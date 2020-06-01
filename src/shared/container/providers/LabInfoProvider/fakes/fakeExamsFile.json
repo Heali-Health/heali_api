@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1974,
+    "slug": "nipt-avancado-maternit-genome-sangue",
+    "title": "NIPT Avançado (MATERNIT GENOME), Sangue",
+    "synonymous": "",
+    "price": "3334.00",
+    "sku": "NIPT",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 31244,
+    "slug": "niquel",
+    "title": "Níquel",
+    "synonymous": "",
+    "price": "42",
+    "sku": "NIQS",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 1745,
+    "slug": "osmolaridade-urinaria",
+    "title": "Osmolaridade Urinária",
+    "synonymous": "",
+    "price": "28.00",
+    "sku": "OSMOU",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 1746,
+    "slug": "osmolaridade-soro",
+    "title": "Osmolaridade,Soro",
+    "synonymous": "",
+    "price": "28.00",
+    "sku": "OSMSO",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 1747,
+    "slug": "osteocalcina",
+    "title": "Osteocalcina",
+    "synonymous": "",
+    "price": "189.00",
+    "sku": "OSTE",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 1748,
+    "slug": "oxalato-urinario-24-horas",
+    "title": "Oxalato Urinário 24 horas",
+    "synonymous": "Oxalato Urinário 24 horas -  Ácido Oxálico (Oxalato),Urina",
+    "price": "138.00",
+    "sku": "OXA24",
+    "category": "Exames",
+    "purchase_note": ""
+  },
+  {
+    "id": 1749,
+    "slug": "oxcarbamazepina",
+    "title": "Oxcarbazepina Perfil",
+    "synonymous": "",
+    "price": "178.00",
+    "sku": "OXP",
+    "category": "Exames",
+    "purchase_note": ""
+  }
+]

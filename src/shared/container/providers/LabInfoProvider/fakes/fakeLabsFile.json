@@ -1,0 +1,192 @@
+[
+  {
+    "id": 44120,
+    "title": "Unidade Penha (temporariamente fechada)",
+    "address": {
+      "r": "Av. Penha de França, 593",
+      "cep": "03606-010",
+      "b": "Penha",
+      "city": "São Paulo",
+      "location": {
+        "lat": -23.5215282,
+        "lng": -46.5491536
+      }
+    },
+    "link_map": "https:\/\/www.google.com\/maps\/embed?pb=!1m18!1m12!1m3!1d914.5762630508256!2d-46.5475120707871!3d-23.521528199043892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5e5237f51a05%3A0x4f3006debd0636d4!2sAv.%20Penha%20de%20Fran%C3%A7a%2C%20593%20-%20Penha%20de%20Fran%C3%A7a%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2003606-010%2C%20Brasil!5e0!3m2!1spt-BR!2sbr!4v1578335596434!5m2!1spt-BR!2sbr",
+    "link_map_app": "https:\/\/goo.gl\/maps\/5NrvMS1W8JW323BN9",
+    "content": {
+      "parks": [
+        {
+          "name": "Paiva Estacionamento",
+          "end": "Av. Penha de França, 744",
+          "ref": "150",
+          "opening_hour": ""
+        }
+      ],
+      "transport": [
+        {
+          "line": ""
+        }
+      ],
+      "covenants": [
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/01\/Sulamerica@2x.png",
+          "name": "SulAmérica",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/PortoSeguro@2x-1.png",
+          "name": "Porto Seguro",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Itau@2x-1.png",
+          "name": "Fundação Saúde Itaú",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Unimed@2x-1.png",
+          "name": "Seguros Unimed",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Careplus@2x-1.png",
+          "name": "CarePlus",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Leader@2x-1.png",
+          "name": "New Saúde Leader",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Interclinicas@2x-1.png",
+          "name": "Interclínicas",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/01\/PlenaSaude@2x.png",
+          "name": "Plena Saúde",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/03\/bestdoctors@2x.png",
+          "name": "Best Doctors",
+          "have_covenant": true
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/04\/BioSaude@2x.png",
+          "name": "BioSaúde",
+          "have_covenant": true
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/04\/notredame_intermedica@2x.png",
+          "name": "NotreDame Intermédica",
+          "have_covenant": false
+        }
+      ]
+    },
+    "is_opened": true,
+    "open_date": "",
+    "results_hour": "Segunda a sexta das 7h às 16h e no sábado das 7h às 13h",
+    "collect_hour": "Segunda a sexta das 7h às 15h e no sábado das 7h às 12h"
+  },
+  {
+    "id": 27445,
+    "title": "Unidade Vila Olímpia (temporariamente fechada)",
+    "address": {
+      "r": "R. Fidêncio Ramos, 160 - Cj. 405",
+      "cep": "04551-010",
+      "b": "Vila Olímpia",
+      "city": "São Paulo",
+      "location": {
+        "lat": -23.5945348,
+        "lng": -46.685436
+      }
+    },
+    "link_map": "https:\/\/www.google.com\/maps\/embed?pb=!1m18!1m12!1m3!1d313.42843399192725!2d-46.68541166106052!3d-23.594472851141603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5748abc48629%3A0x9d957ffa1a67da59!2sR.%20Fid%C3%AAncio%20Ramos%2C%20160%20-%20Vila%20Ol%C3%ADmpia%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2004551-010!5e0!3m2!1spt-BR!2sbr!4v1583788259677!5m2!1spt-BR!2sbr",
+    "link_map_app": "https:\/\/goo.gl\/maps\/sCD28EEiV8utSmgA8",
+    "content": {
+      "parks": [
+        {
+          "name": "Operacional Park Serviços Estacionamento",
+          "end": "R. Fidêncio Ramos, 160",
+          "ref": "0",
+          "opening_hour": ""
+        },
+        {
+          "name": "Estacionamento Auto Vagas",
+          "end": "R. Fidêncio Ramos, 195",
+          "ref": "50",
+          "opening_hour": ""
+        }
+      ],
+      "transport": [
+        {
+          "line": "Estação Vila Olímpia (Linha 9 - Esmeralda)"
+        }
+      ],
+      "covenants": [
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/01\/Sulamerica@2x.png",
+          "name": "SulAmérica",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/PortoSeguro@2x-1.png",
+          "name": "Porto Seguro",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Itau@2x-1.png",
+          "name": "Fundação Saúde Itaú",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Unimed@2x-1.png",
+          "name": "Seguros Unimed",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Careplus@2x-1.png",
+          "name": "CarePlus",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Leader@2x-1.png",
+          "name": "New Saúde Leader",
+          "have_covenant": true
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2019\/11\/Interclinicas@2x-1.png",
+          "name": "Interclínicas",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/01\/PlenaSaude@2x.png",
+          "name": "Plena Saúde",
+          "have_covenant": false
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/03\/bestdoctors@2x.png",
+          "name": "Best Doctors",
+          "have_covenant": true
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/04\/BioSaude@2x.png",
+          "name": "BioSaúde",
+          "have_covenant": true
+        },
+        {
+          "image": "https:\/\/wp.labiexames.com.br\/wp-content\/uploads\/2020\/04\/notredame_intermedica@2x.png",
+          "name": "NotreDame Intermédica",
+          "have_covenant": false
+        }
+      ]
+    },
+    "is_opened": true,
+    "open_date": "",
+    "results_hour": "Segunda a sexta das 7h às 16h e no sábado das 7h às 13h",
+    "collect_hour": "Segunda a sexta das 7h às 15h e no sábado das 7h às 12h"
+  }
+]

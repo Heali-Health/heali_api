@@ -23,7 +23,7 @@ export default class AddOriginalIdAndForeignKeyInPricesTable1590799346920
         name: 'PriceOriginalId',
         columnNames: ['original_exam_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'prices',
+        referencedTableName: 'original_exams',
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       }),

@@ -33,6 +33,14 @@ export default class FakeOriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByLabsIds(labIdData: string[]): Promise<OriginalExam[]> {
+    const originalExams = await this.originalExams.filter(originalExam =>
+      labIdData.includes(originalExam.lab_id),
+    );
+
+    return originalExams;
+  }
+
   public async upsertOriginalExams(
     originalExamData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {

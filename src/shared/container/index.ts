@@ -24,6 +24,9 @@ import LabsRepository from '@modules/labs/infra/typeorm/repositories/LabsReposit
 import IOriginalExamsRepository from '@modules/exams/repositories/IOriginalExamsRepository';
 import OriginalExamsRepository from '@modules/exams/infra/typeorm/repositories/OriginalExamsRepository';
 
+import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
+import PricesRepository from '@modules/exams/infra/typeorm/repositories/PricesRepository';
+
 container.registerSingleton<IPatientsRepository>(
   'PatientsRepository',
   PatientsRepository,
@@ -54,4 +57,9 @@ container.registerSingleton<ILabsRepository>('LabsRepository', LabsRepository);
 container.registerSingleton<IOriginalExamsRepository>(
   'OriginalExamsRepository',
   OriginalExamsRepository,
+);
+
+container.registerSingleton<IPricesRepository>(
+  'PricesRepository',
+  PricesRepository,
 );

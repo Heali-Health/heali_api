@@ -2,6 +2,7 @@ import axios from 'axios';
 import { container } from 'tsyringe';
 
 import ListLabsFromCompanyService from '@modules/labs/services/ListLabsFromCompanyService';
+import ListOriginalExamsFromLabsService from '@modules/exams/services/ListOriginalExamsFromLabsService';
 
 import ILabInfoProvider from '@shared/container/providers/LabInfoProvider/models/ILabInfoProvider';
 
@@ -96,7 +97,8 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     const labiExamsApiResponse = await this.api.get(
       'https://wp.labiexames.com.br//wp-json/api/exams',
     );
-    const labiPrices: ILabiExamsInfoDTO[] = labiExamsApiResponse.data.items;
+    const labiExamsAndPricesInfo: ILabiExamsInfoDTO[] =
+      labiExamsApiResponse.data.items;
 
     const listLabsFromCompany = container.resolve(ListLabsFromCompanyService);
 
@@ -104,22 +106,32 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       '3b20687a-beec-4e83-b875-53c5f07c0e77',
     );
 
-    /*
-    Falta puxar os códigos de exames existentes e vinculados a Labi
-    */
+    const labiLabsIds = labiLabs.map(labiLab => labiLab.id);
 
-    const preAdjustedLabi = labiLabs.map(labiLab => {
-      const labiLabPrices = labiPrices.map(labiPrice => {
-        const labiLabPrice = {
-          exam_id: labiPrice.price,
-          lab_id: labiLab.id,
-          price: labiPrice.price,
-        };
+    const listOriginalExams = container.resolve(
+      ListOriginalExamsFromLabsService,
+    );
 
-        return labiLabPrice;
-      });
+    const labiOriginalExams = await listOriginalExams.execute(labiLabsIds);
 
-      return labiLabPrices;
+    const labi = labiOriginalExams.map(labiOriginalExam => {
+      const priceIndex = labiExamsAndPricesInfo.findIndex(
+        labiInfo =>
+          labiInfo.id.toString() === labiOriginalExam.exam_original_id,
+      );
+
+      const labiPrice: ICreatePriceDTO = {
+        original_exam_id: labiOriginalExam.id,
+        lab_id: labiOriginalExam.lab_id,
+        price: parseFloat(labiExamsAndPricesInfo[priceIndex].price),
+        lab_id_exam_original_id: labiOriginalExam.lab_id_exam_original_id,
+      };
+
+      return labiPrice;
     });
+
+    const prices = [...labi];
+
+    return prices;
   }
 }

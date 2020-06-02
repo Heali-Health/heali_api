@@ -41,6 +41,9 @@ class Price {
   original_exam: OriginalExam;
 
   @Column()
+  lab_id_exam_original_id: string;
+
+  @Column()
   price: number;
 
   @CreateDateColumn()

@@ -69,6 +69,30 @@ export default class FakeLabInfoProvider implements ILabInfoProvider {
   }
 
   public async getPricesInfo(): Promise<ICreatePriceDTO[]> {
-    return this.pricesToUpdate;
+    const preAdjustedfakePricesToUpdate = fakeLabsFile.map(labiLab => {
+      const fakeLabPricesToUpdate = fakeExamsFile.map(labiPrice => {
+        const price: ICreatePriceDTO = {
+          original_exam_id: labiPrice.id.toString(),
+          price: parseFloat(labiPrice.price),
+          lab_id: labiLab.id.toString(),
+          lab_id_exam_original_id: `${labiLab.id.toString()}${labiPrice.id.toString()}`,
+        };
+
+        return price;
+      });
+
+      return fakeLabPricesToUpdate;
+    });
+
+    const fakePricesToUpdate = preAdjustedfakePricesToUpdate.reduce(
+      (result, current) => {
+        result.push(...current);
+        return result;
+      },
+    );
+
+    const addedPricesToUpdate = [...this.pricesToUpdate, ...fakePricesToUpdate];
+
+    return addedPricesToUpdate;
   }
 }

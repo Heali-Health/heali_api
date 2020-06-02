@@ -14,11 +14,8 @@ export default class OriginalExamsRepository
   implements IOriginalExamsRepository {
   private ormRepository: Repository<OriginalExam>;
 
-  private listLabsFromCompany: ListLabsFromCompanyService;
-
   constructor() {
     this.ormRepository = getRepository(OriginalExam);
-    this.listLabsFromCompany = container.resolve(ListLabsFromCompanyService);
   }
 
   public async create(examData: ICreateOriginalExamDTO): Promise<OriginalExam> {
@@ -30,13 +27,23 @@ export default class OriginalExamsRepository
   }
 
   public async findAllByCompanyId(company_id: string): Promise<OriginalExam[]> {
-    /* const listLabsFromCompany = container.resolve(ListLabsFromCompanyService); */
-    const companylabs = await this.listLabsFromCompany.execute(company_id);
+    const listLabsFromCompany = container.resolve(ListLabsFromCompanyService);
+    const companylabs = await listLabsFromCompany.execute(company_id);
     const companylabsIds = companylabs.map(companyLab => companyLab.id);
 
     const originalExams = await this.ormRepository.find({
       where: {
         lab_id: In(companylabsIds),
+      },
+    });
+
+    return originalExams;
+  }
+
+  public async findAllByLabsIds(labIdData: string[]): Promise<OriginalExam[]> {
+    const originalExams = await this.ormRepository.find({
+      where: {
+        lab_id: In(labIdData),
       },
     });
 

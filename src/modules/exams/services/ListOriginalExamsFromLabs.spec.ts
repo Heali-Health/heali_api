@@ -1,20 +1,19 @@
 import FakeCompaniesRepository from '@modules/labs/repositories/fakes/FakeCompaniesRepository';
 import FakeLabsRepository from '@modules/labs/repositories/fakes/FakeLabsRepository';
 import FakeOriginalExamsRepository from '@modules/exams/repositories/fakes/FakeOriginalExamsRepository';
-import ListOriginalExamsFromCompanyService from './ListOriginalExamsFromCompanyService';
+import ListOriginalExamsFromLabsService from './ListOriginalExamsFromLabsService';
 
 let fakeCompaniesRepository: FakeCompaniesRepository;
 let fakeLabsRepository: FakeLabsRepository;
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
-let listOriginalExamsFromCompany: ListOriginalExamsFromCompanyService;
+let listOriginalExamsFromLabs: ListOriginalExamsFromLabsService;
 
-describe('ListOriginalExamsFromCompany', () => {
+describe('ListOriginalExamsFromLabs', () => {
   beforeEach(() => {
     fakeCompaniesRepository = new FakeCompaniesRepository();
     fakeLabsRepository = new FakeLabsRepository();
-    console.log('step 1 - step 1 - step 1');
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
-    listOriginalExamsFromCompany = new ListOriginalExamsFromCompanyService(
+    listOriginalExamsFromLabs = new ListOriginalExamsFromLabsService(
       fakeOriginalExamsRepository,
     );
   });
@@ -110,10 +109,11 @@ describe('ListOriginalExamsFromCompany', () => {
       lab_id_exam_original_id: `${lab4.id}007`,
     });
 
-    const rightCompanyOriginalExams = await listOriginalExamsFromCompany.execute(
-      company1.id,
-    );
+    const rightCompanyOriginalExams = await listOriginalExamsFromLabs.execute([
+      lab1.id,
+      lab2.id,
+    ]);
 
-    expect(rightCompanyOriginalExams).toBe([originalExam1, originalExam2]);
+    expect(rightCompanyOriginalExams).toEqual([originalExam1, originalExam2]);
   });
 });

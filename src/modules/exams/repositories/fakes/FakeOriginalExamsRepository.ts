@@ -21,6 +21,42 @@ export default class FakeOriginalExamsRepository
     return originalExam;
   }
 
+  public async save(originalExam: OriginalExam): Promise<OriginalExam> {
+    const findIndex = this.originalExams.findIndex(
+      findOriginalExam => findOriginalExam.id === originalExam.id,
+    );
+
+    this.originalExams[findIndex] = originalExam;
+
+    return originalExam;
+  }
+
+  public async saveMany(
+    originalExams: OriginalExam[],
+  ): Promise<OriginalExam[]> {
+    const updatedOriginalExams = originalExams.map(originalExam => {
+      const findIndex = this.originalExams.findIndex(
+        findOriginalExam => findOriginalExam.id === originalExam.id,
+      );
+
+      this.originalExams[findIndex] = originalExam;
+
+      return originalExam;
+    });
+
+    return updatedOriginalExams;
+  }
+
+  public async findByIdArray(
+    original_exams_ids: string[],
+  ): Promise<OriginalExam[]> {
+    const originalExams = this.originalExams.filter(originalExam =>
+      original_exams_ids.includes(originalExam.id),
+    );
+
+    return originalExams;
+  }
+
   public async findAllByCompanyId(company_id: string): Promise<OriginalExam[]> {
     const listLabsFromCompany = container.resolve(ListLabsFromCompanyService);
     const companylabs = await listLabsFromCompany.execute(company_id);
@@ -34,7 +70,7 @@ export default class FakeOriginalExamsRepository
   }
 
   public async findAllByLabsIds(labIdData: string[]): Promise<OriginalExam[]> {
-    const originalExams = await this.originalExams.filter(originalExam =>
+    const originalExams = this.originalExams.filter(originalExam =>
       labIdData.includes(originalExam.lab_id),
     );
 

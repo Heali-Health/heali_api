@@ -12,6 +12,18 @@ class ExamsRepository implements IExamsRepository {
     this.ormRepository = getRepository(Exam);
   }
 
+  public async create({ title }: ICreateExamDTO): Promise<Exam> {
+    const exam = this.ormRepository.create({ title });
+
+    await this.ormRepository.save(exam);
+
+    return exam;
+  }
+
+  public async save(exam: Exam): Promise<Exam> {
+    return this.ormRepository.save(exam);
+  }
+
   public async findAllByUserInput(query: string): Promise<Exam[]> {
     const exams = await this.ormRepository.find({
       where: `title ILIKE '%${query}%'`,
@@ -22,14 +34,6 @@ class ExamsRepository implements IExamsRepository {
 
   public async findByTitle(title: string): Promise<Exam | undefined> {
     const exam = await this.ormRepository.findOne({ where: { title } });
-
-    return exam;
-  }
-
-  public async create({ title }: ICreateExamDTO): Promise<Exam> {
-    const exam = this.ormRepository.create({ title });
-
-    await this.ormRepository.save(exam);
 
     return exam;
   }

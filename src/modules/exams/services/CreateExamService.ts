@@ -1,6 +1,7 @@
 import AppError from '@shared/errors/AppError';
 
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
+import IOriginalExamsRepository from '@modules/exams/repositories/IOriginalExamsRepository';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import { injectable, inject } from 'tsyringe';
 import ICreateExamDTO from '@modules/exams/dtos/ICreateExamDTO';
@@ -12,6 +13,9 @@ export default class CreateExamService {
   constructor(
     @inject('ExamsRepository')
     private examsRepository: IExamsRepository,
+
+    @inject('OriginalExamsRepository')
+    private originalExamsRepository: IOriginalExamsRepository,
 
     @inject('PricesRepository')
     private pricesRepository: IPricesRepository,
@@ -28,20 +32,35 @@ export default class CreateExamService {
       throw new AppError('Exam title already used', 400);
     }
 
+    const exam = await this.examsRepository.create({ title });
+
     if (original_exams_ids) {
-      const selectedPrices = this.pricesRepository.findByOriginalExamIdsArray(
+      const selectedOriginalExams = await this.originalExamsRepository.findByIdArray(
         original_exams_ids,
       );
 
-      return selectedPrices;
-    }
+      const updatedOriginalExams = selectedOriginalExams.map(
+        selectedOriginalExam => {
+          const updatedOriginalExam = selectedOriginalExam;
+          updatedOriginalExam.exam_id = exam.id;
+          return updatedOriginalExam;
+        },
+      );
 
-    const exam = await this.examsRepository.create({
-      title,
-      synonyms,
-      original_exam: selectedOriginalExams,
-      price: selectedPrices,
-    });
+      await this.originalExamsRepository.saveMany(updatedOriginalExams);
+
+      const selectedPrices = await this.pricesRepository.findByOriginalExamIdsArray(
+        original_exams_ids,
+      );
+
+      const updatedPrices = selectedPrices.map(selectedPrice => {
+        const updatedPrice = selectedPrice;
+        updatedPrice.exam_id = exam.id;
+        return updatedPrice;
+      });
+
+      await this.pricesRepository.saveMany(updatedPrices);
+    }
 
     return exam;
   }

@@ -7,23 +7,48 @@ import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
 export default class FakePricesRepository implements IPricesRepository {
   private prices: Price[] = [];
 
+  public async create(priceData: ICreatePriceDTO): Promise<Price> {
+    const price = new Price();
+
+    Object.assign(price, { id: uuid() }, priceData);
+
+    this.prices.push(price);
+
+    return price;
+  }
+
+  public async save(price: Price): Promise<Price> {
+    const findIndex = this.prices.findIndex(
+      findPrice => findPrice.id === price.id,
+    );
+
+    this.prices[findIndex] = price;
+
+    return price;
+  }
+
+  public async saveMany(prices: Price[]): Promise<Price[]> {
+    const updatedPrices = prices.map(price => {
+      const findIndex = this.prices.findIndex(
+        findPrice => findPrice.id === price.id,
+      );
+
+      this.prices[findIndex] = price;
+
+      return price;
+    });
+
+    return updatedPrices;
+  }
+
   public async findByOriginalExamIdsArray(
     original_exams_ids: string[],
   ): Promise<Price[]> {
-    const preAdjustedPrices = original_exams_ids.map(originalExamId => {
-      const originalExamPrices = this.prices.filter(
-        price => price.original_exam_id === originalExamId,
-      );
+    const originalExamPrices = this.prices.filter(price =>
+      original_exams_ids.includes(price.original_exam_id),
+    );
 
-      return originalExamPrices;
-    });
-
-    const prices = preAdjustedPrices.reduce((result, current) => {
-      result.push(...current);
-      return result;
-    });
-
-    return prices;
+    return originalExamPrices;
   }
 
   public async insertPrices(priceData: ICreatePriceDTO[]): Promise<Price[]> {

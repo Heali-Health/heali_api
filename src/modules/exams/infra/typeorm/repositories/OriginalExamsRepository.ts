@@ -26,6 +26,26 @@ export default class OriginalExamsRepository
     return originalExam;
   }
 
+  public async save(originalExam: OriginalExam): Promise<OriginalExam> {
+    return this.ormRepository.save(originalExam);
+  }
+
+  public async saveMany(
+    originalExams: OriginalExam[],
+  ): Promise<OriginalExam[]> {
+    return this.ormRepository.save(originalExams);
+  }
+
+  public async findByIdArray(
+    original_exams_ids: string[],
+  ): Promise<OriginalExam[]> {
+    const originalExams = await this.ormRepository.findByIds(
+      original_exams_ids,
+    );
+
+    return originalExams;
+  }
+
   public async findAllByCompanyId(company_id: string): Promise<OriginalExam[]> {
     const listLabsFromCompany = container.resolve(ListLabsFromCompanyService);
     const companylabs = await listLabsFromCompany.execute(company_id);

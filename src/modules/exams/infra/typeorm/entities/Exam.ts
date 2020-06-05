@@ -17,6 +17,9 @@ class Exam {
   @Column()
   title: string;
 
+  @Column()
+  slug: string;
+
   @OneToMany(() => OriginalExam, originalExam => originalExam.exam)
   original_exam: OriginalExam;
 

@@ -3,11 +3,13 @@ import AppError from '@shared/errors/AppError';
 import FakeExamsRepository from '@modules/exams/repositories/fakes/FakeExamsRepository';
 import FakeOriginalExamsRepository from '@modules/exams/repositories/fakes/FakeOriginalExamsRepository';
 import FakePricesRepository from '@modules/exams/repositories/fakes/FakePricesRepository';
+import FakeSlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/fakes/FakeSlugTransformation';
 import CreateExamService from '@modules/exams/services/CreateExamService';
 
 let fakeExamsRepository: FakeExamsRepository;
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
 let fakePricesRepository: FakePricesRepository;
+let fakeSlugTransformationProvider: FakeSlugTransformationProvider;
 let createExam: CreateExamService;
 
 describe('SearchExam', () => {
@@ -15,16 +17,21 @@ describe('SearchExam', () => {
     fakeExamsRepository = new FakeExamsRepository();
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
     fakePricesRepository = new FakePricesRepository();
+    fakeSlugTransformationProvider = new FakeSlugTransformationProvider();
     createExam = new CreateExamService(
       fakeExamsRepository,
       fakeOriginalExamsRepository,
       fakePricesRepository,
+      fakeSlugTransformationProvider,
     );
   });
 
   it('should be able to create a new exam', async () => {
     const exam = await createExam.execute({
       title: 'Hemograma completo',
+      slug: await fakeSlugTransformationProvider.transform(
+        'Hemograma completo',
+      ),
     });
 
     expect(exam.title).toBe('Hemograma completo');
@@ -34,10 +41,13 @@ describe('SearchExam', () => {
   it('should not be able to create an existent exam', async () => {
     const exam = await createExam.execute({
       title: 'Hemograma completo',
+      slug: await fakeSlugTransformationProvider.transform(
+        'Hemograma completo',
+      ),
     });
 
     await expect(
-      createExam.execute({ title: exam.title }),
+      createExam.execute({ title: exam.title, slug: exam.slug }),
     ).rejects.toBeInstanceOf(AppError);
   });
 
@@ -86,6 +96,9 @@ describe('SearchExam', () => {
 
     const exam1 = await createExam.execute({
       title: 'Hemograma completo',
+      slug: await fakeSlugTransformationProvider.transform(
+        'Hemograma completo',
+      ),
       original_exams_ids: [originalExam1.id, originalExam2.id],
     });
 

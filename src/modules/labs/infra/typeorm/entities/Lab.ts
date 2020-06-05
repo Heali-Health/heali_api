@@ -21,6 +21,9 @@ class Lab {
   title: string;
 
   @Column()
+  slug: string;
+
+  @Column()
   company_id: string;
 
   @ManyToOne(() => Company, company => company.lab, { eager: true })

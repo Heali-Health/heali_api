@@ -4,15 +4,15 @@
    "main": "index.js",
    "license": "MIT",
    "scripts": {
-    "build": "tsc",
-    "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpileOnly --ignore-watch node_modules src/shared/infra/http/server.ts",
-    "start": "ts-node-dev src/shared/infra/http/server.ts",
-    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "test": "jest"
+      "build": "tsc",
+      "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpileOnly --ignore-watch node_modules src/shared/infra/http/server.ts",
+      "start": "ts-node-dev src/shared/infra/http/server.ts",
+      "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+      "test": "jest"
    },
    "dependencies": {
-      "axios": "^0.19.2",
       "aws-sdk": "^2.678.0",
+      "axios": "^0.19.2",
       "bcryptjs": "^2.4.3",
       "celebrate": "^12.1.1",
       "class-transformer": "^0.2.3",
@@ -28,12 +28,13 @@
       "mongodb": "^3.5.7",
       "multer": "^1.4.2",
       "nodemailer": "^6.4.6",
-      "pg": "^8.0.3",
+      "pg": "^8.2.1",
       "rate-limiter-flexible": "^2.1.5",
       "redis": "^3.0.2",
       "reflect-metadata": "^0.1.10",
+      "slug": "^3.3.0",
       "tsyringe": "^4.2.0",
-      "typeorm": "0.2.24",
+      "typeorm": "^0.2.25",
       "uuidv4": "^6.0.8"
    },
    "devDependencies": {
@@ -47,6 +48,7 @@
       "@types/multer": "^1.4.2",
       "@types/nodemailer": "^6.4.0",
       "@types/redis": "^2.8.21",
+      "@types/slug": "^0.9.1",
       "@typescript-eslint/eslint-plugin": "^2.29.0",
       "@typescript-eslint/parser": "^2.29.0",
       "eslint": "^6.8.0",

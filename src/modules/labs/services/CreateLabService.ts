@@ -4,6 +4,7 @@ import AppError from '@shared/errors/AppError';
 
 import ILabsRepository from '@modules/labs/repositories/ILabsRepository';
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
+import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
 import Lab from '@modules/labs/infra/typeorm/entities/Lab';
 
 @injectable()
@@ -11,6 +12,9 @@ export default class CreateLabService {
   constructor(
     @inject('LabsRepository')
     private labsRepository: ILabsRepository,
+
+    @inject('SlugTransformationProvider')
+    private slugTransformation: ISlugTransformationProvider,
   ) {}
 
   public async execute({
@@ -37,6 +41,7 @@ export default class CreateLabService {
 
     const lab = await this.labsRepository.create({
       title,
+      slug: await this.slugTransformation.transform(title),
       company_id,
       original_id,
       address,

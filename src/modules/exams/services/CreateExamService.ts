@@ -1,12 +1,15 @@
+import { injectable, inject } from 'tsyringe';
+
 import AppError from '@shared/errors/AppError';
 
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
 import IOriginalExamsRepository from '@modules/exams/repositories/IOriginalExamsRepository';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
-import { injectable, inject } from 'tsyringe';
 import ICreateExamDTO from '@modules/exams/dtos/ICreateExamDTO';
 
 import Exam from '@modules/exams/infra/typeorm/entities/Exam';
+
+import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
 
 @injectable()
 export default class CreateExamService {
@@ -19,6 +22,9 @@ export default class CreateExamService {
 
     @inject('PricesRepository')
     private pricesRepository: IPricesRepository,
+
+    @inject('SlugTransformationProvider')
+    private slugTransformation: ISlugTransformationProvider,
   ) {}
 
   public async execute({
@@ -32,7 +38,10 @@ export default class CreateExamService {
       throw new AppError('Exam title already used', 400);
     }
 
-    const exam = await this.examsRepository.create({ title });
+    const exam = await this.examsRepository.create({
+      title,
+      slug: await this.slugTransformation.transform(title),
+    });
 
     if (original_exams_ids) {
       const selectedOriginalExams = await this.originalExamsRepository.findByIdArray(
@@ -42,7 +51,7 @@ export default class CreateExamService {
       const updatedOriginalExams = selectedOriginalExams.map(
         selectedOriginalExam => {
           const updatedOriginalExam = selectedOriginalExam;
-          updatedOriginalExam.exam_id = exam.id;
+          updatedOriginalExam.exam = exam;
           return updatedOriginalExam;
         },
       );
@@ -55,7 +64,7 @@ export default class CreateExamService {
 
       const updatedPrices = selectedPrices.map(selectedPrice => {
         const updatedPrice = selectedPrice;
-        updatedPrice.exam_id = exam.id;
+        updatedPrice.exam = exam;
         return updatedPrice;
       });
 

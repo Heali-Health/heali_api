@@ -1,4 +1,5 @@
 import { uuid } from 'uuidv4';
+import { max } from 'date-fns';
 
 import Price from '@modules/exams/infra/typeorm/entities/Price';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
@@ -39,6 +40,30 @@ export default class FakePricesRepository implements IPricesRepository {
     });
 
     return updatedPrices;
+  }
+
+  public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
+    const recentMatchedPrices = exams_ids.map(exam_id => {
+      const matchedPrices = this.prices.filter(price =>
+        exam_id.includes(price.exam_id),
+      );
+
+      const matchedCreatedDates = matchedPrices.map(
+        price => price.created_date,
+      );
+
+      const maxCreatedDate = max(matchedCreatedDates);
+
+      const recentPriceIndex = matchedPrices.findIndex(
+        price => price.created_date === maxCreatedDate,
+      );
+
+      const recentPrice = matchedPrices[recentPriceIndex];
+
+      return recentPrice;
+    });
+
+    return recentMatchedPrices;
   }
 
   public async findByOriginalExamIdsArray(

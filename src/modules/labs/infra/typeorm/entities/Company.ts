@@ -17,6 +17,9 @@ class Company {
   title: string;
 
   @Column()
+  slug: string;
+
+  @Column()
   logo: string;
 
   @OneToMany(() => Lab, lab => lab.company)

@@ -1,6 +1,8 @@
 export default interface ICreateLabDTO {
   title: string;
 
+  slug: string;
+
   company_id: string;
 
   original_id: string;

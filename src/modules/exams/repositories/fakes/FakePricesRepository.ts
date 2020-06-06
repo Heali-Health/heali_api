@@ -11,7 +11,13 @@ export default class FakePricesRepository implements IPricesRepository {
   public async create(priceData: ICreatePriceDTO): Promise<Price> {
     const price = new Price();
 
-    Object.assign(price, { id: uuid() }, priceData);
+    Object.assign(
+      price,
+      { id: uuid() },
+      priceData,
+      { created_date: new Date(Date.now()) },
+      { updated_date: new Date(Date.now()) },
+    );
 
     this.prices.push(price);
 
@@ -43,22 +49,32 @@ export default class FakePricesRepository implements IPricesRepository {
   }
 
   public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
-    const recentMatchedPrices = exams_ids.map(exam_id => {
-      const matchedPrices = this.prices.filter(price =>
-        exam_id.includes(price.exam_id),
+    const matchedPrices = this.prices.filter(price =>
+      exams_ids.includes(price.exam_id),
+    );
+
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
+
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
+
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
       );
 
-      const matchedCreatedDates = matchedPrices.map(
+      const matchedCreatedDates = labExamPrices.map(
         price => price.created_date,
       );
 
       const maxCreatedDate = max(matchedCreatedDates);
 
-      const recentPriceIndex = matchedPrices.findIndex(
-        price => price.created_date === maxCreatedDate,
+      const recentPriceIndex = labExamPrices.findIndex(
+        price => price.created_date.getTime() === maxCreatedDate.getTime(),
       );
 
-      const recentPrice = matchedPrices[recentPriceIndex];
+      const recentPrice = labExamPrices[recentPriceIndex];
 
       return recentPrice;
     });

@@ -14,14 +14,17 @@ describe('SearchExam', () => {
   it('should be able to search exam based on an user entry', async () => {
     const exam1 = await fakeExamsRepository.create({
       title: 'Hemograma completo',
+      slug: 'hemograma-completo',
     });
 
     const exam2 = await fakeExamsRepository.create({
       title: 'Colesterol Total e Frações',
+      slug: 'colesterol-total-e-fracoes',
     });
 
     const exam3 = await fakeExamsRepository.create({
       title: 'Glicose',
+      slug: 'glicose',
     });
 
     const results1 = await searchExam.execute('hemograma');

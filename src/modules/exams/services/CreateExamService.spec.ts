@@ -12,7 +12,7 @@ let fakePricesRepository: FakePricesRepository;
 let fakeSlugTransformationProvider: FakeSlugTransformationProvider;
 let createExam: CreateExamService;
 
-describe('SearchExam', () => {
+describe('CreateExam', () => {
   beforeEach(() => {
     fakeExamsRepository = new FakeExamsRepository();
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();

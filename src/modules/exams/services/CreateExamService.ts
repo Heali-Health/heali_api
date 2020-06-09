@@ -51,7 +51,7 @@ export default class CreateExamService {
       const updatedOriginalExams = selectedOriginalExams.map(
         selectedOriginalExam => {
           const updatedOriginalExam = selectedOriginalExam;
-          updatedOriginalExam.exam_id = exam.id;
+          updatedOriginalExam.exam = exam;
           return updatedOriginalExam;
         },
       );
@@ -64,7 +64,7 @@ export default class CreateExamService {
 
       const updatedPrices = selectedPrices.map(selectedPrice => {
         const updatedPrice = selectedPrice;
-        updatedPrice.exam_id = exam.id;
+        updatedPrice.exam = exam;
         return updatedPrice;
       });
 

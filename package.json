@@ -11,6 +11,7 @@
       "test": "jest"
    },
    "dependencies": {
+      "@googlemaps/google-maps-services-js": "^3.0.0",
       "aws-sdk": "^2.678.0",
       "axios": "^0.19.2",
       "bcryptjs": "^2.4.3",

@@ -18,10 +18,10 @@ export default class InsertPricesFromApiService {
   public async execute(): Promise<Price[]> {
     const pricesFromApi = await this.labInfoProvider.getPricesInfo();
 
-    const pricesToUpdate = await this.pricesRepository.insertPrices(
+    const pricesToInsert = await this.pricesRepository.insertPrices(
       pricesFromApi,
     );
 
-    return pricesToUpdate;
+    return pricesToInsert;
   }
 }

@@ -1,18 +1,24 @@
-import AppError from '@shared/errors/AppError';
-
 import { Repository, getRepository, In } from 'typeorm';
+import { injectable, inject } from 'tsyringe';
+
+import AppError from '@shared/errors/AppError';
 
 import ILabsRepository, {
   IFindSameLab,
 } from '@modules/labs/repositories/ILabsRepository';
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
+import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
 
 import Lab from '@modules/labs/infra/typeorm/entities/Lab';
 
+@injectable()
 class LabsRepository implements ILabsRepository {
   private ormRepository: Repository<Lab>;
 
-  constructor() {
+  constructor(
+    @inject('SlugTransformation')
+    private slugTransformation: ISlugTransformationProvider,
+  ) {
     this.ormRepository = getRepository(Lab);
   }
 
@@ -97,6 +103,7 @@ class LabsRepository implements ILabsRepository {
       }
 
       existentLab.title = labToUpdate.title;
+      existentLab.slug = this.slugTransformation.transform(labToUpdate.title);
       existentLab.address = labToUpdate.address;
       existentLab.city = labToUpdate.city;
       existentLab.latitude = labToUpdate.latitude;

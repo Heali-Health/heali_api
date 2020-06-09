@@ -12,6 +12,7 @@ import ILabiExamsInfoDTO from '@shared/container/providers/LabInfoProvider/dtos/
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
 import ICreateOriginalExamDTO from '@modules/exams/dtos/ICreateOriginalExamDTO';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
+import SlugPkgSlugTransformationProvider from '../../SlugTransformationProvider/implementations/SlugPkgSlugTransformationProvider';
 
 export default class LabiLabInfoProvider implements ILabInfoProvider {
   private api = axios;
@@ -25,9 +26,14 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     );
     const labiLabs: ILabiLabInfoDTO[] = labiLabsApiResponse.data;
 
+    const slugTransformation = container.resolve(
+      SlugPkgSlugTransformationProvider,
+    );
+
     const labi = labiLabs.map(labiLab => {
       const lab: ICreateLabDTO = {
         title: labiLab.title,
+        slug: slugTransformation.transform(labiLab.title),
         company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
         original_id: labiLab.id.toString(),
         company_id_original_id: `3b20687a-beec-4e83-b875-53c5f07c0e77${labiLab.id.toString()}`,

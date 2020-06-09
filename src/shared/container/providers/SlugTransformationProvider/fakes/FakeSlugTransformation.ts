@@ -2,7 +2,7 @@ import ISlugTransformationProvider from '../models/ISlugTransformationProvider';
 
 export default class FakeSlugTransformationProvider
   implements ISlugTransformationProvider {
-  public async transform(input: string): Promise<string> {
+  public transform(input: string): string {
     const output = input
       .toString()
       .toLowerCase()

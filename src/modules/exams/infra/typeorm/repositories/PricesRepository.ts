@@ -36,17 +36,27 @@ export default class PricesRepository implements IPricesRepository {
       },
     });
 
-    const matchedPriceIds = matchedPrices.map(price => price.id);
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
 
-    const recentMatchedPrices = matchedPriceIds.map(price_id => {
-      const prices = matchedPrices.filter(price => price_id.includes(price.id));
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
 
-      const matchedCreatedDates = prices.map(price => price.created_date);
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
+      );
+
+      const matchedCreatedDates = labExamPrices.map(
+        price => price.created_date,
+      );
 
       const maxCreatedDate = max(matchedCreatedDates);
 
-      const recentPriceIndex = prices.findIndex(
-        price => price.created_date === maxCreatedDate,
+      const recentPriceIndex = matchedPrices.findIndex(
+        price =>
+          price.created_date.getTime() === maxCreatedDate.getTime() &&
+          price.lab_id_exam_original_id === labExam,
       );
 
       const recentPrice = matchedPrices[recentPriceIndex];

@@ -1,5 +1,5 @@
 import { Repository, getRepository, In } from 'typeorm';
-import { injectable, inject } from 'tsyringe';
+import { injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
@@ -7,7 +7,6 @@ import ILabsRepository, {
   IFindSameLab,
 } from '@modules/labs/repositories/ILabsRepository';
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
-import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
 
 import Lab from '@modules/labs/infra/typeorm/entities/Lab';
 
@@ -15,10 +14,7 @@ import Lab from '@modules/labs/infra/typeorm/entities/Lab';
 class LabsRepository implements ILabsRepository {
   private ormRepository: Repository<Lab>;
 
-  constructor(
-    @inject('SlugTransformation')
-    private slugTransformation: ISlugTransformationProvider,
-  ) {
+  constructor() {
     this.ormRepository = getRepository(Lab);
   }
 
@@ -36,6 +32,12 @@ class LabsRepository implements ILabsRepository {
     });
 
     return labs;
+  }
+
+  public async findById(lab_id: string): Promise<Lab | undefined> {
+    const lab = await this.ormRepository.findOne(lab_id);
+
+    return lab;
   }
 
   public async findSameLab({
@@ -62,6 +64,10 @@ class LabsRepository implements ILabsRepository {
 
   public async save(lab: Lab): Promise<Lab> {
     return this.ormRepository.save(lab);
+  }
+
+  public async saveMany(labs: Lab[]): Promise<Lab[]> {
+    return this.ormRepository.save(labs);
   }
 
   public async upsertLabs(labsData: ICreateLabDTO[]): Promise<Lab[]> {
@@ -103,7 +109,6 @@ class LabsRepository implements ILabsRepository {
       }
 
       existentLab.title = labToUpdate.title;
-      existentLab.slug = this.slugTransformation.transform(labToUpdate.title);
       existentLab.address = labToUpdate.address;
       existentLab.city = labToUpdate.city;
       existentLab.latitude = labToUpdate.latitude;

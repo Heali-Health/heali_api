@@ -6,6 +6,10 @@ export default interface IPricesRepository {
   save(price: Price): Promise<Price>;
   saveMany(prices: Price[]): Promise<Price[]>;
   findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]>;
+  findAllRecentByExamsIdsAndLab(
+    exams_ids: string[],
+    lab_id: string,
+  ): Promise<Price[]>;
   findByOriginalExamIdsArray(original_exams_ids: string[]): Promise<Price[]>;
   insertPrices(priceData: ICreatePriceDTO[]): Promise<Price[]>;
 }

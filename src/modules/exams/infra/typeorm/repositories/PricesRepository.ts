@@ -67,6 +67,48 @@ export default class PricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
+  public async findAllRecentByExamsIdsAndLab(
+    exams_ids: string[],
+    lab_id: string,
+  ): Promise<Price[]> {
+    const matchedPrices = await this.ormRepository.find({
+      where: {
+        exam_id: In(exams_ids),
+        lab_id,
+      },
+    });
+
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
+
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
+
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
+      );
+
+      const matchedCreatedDates = labExamPrices.map(
+        price => price.created_date,
+      );
+
+      const maxCreatedDate = max(matchedCreatedDates);
+
+      const recentPriceIndex = matchedPrices.findIndex(
+        price =>
+          price.created_date.getTime() === maxCreatedDate.getTime() &&
+          price.lab_id_exam_original_id === labExam,
+      );
+
+      const recentPrice = matchedPrices[recentPriceIndex];
+
+      return recentPrice;
+    });
+
+    return recentMatchedPrices;
+  }
+
   public async findByOriginalExamIdsArray(
     original_exams_ids: string[],
   ): Promise<Price[]> {

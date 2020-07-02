@@ -28,6 +28,18 @@ export default class FakeLabsRepository implements ILabsRepository {
     return lab;
   }
 
+  public async saveMany(labs: Lab[]): Promise<Lab[]> {
+    const savedLabs = labs.map(lab => {
+      const findIndex = this.labs.findIndex(findLab => findLab.id === lab.id);
+
+      this.labs[findIndex] = lab;
+
+      return lab;
+    });
+
+    return savedLabs;
+  }
+
   public async findAll(): Promise<Lab[]> {
     return this.labs;
   }
@@ -36,6 +48,12 @@ export default class FakeLabsRepository implements ILabsRepository {
     const labs = this.labs.filter(lab => lab.company_id === company_id);
 
     return labs;
+  }
+
+  public async findById(lab_id: string): Promise<Lab | undefined> {
+    const lab = this.labs.find(eachLab => eachLab.id === lab_id);
+
+    return lab;
   }
 
   public async findSameLab({

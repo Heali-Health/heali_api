@@ -15,6 +15,9 @@ import UserTokensRepository from '@modules/users/infra/typeorm/repositories/User
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 import NotificationsRepository from '@modules/notifications/infra/typeorm/repositories/NotificationsRepository';
 
+import IQuotesRepository from '@modules/quotes/repositories/IQuotesRepository';
+import QuotesRepository from '@modules/quotes/infra/typeorm/repositories/QuotesRepository';
+
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
 import ExamsRepository from '@modules/exams/infra/typeorm/repositories/ExamsRepository';
 
@@ -45,6 +48,11 @@ container.registerSingleton<IUserTokensRepository>(
 container.registerSingleton<INotificationsRepository>(
   'NotificationsRepository',
   NotificationsRepository,
+);
+
+container.registerSingleton<IQuotesRepository>(
+  'QuotesRepository',
+  QuotesRepository,
 );
 
 container.registerSingleton<IExamsRepository>(

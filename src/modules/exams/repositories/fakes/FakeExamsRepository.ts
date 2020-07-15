@@ -5,7 +5,7 @@ import ICreateExamDTO from '@modules/exams/dtos/ICreateExamDTO';
 
 import Exam from '@modules/exams/infra/typeorm/entities/Exam';
 
-export default class FakeExamRepository implements IExamsRepository {
+export default class FakeExamsRepository implements IExamsRepository {
   private exams: Exam[] = [];
 
   public async create({ title }: ICreateExamDTO): Promise<Exam> {

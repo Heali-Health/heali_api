@@ -10,6 +10,7 @@ import examsRouter from '@modules/exams/infra/http/routes/exams.routes';
 import updateLabsFromLabsApiRouter from '@modules/labs/infra/http/routes/updateLabsFromLabsApi.routes';
 import updateExamsFromLabsApiRouter from '@modules/exams/infra/http/routes/updateExamsFromLabsApi.routes';
 import updatePricesFromLabsApiRouter from '@modules/exams/infra/http/routes/updatePricesFromLabsApi.routes';
+import quotesRouter from '@modules/quotes/infra/http/routes/quotes.routes';
 
 const routes = Router();
 
@@ -19,6 +20,7 @@ routes.use('/users', usersRouter);
 routes.use('/sessions', sessionsRouter);
 routes.use('/password', passwordRouter);
 routes.use('/profile', profileRouter);
+routes.use('/quotes', quotesRouter);
 routes.use('/admin/exam', examsRouter);
 routes.use('/admin/update/labs', updateLabsFromLabsApiRouter);
 routes.use('/admin/update/originalexams', updateExamsFromLabsApiRouter);

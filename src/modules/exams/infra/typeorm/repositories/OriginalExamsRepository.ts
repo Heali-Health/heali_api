@@ -73,15 +73,43 @@ export default class OriginalExamsRepository
   public async upsertOriginalExams(
     originalExamsData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {
+    const chunk = (arr: string[], size: number): string[][] =>
+      Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+        arr.slice(i * size, i * size + size),
+      );
+
     const originalExamLabIdExamOriginalIds = originalExamsData.map(
       originalExam => originalExam.lab_id_exam_original_id,
     );
 
-    const existentOriginalExams = await this.ormRepository.find({
-      where: {
-        lab_id_exam_original_id: In(originalExamLabIdExamOriginalIds),
+    const originalExamLabIdExamOriginalIdsArrays = chunk(
+      originalExamLabIdExamOriginalIds,
+      5000,
+    );
+
+    const existentOriginalExamsArrayPromise = originalExamLabIdExamOriginalIdsArrays.map(
+      async item => {
+        const existentOriginalExams = await this.ormRepository.find({
+          where: {
+            lab_id_exam_original_id: In(item),
+          },
+        });
+
+        return existentOriginalExams;
       },
-    });
+    );
+
+    const existentOriginalExamsArray = await Promise.all(
+      existentOriginalExamsArrayPromise,
+    );
+
+    const existentOriginalExams = existentOriginalExamsArray.reduce(
+      (result, current) => {
+        result.push(...current);
+
+        return result;
+      },
+    );
 
     const existentOriginalExamsLabIdExamOriginalIds = existentOriginalExams.map(
       originalExam => originalExam.lab_id_exam_original_id,
@@ -96,7 +124,9 @@ export default class OriginalExamsRepository
 
     const addedOriginalExams = this.ormRepository.create(originalExamsToAdd);
 
-    await this.ormRepository.save(addedOriginalExams);
+    await this.ormRepository.save(addedOriginalExams, {
+      chunk: 1000,
+    });
 
     const originalExamsToUpdate = originalExamsData.filter(originalExam =>
       existentOriginalExamsLabIdExamOriginalIds.includes(
@@ -122,10 +152,63 @@ export default class OriginalExamsRepository
       },
     );
 
-    await this.ormRepository.save(updatedOriginalExams);
+    await this.ormRepository.save(updatedOriginalExams, {
+      chunk: 5000,
+    });
 
-    const labs = [...addedOriginalExams, ...updatedOriginalExams];
+    const originalExams = [...addedOriginalExams, ...updatedOriginalExams];
 
-    return labs;
+    return originalExams;
+
+    // const originalExamsPromise = originalExamsData.map(async originalExam => {
+    //   const originalExamExists = await this.ormRepository.findOne({
+    //     where: {
+    //       lab_id_exam_original_id: originalExam.lab_id_exam_original_id,
+    //     },
+    //   });
+
+    //   if (originalExamExists) {
+    //     originalExamExists.title = originalExam.title;
+
+    //     return originalExamExists;
+    //   }
+    //   const addedOriginalExam = this.ormRepository.create(originalExam);
+
+    //   return addedOriginalExam;
+    // });
+
+    // const originalExams = await Promise.all(originalExamsPromise);
+
+    // await this.ormRepository.save(originalExams, {
+    //   chunk: 5000,
+    // });
+
+    // return originalExams;
+
+    // const teste = originalExamsData.map(exam => {
+    //   exam.exam_original_id,
+    //   exam.lab_id,
+    //   exam.lab_id_exam_original_id,
+    //   exam.title,
+    // })
+
+    // const originalExams = await this.ormRepository
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into(OriginalExam)
+    //   .values(originalExamsData)
+    //   .orUpdate({
+    //     conflict_target: ['lab_id_exam_original_id'],
+    //     overwrite: ['title', 'lab_id', 'exam_original_id'],
+    //   })
+    //   .execute();
+
+    // const originalExamsIds = originalExams.identifiers;
+
+    // const originalExamsReturn = await this.ormRepository.findByIds(
+    //   originalExamsIds,
+    // );
+
+    // return originalExamsReturn;
   }
 }

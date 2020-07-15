@@ -4,7 +4,7 @@ import ILabsRepository from '@modules/labs/repositories/ILabsRepository';
 import ILabInfoProvider from '@shared/container/providers/LabInfoProvider/models/ILabInfoProvider';
 
 import Lab from '@modules/labs/infra/typeorm/entities/Lab';
-import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
+// import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
 
 @injectable()
 export default class UpsertLabsFromApiService {
@@ -13,10 +13,7 @@ export default class UpsertLabsFromApiService {
     private labsRepository: ILabsRepository,
 
     @inject('LabInfoProvider')
-    private labInfoProvider: ILabInfoProvider,
-
-    @inject('SlugTransformation')
-    private slugTransformation: ISlugTransformationProvider,
+    private labInfoProvider: ILabInfoProvider, // @inject('SlugTransformation') // private slugTransformation: ISlugTransformationProvider,
   ) {}
 
   public async execute(): Promise<Lab[]> {
@@ -24,17 +21,17 @@ export default class UpsertLabsFromApiService {
 
     const labsToUpdate = await this.labsRepository.upsertLabs(labsFromApi);
 
-    const labsWithSlugs = labsToUpdate.map(lab => {
-      const labToUpdate = lab;
+    // const labsWithSlugs = labsToUpdate.map(lab => {
+    //   const labToUpdate = lab;
 
-      labToUpdate.slug = this.slugTransformation.transform(
-        lab.company.title + lab.title,
-      );
+    //   labToUpdate.slug = this.slugTransformation.transform(
+    //     lab.company.title + lab.title,
+    //   );
 
-      return labToUpdate;
-    });
+    //   return labToUpdate;
+    // });
 
-    const updatedLabs = await this.labsRepository.saveMany(labsWithSlugs);
+    const updatedLabs = await this.labsRepository.saveMany(labsToUpdate);
 
     return updatedLabs;
   }

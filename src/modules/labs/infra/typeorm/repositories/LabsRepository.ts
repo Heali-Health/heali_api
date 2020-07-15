@@ -109,6 +109,7 @@ class LabsRepository implements ILabsRepository {
       }
 
       existentLab.title = labToUpdate.title;
+      existentLab.slug = labToUpdate.slug;
       existentLab.address = labToUpdate.address;
       existentLab.city = labToUpdate.city;
       existentLab.latitude = labToUpdate.latitude;

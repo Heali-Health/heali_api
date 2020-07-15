@@ -26,7 +26,9 @@ export default class PricesRepository implements IPricesRepository {
   }
 
   public async saveMany(prices: Price[]): Promise<Price[]> {
-    return this.ormRepository.save(prices);
+    return this.ormRepository.save(prices, {
+      chunk: 5000,
+    });
   }
 
   public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
@@ -124,7 +126,9 @@ export default class PricesRepository implements IPricesRepository {
   public async insertPrices(priceData: ICreatePriceDTO[]): Promise<Price[]> {
     const prices = this.ormRepository.create(priceData);
 
-    await this.ormRepository.save(prices);
+    await this.ormRepository.save(prices, {
+      chunk: 5000,
+    });
 
     return prices;
   }

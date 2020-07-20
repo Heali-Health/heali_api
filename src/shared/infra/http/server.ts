@@ -6,9 +6,19 @@ import cors from 'cors';
 import { errors } from 'celebrate';
 import 'express-async-errors';
 
+/// MIGRAR PARA SERVIDOR DE FILAS ///
+// import { container } from 'tsyringe';
+/// ///
+
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import rateLimiter from '@shared/infra/http/middlewares/rateLimiter';
+
+/// MIGRAR PARA SERVIDOR DE FILAS ///
+// import '@shared/container/providers/QueueProvider';
+
+// import ProcessUserEmailQueueService from '@modules/users/services/ProcessUserEmailQueueService';
+///
 import routes from './routes';
 
 import '@shared/infra/typeorm';
@@ -47,3 +57,11 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
 app.listen(3333, () => {
   console.log('🚀Server started on port 3333🚀');
 });
+
+/// MIGRAR PARA SERVIDOR DE FILAS ///
+// const processUserMailQueue = container.resolve(ProcessUserEmailQueueService);
+
+// processUserMailQueue.execute();
+
+// console.log('⚗‎‎  Processing queue!');
+/// ///

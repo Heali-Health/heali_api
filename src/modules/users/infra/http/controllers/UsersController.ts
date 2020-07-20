@@ -3,6 +3,7 @@ import { classToClass } from 'class-transformer';
 import { container } from 'tsyringe';
 
 import CreateUserService from '@modules/users/services/CreateUserService';
+import SendRegisteredEmailService from '@modules/users/services/SendRegisteredEmailService';
 
 export default class UsersController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -23,6 +24,9 @@ export default class UsersController {
         password,
         phone_whatsapp,
       });
+
+      const sendRegisteredEmail = container.resolve(SendRegisteredEmailService);
+      await sendRegisteredEmail.execute(user);
 
       return res.json(classToClass(user));
     } catch (err) {

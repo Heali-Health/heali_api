@@ -34,10 +34,8 @@ export default class SESMailProvider implements IMailProvider {
 
     await this.client.sendMail({
       from: {
-        name,
-        // name: from?.name || name,
-        address: email,
-        // address: from?.email || email,
+        name: from ? from.name : name,
+        address: from ? from.email : email,
       },
       to: {
         name: to.name,

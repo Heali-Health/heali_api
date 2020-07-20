@@ -1,4 +1,4 @@
-interface ITemplateVariables {
+export interface ITemplateVariables {
   [key: string]: string | number;
 }
 

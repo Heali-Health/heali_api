@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import rateLimit from 'axios-rate-limit';
 import { container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
@@ -14,6 +15,7 @@ import ILabiExamsInfoDTO from '@shared/container/providers/LabInfoProvider/dtos/
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
 import ICreateOriginalExamDTO from '@modules/exams/dtos/ICreateOriginalExamDTO';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
+import capitalizeWords from '@shared/utils/capitalizeWords';
 import SlugPkgSlugTransformationProvider from '../../SlugTransformationProvider/implementations/SlugPkgSlugTransformationProvider';
 import ICdCLabInfoDTO from '../dtos/ICdCLabInfoDTO';
 import ICdCLabInfoDetailDTO from '../dtos/ICdCLabInfoDetailDTO';
@@ -21,9 +23,27 @@ import ICdCExamsInfoDTO from '../dtos/ICdCExamsInfoDTO';
 import IDrcLabInfoDTO from '../dtos/IDrcLabInfoDTO';
 import IDrcExamsDTO from '../dtos/IDrcExamsDTO';
 import IDrcLabExamsDTO from '../dtos/IDrcLabExamsDTO';
+import ILavoLabsDTO from '../dtos/ILavoLabsDTO';
+import ILavoLabDetailsDTO from '../dtos/ILavoLabDetailsDTO';
 
+type IRateLimitedAxiosInstance = AxiosInstance;
+interface IHTTP {
+  rateLimit(
+    axiosInstance: AxiosInstance,
+    options: {
+      maxRequests: number;
+      perMilliseconds: number;
+    },
+  ): IRateLimitedAxiosInstance;
+}
 export default class LabiLabInfoProvider implements ILabInfoProvider {
   private api = axios;
+
+  private http = rateLimit(axios.create(), {
+    maxRequests: 1,
+    perMilliseconds: 1000,
+    // maxRPS: 2,
+  });
 
   public async getLabsInfo(): Promise<ICreateLabDTO[]> {
     /*
@@ -62,36 +82,45 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     Cia da Consulta Labs
     */
 
-    const cdCLabsApiResponse = await this.api.get(
+    const cdCLabsApiResponse = await this.http.get(
       'https://ciadaconsulta.com.br/api/company/list',
     );
     const cdCLabs: ICdCLabInfoDTO[] = cdCLabsApiResponse.data.content;
 
     const ciaDaConsultaPromise = cdCLabs.map(async cdcLab => {
-      const labDetailApiResponse = await this.api.get(
-        `https://ciadaconsulta.com.br/api/company/getBySlugName?slugName=${cdcLab.slugName}`,
-      );
+      try {
+        const labDetailApiResponse = await this.http.get(
+          `https://ciadaconsulta.com.br/api/company/getBySlugName?slugName=${cdcLab.slugName}`,
+        );
 
-      const cdcLabDetail: ICdCLabInfoDetailDTO =
-        labDetailApiResponse.data.content;
+        console.log(labDetailApiResponse.status);
 
-      const lab: ICreateLabDTO = {
-        title: cdcLabDetail.tradingName,
-        slug: `cia-da-consulta-${slugTransformation.transform(
-          cdcLabDetail.tradingName,
-        )}`,
-        company_id: '060c2b76-9410-4ea8-ab0d-cc9ef27c7650',
-        original_id: cdcLabDetail.id.toString(),
-        company_id_original_id: `060c2b76-9410-4ea8-ab0d-cc9ef27c7650${cdcLabDetail.id.toString()}`,
-        address: `${cdcLabDetail.address.address}, ${cdcLabDetail.address.addressNumber} - ${cdcLabDetail.address.neighborhood} - ${cdcLabDetail.address.zipCode}`,
-        city: '',
-        latitude: cdcLabDetail.latitude,
-        longitude: cdcLabDetail.longitude,
-        collect_hour: cdcLabDetail.collectionHours,
-        open_hour: cdcLabDetail.openingHours,
-      };
+        const cdcLabDetail: ICdCLabInfoDetailDTO =
+          labDetailApiResponse.data.content;
 
-      return lab;
+        console.log(cdcLabDetail.tradingName);
+
+        const lab: ICreateLabDTO = {
+          title: cdcLabDetail.tradingName,
+          slug: `cia-da-consulta-${slugTransformation.transform(
+            cdcLabDetail.tradingName,
+          )}`,
+          company_id: '060c2b76-9410-4ea8-ab0d-cc9ef27c7650',
+          original_id: cdcLabDetail.id.toString(),
+          company_id_original_id: `060c2b76-9410-4ea8-ab0d-cc9ef27c7650${cdcLabDetail.id.toString()}`,
+          address: `${cdcLabDetail.address.address}, ${cdcLabDetail.address.addressNumber} - ${cdcLabDetail.address.neighborhood} - ${cdcLabDetail.address.zipCode}`,
+          city: '',
+          latitude: cdcLabDetail.latitude,
+          longitude: cdcLabDetail.longitude,
+          collect_hour: cdcLabDetail.collectionHours,
+          open_hour: cdcLabDetail.openingHours,
+        };
+
+        return lab;
+      } catch (err) {
+        console.log(err);
+        throw new AppError(`Erro na API: ${cdcLab.slugName} | ${err}`);
+      }
     });
 
     const ciaDaConsulta = await Promise.all(ciaDaConsultaPromise);
@@ -126,7 +155,101 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
 
     const drc = await Promise.all(drcPromise);
 
-    const labs = [...labi, ...ciaDaConsulta, ...drc];
+    /**
+     * Lavoisier Labs
+     */
+
+    const lavoLabsApiResponse = await this.api.get(
+      'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
+      {
+        headers: {
+          'x-brand': 'LAVOISIER',
+        },
+      },
+    );
+
+    const lavoLabs: ILavoLabsDTO[] = lavoLabsApiResponse.data;
+    console.log(lavoLabs);
+
+    const lavoPromise = lavoLabs.map(async lavoLab => {
+      const lavoLabDetailsAPIResponse = await this.http.get(
+        `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${lavoLab.id}/detalhes`,
+      );
+
+      console.log(lavoLabDetailsAPIResponse.status);
+
+      const lavoLabDetails: ILavoLabDetailsDTO = lavoLabDetailsAPIResponse.data;
+
+      console.log(lavoLabDetails.nome);
+
+      const lab: ICreateLabDTO = {
+        title: capitalizeWords(lavoLab.nome),
+        slug: `lavoisier-${slugTransformation.transform(lavoLab.nome)}`,
+        company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
+        original_id: lavoLab.id.toString(),
+        company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${lavoLab.id.toString()}`,
+        address: `${capitalizeWords(lavoLab.endereco.logradouro)}, ${
+          lavoLab.endereco.numero
+        } - ${lavoLab.endereco.bairro} - ${lavoLab.endereco.cep}`,
+        city: capitalizeWords(lavoLab.endereco.cidade),
+        state: lavoLab.endereco.uf.toUpperCase(),
+        latitude: lavoLab.latitude,
+        longitude: lavoLab.longitude,
+        collect_hour: lavoLabDetails.coleta.toString(),
+        open_hour: lavoLabDetails.funcionamento.toString(),
+      };
+
+      return lab;
+    });
+
+    const lavo = await Promise.all(lavoPromise);
+
+    /**
+     * Delboni Labs
+     */
+
+    const delboLabsApiResponse = await this.api.get(
+      'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
+      {
+        headers: {
+          'x-brand': 'DELBONI',
+        },
+      },
+    );
+
+    const delboLabs: ILavoLabsDTO[] = delboLabsApiResponse.data;
+
+    const delboPromise = delboLabs.map(async delboLab => {
+      const delboLabDetailsAPIResponse = await this.http.get(
+        `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${delboLab.id}/detalhes`,
+      );
+
+      const delboLabDetails: ILavoLabDetailsDTO =
+        delboLabDetailsAPIResponse.data;
+
+      const lab: ICreateLabDTO = {
+        title: capitalizeWords(delboLab.nome),
+        slug: `lavoisier-${slugTransformation.transform(delboLab.nome)}`,
+        company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
+        original_id: delboLab.id.toString(),
+        company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${delboLab.id.toString()}`,
+        address: `${capitalizeWords(delboLab.endereco.logradouro)}, ${
+          delboLab.endereco.numero
+        } - ${delboLab.endereco.bairro} - ${delboLab.endereco.cep}`,
+        city: capitalizeWords(delboLab.endereco.cidade),
+        state: delboLab.endereco.uf.toUpperCase(),
+        latitude: delboLab.latitude,
+        longitude: delboLab.longitude,
+        collect_hour: delboLabDetails.coleta.toString(),
+        open_hour: delboLabDetails.funcionamento.toString(),
+      };
+
+      return lab;
+    });
+
+    const delbo = await Promise.all(delboPromise);
+
+    const labs = [...labi, ...ciaDaConsulta, ...drc, ...lavo, ...delbo];
 
     return labs;
   }

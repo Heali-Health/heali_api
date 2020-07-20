@@ -5,6 +5,7 @@ import AppError from '@shared/errors/AppError';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
+import IQueueProvider from '@shared/container/providers/QueueProvider/models/IQueueProvider';
 
 interface IRequest {
   email: string;
@@ -21,6 +22,9 @@ export default class SendForgotPasswordEmailService {
 
     @inject('UserTokensRepository')
     private userTokensRepository: IUserTokensRepository,
+
+    @inject('QueueProvider')
+    private queueProvider: IQueueProvider,
   ) {}
 
   public async execute({ email }: IRequest): Promise<void> {
@@ -32,28 +36,36 @@ export default class SendForgotPasswordEmailService {
 
     const { token } = await this.userTokensRepository.generate(user.id);
 
-    const forgotPasswordMailTemplate = path.resolve(
-      __dirname,
-      '..',
-      'views',
-      'forgot_password.hbs',
-    );
-
     try {
-      await this.mailProvider.sendMail({
+      // await this.mailProvider.sendMail({
+      //   to: {
+      //     name: user.first_name,
+      //     email: user.email,
+      //   },
+      //   subject: '[GoBarber] Recuperação de senha',
+      //   templateData: {
+      //     file: forgotPasswordMailTemplate,
+      //     variables: {
+      //       name: user.first_name,
+      //       link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
+      //     },
+      //   },
+      // });
+
+      const queueJob = {
         to: {
           name: user.first_name,
           email: user.email,
         },
-        subject: '[GoBarber] Recuperação de senha',
-        templateData: {
-          file: forgotPasswordMailTemplate,
-          variables: {
-            name: user.first_name,
-            link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
-          },
+        subject: 'Heali :: Recuperação de senha',
+        mailVariables: {
+          name: user.first_name,
+          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
         },
-      });
+        templateFile: 'forgot_password.hbs',
+      };
+
+      await this.queueProvider.add(queueJob);
     } catch (err) {
       console.log(err);
     }

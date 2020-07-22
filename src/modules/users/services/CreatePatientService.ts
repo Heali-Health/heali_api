@@ -55,7 +55,8 @@ export default class CreatePatientService {
       user_id,
     });
 
-    await this.cacheProvider.invalidatePrefix(`user-patients:${user_id}`);
+    await this.cacheProvider.invalidate(`user-patients:${user_id}`);
+
     return patient;
   }
 }

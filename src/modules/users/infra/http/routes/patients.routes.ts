@@ -9,6 +9,11 @@ const usersRouter = Router();
 const userPatientsController = new UserPatientsController();
 
 usersRouter.get('/', ensureAuthenticated, userPatientsController.index);
+usersRouter.get(
+  '/:patient_id',
+  ensureAuthenticated,
+  userPatientsController.show,
+);
 usersRouter.post(
   '/',
   ensureAuthenticated,

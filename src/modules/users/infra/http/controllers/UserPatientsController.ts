@@ -5,6 +5,7 @@ import { container } from 'tsyringe';
 import CreatePatientService from '@modules/users/services/CreatePatientService';
 import ListUserPatientsService from '@modules/users/services/ListUserPatientsService';
 import UpdateUserPatientService from '@modules/users/services/UpdateUserPatientService';
+import ShowUserPatientService from '@modules/users/services/ShowUserPatient';
 
 export default class PatientPatientsController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -48,6 +49,19 @@ export default class PatientPatientsController {
       const patients = await listUserPatients.execute(user_id);
 
       return res.json(patients);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  }
+
+  public async show(req: Request, res: Response): Promise<Response> {
+    try {
+      const { patient_id } = req.params;
+
+      const listUserPatient = container.resolve(ShowUserPatientService);
+      const patient = await listUserPatient.execute(patient_id);
+
+      return res.json(patient);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

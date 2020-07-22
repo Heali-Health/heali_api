@@ -16,7 +16,6 @@ export default class ListUserPatientsService {
 
   public async execute(user_id: string): Promise<Patient[]> {
     const cacheKey = `user-patients:${user_id}`;
-    console.log(cacheKey);
 
     let patients = await this.cacheProvider.recover<Patient[]>(cacheKey);
 

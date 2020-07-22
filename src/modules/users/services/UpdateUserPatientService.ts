@@ -13,8 +13,8 @@ interface IRequest {
   email?: string;
   document_id: string;
   document_type: 'RG' | 'CPF' | 'Passaporte' | 'RNE';
-  height: number;
-  weight: number;
+  height?: number;
+  weight?: number;
   mobility_restrictions?: string;
 }
 

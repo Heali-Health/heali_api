@@ -4,6 +4,7 @@ import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import IListPriceSearchResultsDTO from '@modules/exams/dtos/IListPriceSearchResultsDTO';
 import IDistanceProvider from '@shared/container/providers/DistanceProvider/models/IDistanceProvider';
 
+import sortByDistance from '@shared/utils/sortByDistance';
 import ILabResultsDTO from '../dtos/ILabResultsDTO';
 
 @injectable()
@@ -55,7 +56,9 @@ export default class ListPriceSearchResultsService {
       return searchResult;
     });
 
-    const searchResults = Array.from(new Set(duplicatedSearchResults));
+    const unsortedSearchResults = Array.from(new Set(duplicatedSearchResults));
+
+    const searchResults = unsortedSearchResults.sort(sortByDistance);
 
     return searchResults;
   }

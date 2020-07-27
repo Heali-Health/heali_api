@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { uuid } from 'uuidv4';
 import { container } from 'tsyringe';
 

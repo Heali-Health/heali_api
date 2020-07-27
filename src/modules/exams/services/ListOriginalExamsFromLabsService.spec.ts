@@ -22,15 +22,18 @@ describe('ListOriginalExamsFromLabs', () => {
     const company1 = await fakeCompaniesRepository.create({
       title: 'Right Company',
       logo: '',
+      slug: 'right-company',
     });
 
     const company2 = await fakeCompaniesRepository.create({
       title: 'Wrong Company',
       logo: '',
+      slug: 'wrong-company',
     });
 
     const lab1 = await fakeLabsRepository.create({
       title: 'Right Test1',
+      slug: 'right-test1',
       company_id: company1.id,
       original_id: '007',
       company_id_original_id: `${company1.id}007`,
@@ -44,6 +47,7 @@ describe('ListOriginalExamsFromLabs', () => {
 
     const lab2 = await fakeLabsRepository.create({
       title: 'Right Test2',
+      slug: 'right-test2',
       company_id: company1.id,
       original_id: '006',
       company_id_original_id: `${company1.id}006`,
@@ -57,6 +61,7 @@ describe('ListOriginalExamsFromLabs', () => {
 
     const lab3 = await fakeLabsRepository.create({
       title: 'Wrong Test1',
+      slug: 'wrong-test1',
       company_id: company2.id,
       original_id: '007',
       company_id_original_id: `${company2.id}007`,
@@ -70,6 +75,7 @@ describe('ListOriginalExamsFromLabs', () => {
 
     const lab4 = await fakeLabsRepository.create({
       title: 'Wrong Test2',
+      slug: 'wrong-test2',
       company_id: company2.id,
       original_id: '006',
       company_id_original_id: `${company2.id}006`,

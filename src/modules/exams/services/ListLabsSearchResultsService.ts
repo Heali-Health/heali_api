@@ -26,6 +26,8 @@ export default class ListPriceSearchResultsService {
     );
 
     const duplicatedSearchResults = matchedPrices.map(matchedPrice => {
+      console.log(matchedPrice);
+
       const distance = this.distanceProvider.calculateInKms({
         latitude1: Number(matchedPrice.lab.latitude),
         longitude1: Number(matchedPrice.lab.longitude),

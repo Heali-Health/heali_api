@@ -25,6 +25,7 @@ describe('UpsertLabsFromApi', () => {
   it('should be able to update new labs from a bulk upsert origin', async () => {
     await fakeLabsRepository.create({
       title: 'Test',
+      slug: 'test',
       company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
       original_id: '44120',
       company_id_original_id: '3b20687a-beec-4e83-b875-53c5f07c0e7744120',

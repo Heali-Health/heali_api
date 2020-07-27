@@ -102,9 +102,9 @@ describe('CreateExam', () => {
       original_exams_ids: [originalExam1.id, originalExam2.id],
     });
 
-    expect(originalExam1.exam_id).toBe(exam1.id);
-    expect(price1.exam_id).toBe(exam1.id);
-    expect(originalExam2.exam_id).toBe(exam1.id);
-    expect(price2.exam_id).toBe(exam1.id);
+    expect(originalExam1.exam.id).toBe(exam1.id);
+    expect(price1.exam.id).toBe(exam1.id);
+    expect(originalExam2.exam.id).toBe(exam1.id);
+    expect(price2.exam.id).toBe(exam1.id);
   });
 });

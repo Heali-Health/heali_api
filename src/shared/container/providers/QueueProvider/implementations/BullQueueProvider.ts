@@ -10,7 +10,7 @@ export default class BullQueueProvider implements IQueueProvider {
     this.queue = new Bull('mail-queue', queueConfig);
   }
 
-  async add(data: object | object[]): Promise<void> {
+  public async add(data: object | object[]): Promise<void> {
     if (Array.isArray(data)) {
       const parsedJobs = data.map(jobData => {
         return { data: jobData };
@@ -22,7 +22,7 @@ export default class BullQueueProvider implements IQueueProvider {
     await this.queue.add(data);
   }
 
-  process(processFunction: ProcessPromiseFunction<object>): void {
+  public process(processFunction: ProcessPromiseFunction<object>): void {
     this.queue.process(150, processFunction);
   }
 }

@@ -16,11 +16,13 @@ describe('ListLabsFromCompany', () => {
   it('should be able to list labs from a company', async () => {
     const company = await fakeCompaniesRepository.create({
       title: 'Test Company',
+      slug: 'test-company',
       logo: '',
     });
 
     await fakeLabsRepository.create({
       title: 'Test',
+      slug: 'test',
       company_id: company.id,
       original_id: '007',
       company_id_original_id: `${company.id}007`,
@@ -34,6 +36,7 @@ describe('ListLabsFromCompany', () => {
 
     await fakeLabsRepository.create({
       title: 'Test2',
+      slug: 'test2',
       company_id: company.id,
       original_id: '006',
       company_id_original_id: `${company.id}006`,

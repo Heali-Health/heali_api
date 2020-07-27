@@ -182,6 +182,6 @@ describe('ListLabsSearchResultsService', () => {
       },
     });
 
-    expect(priceSearchResults).toHaveLength(2);
+    expect(priceSearchResults).toHaveLength(4);
   });
 });

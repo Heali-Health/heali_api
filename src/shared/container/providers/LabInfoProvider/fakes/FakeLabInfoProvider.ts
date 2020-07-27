@@ -17,6 +17,7 @@ export default class FakeLabInfoProvider implements ILabInfoProvider {
     const fakeLabsToUpdate = fakeLabsFile.map(labiLab => {
       const lab: ICreateLabDTO = {
         title: labiLab.title,
+        slug: labiLab.title,
         company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
         original_id: labiLab.id.toString(),
         company_id_original_id: `3b20687a-beec-4e83-b875-53c5f07c0e77${labiLab.id.toString()}`,

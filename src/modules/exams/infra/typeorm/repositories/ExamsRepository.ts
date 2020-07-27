@@ -12,8 +12,8 @@ class ExamsRepository implements IExamsRepository {
     this.ormRepository = getRepository(Exam);
   }
 
-  public async create({ title }: ICreateExamDTO): Promise<Exam> {
-    const exam = this.ormRepository.create({ title });
+  public async create({ title, slug }: ICreateExamDTO): Promise<Exam> {
+    const exam = this.ormRepository.create({ title, slug });
 
     await this.ormRepository.save(exam);
 

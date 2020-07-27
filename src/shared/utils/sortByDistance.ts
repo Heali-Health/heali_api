@@ -1,4 +1,4 @@
-export default function sortByDistance(a, b): number {
+export default function sortByDistance(a: any, b: any): number {
   // a should come before b in the sorted order
   if (a.distance < b.distance) {
     return -1;

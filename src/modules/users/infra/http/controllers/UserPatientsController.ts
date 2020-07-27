@@ -5,7 +5,7 @@ import { container } from 'tsyringe';
 import CreatePatientService from '@modules/users/services/CreatePatientService';
 import ListUserPatientsService from '@modules/users/services/ListUserPatientsService';
 import UpdateUserPatientService from '@modules/users/services/UpdateUserPatientService';
-import ShowUserPatientService from '@modules/users/services/ShowUserPatient';
+import ShowUserPatientService from '@modules/users/services/ShowUserPatientService';
 
 export default class PatientPatientsController {
   public async create(req: Request, res: Response): Promise<Response> {

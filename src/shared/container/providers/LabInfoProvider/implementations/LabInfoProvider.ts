@@ -37,13 +37,15 @@ interface IHTTP {
   ): IRateLimitedAxiosInstance;
 }
 export default class LabiLabInfoProvider implements ILabInfoProvider {
+  j;
+
   private api = axios;
 
-  private http = rateLimit(axios.create(), {
-    maxRequests: 1,
-    perMilliseconds: 1000,
-    // maxRPS: 2,
-  });
+  // private http = rateLimit(axios.create(), {
+  //   maxRequests: 1,
+  //   perMilliseconds: 1000,
+  //   // maxRPS: 2,
+  // });
 
   public async getLabsInfo(): Promise<ICreateLabDTO[]> {
     /*
@@ -82,23 +84,19 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     Cia da Consulta Labs
     */
 
-    const cdCLabsApiResponse = await this.http.get(
+    const cdCLabsApiResponse = await this.api.get(
       'https://ciadaconsulta.com.br/api/company/list',
     );
     const cdCLabs: ICdCLabInfoDTO[] = cdCLabsApiResponse.data.content;
 
     const ciaDaConsultaPromise = cdCLabs.map(async cdcLab => {
       try {
-        const labDetailApiResponse = await this.http.get(
+        const labDetailApiResponse = await this.api.get(
           `https://ciadaconsulta.com.br/api/company/getBySlugName?slugName=${cdcLab.slugName}`,
         );
 
-        console.log(labDetailApiResponse.status);
-
         const cdcLabDetail: ICdCLabInfoDetailDTO =
           labDetailApiResponse.data.content;
-
-        console.log(cdcLabDetail.tradingName);
 
         const lab: ICreateLabDTO = {
           title: cdcLabDetail.tradingName,
@@ -159,97 +157,97 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
      * Lavoisier Labs
      */
 
-    const lavoLabsApiResponse = await this.api.get(
-      'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
-      {
-        headers: {
-          'x-brand': 'LAVOISIER',
-        },
-      },
-    );
+    // const lavoLabsApiResponse = await this.api.get(
+    //   'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
+    //   {
+    //     headers: {
+    //       'x-brand': 'LAVOISIER',
+    //     },
+    //   },
+    // );
 
-    const lavoLabs: ILavoLabsDTO[] = lavoLabsApiResponse.data;
-    console.log(lavoLabs);
+    // const lavoLabs: ILavoLabsDTO[] = lavoLabsApiResponse.data;
+    // console.log(lavoLabs);
 
-    const lavoPromise = lavoLabs.map(async lavoLab => {
-      const lavoLabDetailsAPIResponse = await this.http.get(
-        `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${lavoLab.id}/detalhes`,
-      );
+    // const lavoPromise = lavoLabs.map(async lavoLab => {
+    //   const lavoLabDetailsAPIResponse = await this.http.get(
+    //     `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${lavoLab.id}/detalhes`,
+    //   );
 
-      console.log(lavoLabDetailsAPIResponse.status);
+    //   console.log(lavoLabDetailsAPIResponse.status);
 
-      const lavoLabDetails: ILavoLabDetailsDTO = lavoLabDetailsAPIResponse.data;
+    //   const lavoLabDetails: ILavoLabDetailsDTO = lavoLabDetailsAPIResponse.data;
 
-      console.log(lavoLabDetails.nome);
+    //   console.log(lavoLabDetails.nome);
 
-      const lab: ICreateLabDTO = {
-        title: capitalizeWords(lavoLab.nome),
-        slug: `lavoisier-${slugTransformation.transform(lavoLab.nome)}`,
-        company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
-        original_id: lavoLab.id.toString(),
-        company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${lavoLab.id.toString()}`,
-        address: `${capitalizeWords(lavoLab.endereco.logradouro)}, ${
-          lavoLab.endereco.numero
-        } - ${lavoLab.endereco.bairro} - ${lavoLab.endereco.cep}`,
-        city: capitalizeWords(lavoLab.endereco.cidade),
-        state: lavoLab.endereco.uf.toUpperCase(),
-        latitude: lavoLab.latitude,
-        longitude: lavoLab.longitude,
-        collect_hour: lavoLabDetails.coleta.toString(),
-        open_hour: lavoLabDetails.funcionamento.toString(),
-      };
+    //   const lab: ICreateLabDTO = {
+    //     title: capitalizeWords(lavoLab.nome),
+    //     slug: `lavoisier-${slugTransformation.transform(lavoLab.nome)}`,
+    //     company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
+    //     original_id: lavoLab.id.toString(),
+    //     company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${lavoLab.id.toString()}`,
+    //     address: `${capitalizeWords(lavoLab.endereco.logradouro)}, ${
+    //       lavoLab.endereco.numero
+    //     } - ${lavoLab.endereco.bairro} - ${lavoLab.endereco.cep}`,
+    //     city: capitalizeWords(lavoLab.endereco.cidade),
+    //     state: lavoLab.endereco.uf.toUpperCase(),
+    //     latitude: lavoLab.latitude,
+    //     longitude: lavoLab.longitude,
+    //     collect_hour: lavoLabDetails.coleta.toString(),
+    //     open_hour: lavoLabDetails.funcionamento.toString(),
+    //   };
 
-      return lab;
-    });
+    //   return lab;
+    // });
 
-    const lavo = await Promise.all(lavoPromise);
+    // const lavo = await Promise.all(lavoPromise);
 
     /**
      * Delboni Labs
      */
 
-    const delboLabsApiResponse = await this.api.get(
-      'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
-      {
-        headers: {
-          'x-brand': 'DELBONI',
-        },
-      },
-    );
+    // const delboLabsApiResponse = await this.api.get(
+    //   'https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/',
+    //   {
+    //     headers: {
+    //       'x-brand': 'DELBONI',
+    //     },
+    //   },
+    // );
 
-    const delboLabs: ILavoLabsDTO[] = delboLabsApiResponse.data;
+    // const delboLabs: ILavoLabsDTO[] = delboLabsApiResponse.data;
 
-    const delboPromise = delboLabs.map(async delboLab => {
-      const delboLabDetailsAPIResponse = await this.http.get(
-        `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${delboLab.id}/detalhes`,
-      );
+    // const delboPromise = delboLabs.map(async delboLab => {
+    //   const delboLabDetailsAPIResponse = await this.http.get(
+    //     `https://agendamentoonline.lavoisier.com.br/api/public/v2/unidade/${delboLab.id}/detalhes`,
+    //   );
 
-      const delboLabDetails: ILavoLabDetailsDTO =
-        delboLabDetailsAPIResponse.data;
+    //   const delboLabDetails: ILavoLabDetailsDTO =
+    //     delboLabDetailsAPIResponse.data;
 
-      const lab: ICreateLabDTO = {
-        title: capitalizeWords(delboLab.nome),
-        slug: `lavoisier-${slugTransformation.transform(delboLab.nome)}`,
-        company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
-        original_id: delboLab.id.toString(),
-        company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${delboLab.id.toString()}`,
-        address: `${capitalizeWords(delboLab.endereco.logradouro)}, ${
-          delboLab.endereco.numero
-        } - ${delboLab.endereco.bairro} - ${delboLab.endereco.cep}`,
-        city: capitalizeWords(delboLab.endereco.cidade),
-        state: delboLab.endereco.uf.toUpperCase(),
-        latitude: delboLab.latitude,
-        longitude: delboLab.longitude,
-        collect_hour: delboLabDetails.coleta.toString(),
-        open_hour: delboLabDetails.funcionamento.toString(),
-      };
+    //   const lab: ICreateLabDTO = {
+    //     title: capitalizeWords(delboLab.nome),
+    //     slug: `lavoisier-${slugTransformation.transform(delboLab.nome)}`,
+    //     company_id: '053c4118-33e3-45cb-b96b-c84f79cd90c6',
+    //     original_id: delboLab.id.toString(),
+    //     company_id_original_id: `053c4118-33e3-45cb-b96b-c84f79cd90c6${delboLab.id.toString()}`,
+    //     address: `${capitalizeWords(delboLab.endereco.logradouro)}, ${
+    //       delboLab.endereco.numero
+    //     } - ${delboLab.endereco.bairro} - ${delboLab.endereco.cep}`,
+    //     city: capitalizeWords(delboLab.endereco.cidade),
+    //     state: delboLab.endereco.uf.toUpperCase(),
+    //     latitude: delboLab.latitude,
+    //     longitude: delboLab.longitude,
+    //     collect_hour: delboLabDetails.coleta.toString(),
+    //     open_hour: delboLabDetails.funcionamento.toString(),
+    //   };
 
-      return lab;
-    });
+    //   return lab;
+    // });
 
-    const delbo = await Promise.all(delboPromise);
+    // const delbo = await Promise.all(delboPromise);
 
-    const labs = [...labi, ...ciaDaConsulta, ...drc, ...lavo, ...delbo];
+    const labs = [...labi, ...ciaDaConsulta, ...drc];
 
     return labs;
   }

@@ -49,6 +49,35 @@ jobs:
         target: "~/app/heali_mvp"
 
     # Executar "yarn" na Digital Ocean
+    - name: Install dependencies on Digital Ocean
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: | 
+          cd ~/app/heali_mvp
+          yarn
       
     # Executar as migrations do Typeorm
+    - name: Run migrations on Digital Ocean
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: | 
+          cd ~/app/heali_mvp
+          ./node_modules/.bin/typeorm migration:run
+      
     # Restart no servidor Node.js
+    - name: Restart Node.js server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: pm2 restart heali-api

@@ -20,7 +20,7 @@ export default class SendRegisteredEmailService {
           name: `${first_name} ${last_name}`,
           email,
         },
-        subject: `Heali :: Parabéns, ${first_name}, seu cadastro deu foi concluído`,
+        subject: `Heali :: Parabéns, ${first_name}, seu cadastro foi concluiddo`,
         mailVariables: {
           name: first_name,
         },

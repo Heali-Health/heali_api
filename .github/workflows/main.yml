@@ -61,3 +61,4 @@ jobs:
           yarn
           ./node_modules/.bin/typeorm migration:run
           pm2 restart heali-api
+          pm2 restart queue

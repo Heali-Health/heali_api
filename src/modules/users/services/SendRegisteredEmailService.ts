@@ -1,10 +1,7 @@
-import path from 'path';
 import { inject, injectable } from 'tsyringe';
 
-// import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import IQueueProvider from '@shared/container/providers/QueueProvider/models/IQueueProvider';
 import User from '../infra/typeorm/entities/User';
-// import User from '../infra/typeorm/entities/User';
 
 @injectable()
 export default class SendRegisteredEmailService {
@@ -20,7 +17,7 @@ export default class SendRegisteredEmailService {
           name: `${first_name} ${last_name}`,
           email,
         },
-        subject: `Heali :: Parabéns, ${first_name}, seu cadastro foi concluiddo`,
+        subject: `Heali :: Parabéns, ${first_name}, seu cadastro foi concluído`,
         mailVariables: {
           name: first_name,
         },

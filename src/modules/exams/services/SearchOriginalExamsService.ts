@@ -2,12 +2,12 @@ import { injectable, inject } from 'tsyringe';
 import IOriginalExamsRepository from '../repositories/IOriginalExamsRepository';
 
 interface ISearchOriginalExamResponseDTO {
-  associatedOriginalExams: string[];
-  notAssociatedOriginalExams: string[];
+  associatedOriginalExamsToExams: string[];
+  notAssociatedOriginalExamsToExams: string[];
 }
 
 @injectable()
-export default class SearchOriginalExamService {
+export default class SearchOriginalExamsService {
   constructor(
     @inject('OriginalExamsRepository')
     private originalExamsRepository: IOriginalExamsRepository,
@@ -43,8 +43,8 @@ export default class SearchOriginalExamService {
     ];
 
     const matchedOriginalExamsTitles = {
-      associatedOriginalExams: associatedOriginalExamsTitles,
-      notAssociatedOriginalExams: notAssociatedOriginalExamsTitles,
+      associatedOriginalExamsToExams: associatedOriginalExamsTitles,
+      notAssociatedOriginalExamsToExams: notAssociatedOriginalExamsTitles,
     };
 
     return matchedOriginalExamsTitles;

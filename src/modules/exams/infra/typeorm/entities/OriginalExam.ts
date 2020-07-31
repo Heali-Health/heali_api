@@ -24,14 +24,14 @@ class OriginalExam {
   @Column()
   exam_id: string;
 
-  @ManyToOne(() => Exam, exam => exam.original_exam, { eager: true })
+  @ManyToOne(() => Exam, exam => exam.original_exam)
   @JoinColumn({ name: 'exam_id' })
   exam: Exam;
 
   @Column()
   lab_id: string;
 
-  @ManyToOne(() => Lab, lab => lab.original_exam, { eager: true })
+  @ManyToOne(() => Lab, lab => lab.original_exam)
   @JoinColumn({ name: 'lab_id' })
   lab: Lab;
 

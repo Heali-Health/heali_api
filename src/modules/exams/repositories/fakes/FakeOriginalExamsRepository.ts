@@ -78,6 +78,18 @@ export default class FakeOriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByUserInput(query: string): Promise<OriginalExam[]> {
+    const { originalExams } = this;
+
+    const queryRegex = new RegExp(query, 'i');
+
+    const results = originalExams.filter(originalExam =>
+      queryRegex.test(originalExam.title),
+    );
+
+    return results;
+  }
+
   public async upsertOriginalExams(
     originalExamData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {

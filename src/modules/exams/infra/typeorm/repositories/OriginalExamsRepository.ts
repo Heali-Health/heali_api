@@ -70,6 +70,14 @@ export default class OriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByUserInput(query: string): Promise<OriginalExam[]> {
+    const originalExams = await this.ormRepository.find({
+      where: `title ILIKE '%${query}%'`,
+    });
+
+    return originalExams;
+  }
+
   public async upsertOriginalExams(
     originalExamsData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {

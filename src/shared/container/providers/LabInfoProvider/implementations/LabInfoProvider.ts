@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import rateLimit from 'axios-rate-limit';
+// import rateLimit from 'axios-rate-limit';
 import { container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
@@ -15,7 +15,7 @@ import ILabiExamsInfoDTO from '@shared/container/providers/LabInfoProvider/dtos/
 import ICreateLabDTO from '@modules/labs/dtos/ICreateLabDTO';
 import ICreateOriginalExamDTO from '@modules/exams/dtos/ICreateOriginalExamDTO';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
-import capitalizeWords from '@shared/utils/capitalizeWords';
+// import capitalizeWords from '@shared/utils/capitalizeWords';
 import SlugPkgSlugTransformationProvider from '../../SlugTransformationProvider/implementations/SlugPkgSlugTransformationProvider';
 import ICdCLabInfoDTO from '../dtos/ICdCLabInfoDTO';
 import ICdCLabInfoDetailDTO from '../dtos/ICdCLabInfoDetailDTO';
@@ -23,22 +23,20 @@ import ICdCExamsInfoDTO from '../dtos/ICdCExamsInfoDTO';
 import IDrcLabInfoDTO from '../dtos/IDrcLabInfoDTO';
 import IDrcExamsDTO from '../dtos/IDrcExamsDTO';
 import IDrcLabExamsDTO from '../dtos/IDrcLabExamsDTO';
-import ILavoLabsDTO from '../dtos/ILavoLabsDTO';
-import ILavoLabDetailsDTO from '../dtos/ILavoLabDetailsDTO';
+// import ILavoLabsDTO from '../dtos/ILavoLabsDTO';
+// import ILavoLabDetailsDTO from '../dtos/ILavoLabDetailsDTO';
 
 type IRateLimitedAxiosInstance = AxiosInstance;
-interface IHTTP {
-  rateLimit(
-    axiosInstance: AxiosInstance,
-    options: {
-      maxRequests: number;
-      perMilliseconds: number;
-    },
-  ): IRateLimitedAxiosInstance;
-}
-export default class LabiLabInfoProvider implements ILabInfoProvider {
-  j;
-
+// interface IHTTP {
+//   rateLimit(
+//     axiosInstance: AxiosInstance,
+//     options: {
+//       maxRequests: number;
+//       perMilliseconds: number;
+//     },
+//   ): IRateLimitedAxiosInstance;
+// }
+export default class LabInfoProvider implements ILabInfoProvider {
   private api = axios;
 
   // private http = rateLimit(axios.create(), {
@@ -64,9 +62,11 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       const lab: ICreateLabDTO = {
         title: labiLab.title,
         slug: `labi-exames-${slugTransformation.transform(labiLab.title)}`,
-        company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
+        company_id: process.env.ID_LABI ? process.env.ID_LABI : '',
         original_id: labiLab.id.toString(),
-        company_id_original_id: `3b20687a-beec-4e83-b875-53c5f07c0e77${labiLab.id.toString()}`,
+        company_id_original_id: `${
+          process.env.ID_LABI ? process.env.ID_LABI : ''
+        }${labiLab.id.toString()}`,
         address: `${labiLab.address.r} - ${labiLab.address.b} - ${labiLab.address.cep}`,
         city: labiLab.address.city,
         latitude: labiLab.address.location.lat,
@@ -103,9 +103,11 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
           slug: `cia-da-consulta-${slugTransformation.transform(
             cdcLabDetail.tradingName,
           )}`,
-          company_id: '060c2b76-9410-4ea8-ab0d-cc9ef27c7650',
+          company_id: process.env.ID_CDC ? process.env.ID_CDC : '',
           original_id: cdcLabDetail.id.toString(),
-          company_id_original_id: `060c2b76-9410-4ea8-ab0d-cc9ef27c7650${cdcLabDetail.id.toString()}`,
+          company_id_original_id: `${
+            process.env.ID_CDC ? process.env.ID_CDC : ''
+          }${cdcLabDetail.id.toString()}`,
           address: `${cdcLabDetail.address.address}, ${cdcLabDetail.address.addressNumber} - ${cdcLabDetail.address.neighborhood} - ${cdcLabDetail.address.zipCode}`,
           city: '',
           latitude: cdcLabDetail.latitude,
@@ -136,9 +138,11 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       const lab: ICreateLabDTO = {
         title: drcLab.nome,
         slug: `dr-consulta-${slugTransformation.transform(drcLab.nome)}`,
-        company_id: '68e9f21e-0c8b-4796-ab5c-80a6a148f6b8',
+        company_id: process.env.ID_DRC ? process.env.ID_DRC : '',
         original_id: drcLab.id_unidade.toString(),
-        company_id_original_id: `68e9f21e-0c8b-4796-ab5c-80a6a148f6b8${drcLab.id_unidade.toString()}`,
+        company_id_original_id: `${
+          process.env.ID_DRC ? process.env.ID_DRC : ''
+        }${drcLab.id_unidade.toString()}`,
         address: `${drcLab.endereco} - ${drcLab.bairro}`,
         city: drcLab.cidade,
         state: drcLab.uf,
@@ -266,7 +270,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       labiExamsApiResponse.data.items;
 
     const labiLabs = await listLabsFromCompany.execute(
-      '3b20687a-beec-4e83-b875-53c5f07c0e77',
+      process.env.ID_LABI ? process.env.ID_LABI : '',
     );
 
     const preAdjustedLabi = labiLabs.map(labiLab => {
@@ -306,7 +310,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       cdcExamsApiResponse.data.content;
 
     const cdcLabs = await listLabsFromCompany.execute(
-      '060c2b76-9410-4ea8-ab0d-cc9ef27c7650',
+      process.env.ID_CDC ? process.env.ID_CDC : '',
     );
 
     // Exames de análises clínicas
@@ -382,7 +386,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     */
 
     const drcLabs = await listLabsFromCompany.execute(
-      '68e9f21e-0c8b-4796-ab5c-80a6a148f6b8',
+      process.env.ID_DRC ? process.env.ID_DRC : '',
     );
 
     const drcExamsApiResponse = await this.api.get(
@@ -488,7 +492,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
       labiExamsApiResponse.data.items;
 
     const labiLabs = await listLabsFromCompany.execute(
-      '3b20687a-beec-4e83-b875-53c5f07c0e77',
+      process.env.ID_LABI ? process.env.ID_LABI : '',
     );
 
     const labiLabsIds = labiLabs.map(labiLab => labiLab.id);
@@ -521,7 +525,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     const cdcPrices: ICdCExamsInfoDTO[] = cdcExamsApiResponse.data.content;
 
     const cdcLabs = await listLabsFromCompany.execute(
-      '060c2b76-9410-4ea8-ab0d-cc9ef27c7650',
+      process.env.ID_CDC ? process.env.ID_CDC : '',
     );
 
     const cdcLabsIds = cdcLabs.map(cdcLab => cdcLab.id);
@@ -548,7 +552,7 @@ export default class LabiLabInfoProvider implements ILabInfoProvider {
     */
 
     const drcLabs = await listLabsFromCompany.execute(
-      '68e9f21e-0c8b-4796-ab5c-80a6a148f6b8',
+      process.env.ID_DRC ? process.env.ID_DRC : '',
     );
 
     const drcExamsApiResponse = await this.api.get(

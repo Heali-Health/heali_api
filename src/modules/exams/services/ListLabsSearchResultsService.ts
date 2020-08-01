@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 
-import AppError from 'shared/errors/AppError';
+import AppError from '@shared/errors/AppError';
 
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import IListPriceSearchResultsDTO from '@modules/exams/dtos/IListPriceSearchResultsDTO';

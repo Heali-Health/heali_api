@@ -70,6 +70,32 @@ export default class OriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByTitle(
+    title: string | string[],
+  ): Promise<OriginalExam[]> {
+    const isArray = (arr: any): arr is Array<string> => {
+      return !!arr.length;
+    };
+
+    if (!isArray(title)) {
+      const originalExams = await this.ormRepository.find({
+        where: {
+          title,
+        },
+      });
+
+      return originalExams;
+    }
+
+    const originalExams = await this.ormRepository.find({
+      where: {
+        title: In(title),
+      },
+    });
+
+    return originalExams;
+  }
+
   public async findAllByUserInput(query: string): Promise<OriginalExam[]> {
     const originalExams = await this.ormRepository.find({
       where: `title ILIKE '%${query}%'`,

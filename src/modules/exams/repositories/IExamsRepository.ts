@@ -5,5 +5,5 @@ export default interface IExamsRepository {
   create({ title }: ICreateExamDTO): Promise<Exam>;
   save(exam: Exam): Promise<Exam>;
   findAllByUserInput(query: string): Promise<Exam[]>;
-  findByTitle(title: string): Promise<Exam | undefined>;
+  findByTitle(title: string | string[]): Promise<Exam | undefined>;
 }

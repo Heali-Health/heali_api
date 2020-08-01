@@ -78,6 +78,28 @@ export default class FakeOriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByTitle(
+    title: string | string[],
+  ): Promise<OriginalExam[]> {
+    const isArray = (arr: any): arr is Array<string> => {
+      return !!arr.length;
+    };
+
+    if (!isArray(title)) {
+      const originalExams = this.originalExams.filter(
+        originalExam => originalExam.title === title,
+      );
+
+      return originalExams;
+    }
+
+    const originalExams = this.originalExams.filter(oExam =>
+      title.includes(oExam.title),
+    );
+
+    return originalExams;
+  }
+
   public async findAllByUserInput(query: string): Promise<OriginalExam[]> {
     const { originalExams } = this;
 

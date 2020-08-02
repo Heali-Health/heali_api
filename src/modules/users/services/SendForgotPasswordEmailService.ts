@@ -37,21 +37,6 @@ export default class SendForgotPasswordEmailService {
     const { token } = await this.userTokensRepository.generate(user.id);
 
     try {
-      // await this.mailProvider.sendMail({
-      //   to: {
-      //     name: user.first_name,
-      //     email: user.email,
-      //   },
-      //   subject: '[GoBarber] Recuperação de senha',
-      //   templateData: {
-      //     file: forgotPasswordMailTemplate,
-      //     variables: {
-      //       name: user.first_name,
-      //       link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
-      //     },
-      //   },
-      // });
-
       const queueJob = {
         to: {
           name: user.first_name,
@@ -60,7 +45,7 @@ export default class SendForgotPasswordEmailService {
         subject: 'Heali :: Recuperação de senha',
         mailVariables: {
           name: user.first_name,
-          link: `${process.env.APP_WEB_URL}/reset_password?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/reset-password?token=${token}`,
         },
         templateFile: 'forgot_password.hbs',
       };

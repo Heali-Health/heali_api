@@ -3,22 +3,15 @@ import 'dotenv/config';
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import * as Sentry from '@sentry/node';
+import sentryConfig from '@config/sentry';
 import { errors } from 'celebrate';
 import 'express-async-errors';
-
-/// MIGRAR PARA SERVIDOR DE FILAS ///
-// import { container } from 'tsyringe';
-/// ///
 
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import rateLimiter from '@shared/infra/http/middlewares/rateLimiter';
 
-/// MIGRAR PARA SERVIDOR DE FILAS ///
-// import '@shared/container/providers/QueueProvider';
-
-// import ProcessUserEmailQueueService from '@modules/users/services/ProcessUserEmailQueueService';
-///
 import routes from './routes';
 
 import '@shared/infra/typeorm';
@@ -26,12 +19,18 @@ import '@shared/container';
 
 const app = express();
 
+Sentry.init({ dsn: sentryConfig.dsn });
+
+app.use(Sentry.Handlers.requestHandler());
+
 app.use(cors());
 app.use(express.json());
 // midleware para servir arquivos estáticos
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(rateLimiter);
 app.use(routes);
+
+app.use(Sentry.Handlers.errorHandler());
 
 app.use(errors());
 
@@ -57,11 +56,3 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
 app.listen(3333, () => {
   console.log('🚀Server started on port 3333🚀');
 });
-
-/// MIGRAR PARA SERVIDOR DE FILAS ///
-// const processUserMailQueue = container.resolve(ProcessUserEmailQueueService);
-
-// processUserMailQueue.execute();
-
-// console.log('⚗‎‎  Processing queue!');
-/// ///

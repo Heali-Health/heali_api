@@ -13,6 +13,7 @@
    },
    "dependencies": {
       "@googlemaps/google-maps-services-js": "^3.0.0",
+      "@sentry/node": "^5.20.1",
       "aws-sdk": "^2.678.0",
       "axios": "^0.19.2",
       "axios-rate-limit": "^1.2.1",
@@ -39,7 +40,9 @@
       "slug": "^3.3.0",
       "tsyringe": "^4.2.0",
       "typeorm": "^0.2.25",
-      "uuidv4": "^6.0.8"
+      "uuidv4": "^6.0.8",
+      "winston": "^3.3.3",
+      "winston-mongodb": "^5.0.1"
    },
    "devDependencies": {
       "@babel/cli": "^7.10.5",

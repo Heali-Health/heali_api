@@ -1,5 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
+import mailConfig from '@config/mail';
 import IQueueProvider from '@shared/container/providers/QueueProvider/models/IQueueProvider';
 import User from '../infra/typeorm/entities/User';
 
@@ -11,11 +12,17 @@ export default class SendRegisteredEmailService {
   ) {}
 
   public async execute({ email, first_name, last_name }: User): Promise<void> {
+    const { email: emailDefault, name } = mailConfig.defaults.from;
+
     try {
       const queueJob = {
         to: {
           name: `${first_name} ${last_name}`,
           email,
+        },
+        bcc: {
+          name,
+          email: emailDefault,
         },
         subject: `Heali :: Parabéns, ${first_name}, seu cadastro foi concluído`,
         mailVariables: {

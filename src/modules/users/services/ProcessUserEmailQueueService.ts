@@ -19,6 +19,8 @@ export default class ProcessUserEmailQueueService {
     this.queueProvider.process(async job => {
       const {
         to,
+        cc,
+        bcc,
         subject,
         mailVariables,
         templateFile,
@@ -31,6 +33,14 @@ export default class ProcessUserEmailQueueService {
           to: {
             name: to.name,
             email: to.email,
+          },
+          cc: cc && {
+            name: cc.name,
+            email: cc.email,
+          },
+          bcc: bcc && {
+            name: bcc.name,
+            email: bcc.email,
           },
           subject,
           templateData: {

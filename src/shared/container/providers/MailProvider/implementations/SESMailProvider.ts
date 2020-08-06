@@ -29,6 +29,8 @@ export default class SESMailProvider implements IMailProvider {
   public async sendMail({
     to,
     from,
+    cc,
+    bcc,
     subject,
     templateData,
   }: ISendMailDTO): Promise<void> {
@@ -38,6 +40,14 @@ export default class SESMailProvider implements IMailProvider {
       from: {
         name: from ? from.name : name,
         address: from ? from.email : email,
+      },
+      cc: cc && {
+        name: cc.name,
+        address: cc.email,
+      },
+      bcc: bcc && {
+        name: bcc.name,
+        address: bcc.email,
       },
       to: {
         name: to.name,

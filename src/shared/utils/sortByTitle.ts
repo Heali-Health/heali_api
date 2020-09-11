@@ -1,4 +1,4 @@
-export default function sortByTitle(a, b): number {
+export default function sortByTitle(a: any, b: any): number {
   // a should come before b in the sorted title
   if (a.title < b.title) {
     return -1;

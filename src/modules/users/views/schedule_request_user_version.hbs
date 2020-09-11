@@ -1,0 +1,47 @@
+<style>
+  .message-content {
+    font-family: : Arial, Helvetica, sans-serif;
+    max-width: 600px;
+    font-size: 18px;
+    line-height: 21px;
+  }
+
+  .table-cell {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border: 1px solid #CFD6E7;
+  }
+</style>
+
+<div class="message-content">
+  <p>Olá, {{username}}</p>
+  <p>Sua solicitação de exames médicos para {{patientname}} já foi recebida por nossa equipe!</p>
+  <p>Em instantes, um de nossos atendentes entrará em contato para realizarmos o agendamento dos seguintes exames:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <td class="table-cell"><strong>Exames</strong></td>
+          <td class="table-cell"><strong>Preços</strong></td>
+          <td class="table-cell"><strong>Laboratórios</strong></td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each prices}}
+          <tr>
+            <td class="table-cell">{{exam.title}}</td>
+            <td class="table-cell"> R$ {{price}}</td>
+            <td class="table-cell">{{lab.company.title}} - {{lab.title}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+  <p>Caso precise falar com a gente, nos responda este email ou envie uma mensagem no nosso whatsapp: (11) 93618-6364.</p>
+  <p>
+    Obrigado!<br />
+    <strong>Equipe Heali</strong>
+  </p>
+</div>

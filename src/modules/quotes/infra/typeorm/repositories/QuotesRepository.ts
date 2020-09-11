@@ -13,17 +13,13 @@ class QuotesRepository implements IQuotesRepository {
   }
 
   public async create({
-    user_id,
-    patient_id,
-    patient_first_name,
-    patient_last_name,
+    user,
+    patient,
     price,
   }: ICreateQuoteDTO): Promise<Quote> {
     const quote = this.ormRepository.create({
-      user_id,
-      patient_id,
-      patient_first_name,
-      patient_last_name,
+      user,
+      patient,
       price,
     });
 

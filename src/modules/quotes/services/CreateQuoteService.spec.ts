@@ -82,16 +82,14 @@ describe('CreateQuote', () => {
     });
 
     const quote = await createQuote.execute({
-      user_id: user.id,
-      patient_id: patient.id,
-      patient_first_name: patient.first_name,
-      patient_last_name: patient.last_name,
+      user,
+      patient,
       price: [price],
     });
 
     expect(quote).toHaveProperty('id');
-    expect(quote.user_id).toBe(user.id);
-    expect(quote.patient_first_name).toBe('Mary');
+    expect(quote.user.id).toBe(user.id);
+    expect(quote.patient.first_name).toBe('Mary');
     expect(quote.price).toContain(price);
   });
 });

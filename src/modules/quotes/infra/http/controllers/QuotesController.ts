@@ -2,25 +2,32 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import CreateQuoteService from '@modules/quotes/services/CreateQuoteService';
+import SendScheduleRequestEmailService from '@modules/quotes/services/SendScheduleRequestEmailService';
+import ShowProfileService from '@modules/users/services/ShowProfileService';
 
 export default class QuotesController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const {
-        user_id,
-        patient_id,
-        patient_first_name,
-        patient_last_name,
-        price,
-      } = req.body;
+      const { patient, price } = req.body;
+      const user_id = req.user.id;
+
+      const showProfile = container.resolve(ShowProfileService);
+      const user = await showProfile.execute({ user_id });
 
       const createQuote = container.resolve(CreateQuoteService);
       const quote = await createQuote.execute({
-        user_id,
-        patient_id,
-        patient_first_name,
-        patient_last_name,
+        user,
+        patient,
         price,
+      });
+
+      const sendScheduleRequestEmail = container.resolve(
+        SendScheduleRequestEmailService,
+      );
+      await sendScheduleRequestEmail.execute({
+        user,
+        patient,
+        prices: price,
       });
 
       return res.json(quote);

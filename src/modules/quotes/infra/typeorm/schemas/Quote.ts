@@ -7,23 +7,19 @@ import {
   ObjectIdColumn,
 } from 'typeorm';
 import Price from '@modules/exams/infra/typeorm/entities/Price';
+import User from '@modules/users/infra/typeorm/entities/User';
+import Patient from '@modules/users/infra/typeorm/entities/Patient';
 
 @Entity('quotes')
 class Quote {
   @ObjectIdColumn()
   id: ObjectID;
 
-  @Column('uuid')
-  user_id: string;
-
-  @Column('uuid')
-  patient_id: string;
+  @Column()
+  user: User;
 
   @Column()
-  patient_first_name: string;
-
-  @Column()
-  patient_last_name: string;
+  patient: Patient;
 
   @Column()
   price: Price[];

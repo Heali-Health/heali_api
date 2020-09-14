@@ -32,6 +32,10 @@ class User {
   password: string;
 
   @Column()
+  @Exclude()
+  defined_password: boolean;
+
+  @Column()
   phone_whatsapp: string;
 
   @Column()

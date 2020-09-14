@@ -29,14 +29,12 @@ export default class AuthenticateGoogleUserService {
     private hashProvider: IHashProvider,
   ) {}
 
-  private CLIENT_ID = '824391035268-7khec9p8a3k83fed5g5m39ga5p5j7tpa.apps.googleusercontent.com';
-
-  private client = new OAuth2Client(this.CLIENT_ID);
+  private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
   public async execute({ googleTokenId }: IRequest): Promise<IResponse> {
     const ticket = await this.client.verifyIdToken({
       idToken: googleTokenId,
-      audience: this.CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();

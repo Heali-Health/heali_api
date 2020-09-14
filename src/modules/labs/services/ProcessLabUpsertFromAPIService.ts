@@ -9,14 +9,5 @@ export default class ProcessUserEmailQueueService {
   ) {}
 
   public execute(): void {
-    // this.queueProvider.process(async job => {
-    //   const {} = job.data as IUserEmailJob;
-    //   try {
-    //     await this.mailProvider.sendMail();
-    //     console.log('email sent');
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
   }
 }

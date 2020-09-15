@@ -33,7 +33,7 @@ interface IFacebookDebugToken {
     expires_at: number;
     is_valid: boolean;
     user_id: string;
-  }
+  };
 }
 
 interface IFacebookUserData {
@@ -47,8 +47,8 @@ interface IFacebookUserData {
       is_silhouette: boolean;
       url: string;
       width: number;
-    }
-  }
+    };
+  };
 }
 
 @injectable()
@@ -59,26 +59,31 @@ export default class AuthenticateFacebookUserService {
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
-  ) {};
+  ) {}
 
   public async execute({ facebookTokenId }: IRequest): Promise<IResponse> {
     try {
-      const { data: accessTokenData } = await axios.get<IFacebookAccessTokenResponse>('https://graph.facebook.com/oauth/access_token', {
+      const { data: accessTokenData } = await axios.get<
+        IFacebookAccessTokenResponse
+      >('https://graph.facebook.com/oauth/access_token', {
         params: {
           client_id: process.env.FACEBOOK_APP_ID,
           client_secret: process.env.FACEBOOK_APP_SECRET,
-          grant_type:'client_credentials',
-        }
+          grant_type: 'client_credentials',
+        },
       });
 
       const appAccessToken = accessTokenData.access_token;
 
-      const { data: debugTokenData } = await axios.get<IFacebookDebugToken>('https://graph.facebook.com/debug_token', {
-        params: {
-          input_token: facebookTokenId,
-          access_token: appAccessToken,
-        }
-      });
+      const { data: debugTokenData } = await axios.get<IFacebookDebugToken>(
+        'https://graph.facebook.com/debug_token',
+        {
+          params: {
+            input_token: facebookTokenId,
+            access_token: appAccessToken,
+          },
+        },
+      );
 
       const { is_valid } = debugTokenData.data;
 
@@ -86,16 +91,26 @@ export default class AuthenticateFacebookUserService {
         throw new AppError('Facebook token is no longer valid');
       }
 
-      const { data: userData } = await axios.get<IFacebookUserData>('https://graph.facebook.com/me', {
-        params: {
-          fields: 'id,name,first_name,last_name,email,birthday,picture',
+      const { data: userData } = await axios.get<IFacebookUserData>(
+        'https://graph.facebook.com/me',
+        {
+          params: {
+            fields: 'id,name,first_name,last_name,email,birthday,picture',
+          },
+          headers: {
+            Authorization: `Bearer ${facebookTokenId}`,
+          },
         },
-        headers: {
-          token: `Bearer: ${facebookTokenId}`,
-        },
-      });
+      );
 
-      const { first_name, last_name, email, picture: { data: { url: avatar } } } = userData;
+      const {
+        first_name,
+        last_name,
+        email,
+        picture: {
+          data: { url: avatar },
+        },
+      } = userData;
 
       if (!email) {
         throw new AppError('Facebook did not recognise the user email');
@@ -141,12 +156,10 @@ export default class AuthenticateFacebookUserService {
         user,
         token,
       };
-
-
     } catch (err) {
-      throw new AppError(`Facebook could not retrieve the information. Error: ${err}`);
+      throw new AppError(
+        `Facebook could not retrieve the information. Error: ${err}`,
+      );
     }
-
-
   }
 }

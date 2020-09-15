@@ -46,6 +46,7 @@ export default class CreateUserService {
       email,
       password: hashedPassword,
       phone_whatsapp,
+      defined_password: true,
     });
 
     return user;

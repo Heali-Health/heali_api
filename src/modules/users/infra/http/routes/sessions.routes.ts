@@ -3,10 +3,12 @@ import { celebrate, Segments, Joi } from 'celebrate';
 
 import SessionsController from '@modules/users/infra/http/controllers/SessionsController';
 import GoogleSessionsController from '@modules/users/infra/http/controllers/GoogleSessionsController';
+import FacebookSessionsController from '@modules/users/infra/http/controllers/FacebookSessionsController';
 
 const sessionsRouter = Router();
 const sessionsController = new SessionsController();
 const googleSessionsController = new GoogleSessionsController()
+const facebookSessionsController = new FacebookSessionsController()
 
 sessionsRouter.post(
   '/',
@@ -26,6 +28,15 @@ sessionsRouter.post(
     },
   }),
   googleSessionsController.create,
+);
+sessionsRouter.post(
+  '/facebook',
+  celebrate({
+    [Segments.BODY]: {
+      facebookTokenId: Joi.string().required(),
+    },
+  }),
+  facebookSessionsController.create,
 );
 
 export default sessionsRouter;

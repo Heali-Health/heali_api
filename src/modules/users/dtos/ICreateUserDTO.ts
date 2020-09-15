@@ -5,4 +5,6 @@ export default interface ICreateUserDTO {
   password: string;
   phone_whatsapp?: string;
   avatar?: string;
+  defined_password?: boolean;
+  uploaded_avatar?: boolean;
 }

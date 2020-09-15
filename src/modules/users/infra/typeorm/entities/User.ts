@@ -41,6 +41,9 @@ class User {
   @Column()
   avatar: string;
 
+  @Column()
+  uploaded_avatar: boolean;
+
   @OneToMany(() => Patient, patient => patient.user)
   patient: Patient;
 
@@ -54,6 +57,10 @@ class User {
   getAvatarUrl(): string | null {
     if (!this.avatar) {
       return null;
+    }
+
+    if (!this.uploaded_avatar && !this.defined_password) {
+      return this.avatar;
     }
 
     switch (uploadConfig.driver) {

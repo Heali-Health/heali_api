@@ -45,7 +45,7 @@ export default class AuthenticateGoogleUserService {
 
     const first_name = payload.given_name;
     const last_name = payload.family_name;
-    const email = payload.email;
+    const { email } = payload;
     const avatar = payload.picture;
 
     if (!email) {
@@ -78,8 +78,10 @@ export default class AuthenticateGoogleUserService {
 
     user.first_name = first_name || user.first_name;
     user.last_name = last_name || user.last_name;
-    user.avatar = avatar || user.avatar;
-    user.first_name = first_name || user.first_name;
+
+    if (user.uploaded_avatar === false) {
+      user.avatar = avatar || user.avatar;
+    }
 
     await this.usersRepository.save(user);
 

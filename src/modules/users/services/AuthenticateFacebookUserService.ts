@@ -142,8 +142,10 @@ export default class AuthenticateFacebookUserService {
 
       user.first_name = first_name || user.first_name;
       user.last_name = last_name || user.last_name;
-      user.avatar = avatar || user.avatar;
-      user.first_name = first_name || user.first_name;
+
+      if (user.uploaded_avatar === false) {
+        user.avatar = avatar || user.avatar;
+      }
 
       await this.usersRepository.save(user);
 

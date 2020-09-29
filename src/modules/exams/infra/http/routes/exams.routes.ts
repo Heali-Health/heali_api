@@ -1,13 +1,10 @@
 import { Router } from 'express';
 
-import ExamsController from '@modules/exams/infra/http/controllers/ExamsController';
-import ExamsAssociationController from '../controllers/ExamsAssociationController';
+import ExamsListController from '@modules/exams/infra/http/controllers/ExamsListController';
 
 const examsRouter = Router();
-const examsController = new ExamsController();
-const examsAssociationController = new ExamsAssociationController();
+const examsListController = new ExamsListController();
 
-examsRouter.post('/', examsController.create);
-examsRouter.post('/association', examsAssociationController.create);
+examsRouter.get('/list', examsListController.index);
 
 export default examsRouter;

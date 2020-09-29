@@ -37,6 +37,12 @@ class ExamsRepository implements IExamsRepository {
 
     return exam;
   }
+
+  public async findByExamIds(exam_ids: string[]): Promise<Exam[]> {
+    const exams = await this.ormRepository.findByIds(exam_ids);
+
+    return exams;
+  }
 }
 
 export default ExamsRepository;

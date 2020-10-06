@@ -104,6 +104,16 @@ export default class OriginalExamsRepository
     return originalExams;
   }
 
+  public async findAllByExamId(exam_id: string[]): Promise<OriginalExam[]> {
+    const originalExams = await this.ormRepository.find({
+      where: {
+        exam_id: In(exam_id),
+      },
+    });
+
+    return originalExams;
+  }
+
   public async upsertOriginalExams(
     originalExamsData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {

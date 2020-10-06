@@ -26,6 +26,10 @@ export default class FakeExamsRepository implements IExamsRepository {
     return exam;
   }
 
+  public async findAll(): Promise<Exam[]> {
+    return this.exams;
+  }
+
   public async findAllByUserInput(query: string): Promise<Exam[]> {
     const { exams } = this;
 

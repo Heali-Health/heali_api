@@ -1,25 +1,22 @@
-import FakeCompaniesRepository from '@modules/labs/repositories/fakes/FakeCompaniesRepository';
-import FakeLabsRepository from '@modules/labs/repositories/fakes/FakeLabsRepository';
 import FakeExamsRepository from '@modules/exams/repositories/fakes/FakeExamsRepository';
-import PushExamsToSearchService from './PushExamsToSearchService';
+import FakeSearchProvider from '@shared/container/providers/SearchProvider/fakes/FakeSearchProvider';
+import PushAllExamsToSearchService from './PushAllExamsToSearchService';
 import FakeOriginalExamsRepository from '../repositories/fakes/FakeOriginalExamsRepository';
 import IPushExamsToSearchDTO from '../dtos/IPushExamsToSearchDTO';
 
-let fakeCompaniesRepository: FakeCompaniesRepository;
-let fakeLabsRepository: FakeLabsRepository;
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
 let fakeExamsRepository: FakeExamsRepository;
-let pushExamsToSearch: PushExamsToSearchService;
+let pushExamsToSearch: PushAllExamsToSearchService;
+let fakeSearchProvider: FakeSearchProvider;
 
 describe('ListSearchableExams', () => {
   beforeEach(() => {
-    fakeCompaniesRepository = new FakeCompaniesRepository();
-    fakeLabsRepository = new FakeLabsRepository();
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
     fakeExamsRepository = new FakeExamsRepository();
-    pushExamsToSearch = new PushExamsToSearchService(
+    pushExamsToSearch = new PushAllExamsToSearchService(
       fakeExamsRepository,
       fakeOriginalExamsRepository,
+      fakeSearchProvider,
     );
   });
 
@@ -62,6 +59,11 @@ describe('ListSearchableExams', () => {
       synonyms: 'Hemograma',
     });
 
+    originalExamHemograma1.exam_id = examHemograma.id;
+    originalExamHemograma1.exam = examHemograma;
+    originalExamHemograma2.exam_id = examHemograma.id;
+    originalExamHemograma2.exam = examHemograma;
+
     const examColesterol = await fakeExamsRepository.create({
       title: 'Colesterol Total e Frações',
       original_exams_ids: [
@@ -72,27 +74,34 @@ describe('ListSearchableExams', () => {
       synonyms: 'Estudo Lipídico',
     });
 
+    originalExamColesterol1.exam_id = examColesterol.id;
+    originalExamColesterol1.exam = examColesterol;
+    originalExamColesterol2.exam_id = examColesterol.id;
+    originalExamColesterol2.exam = examColesterol;
+
     const hemogramaIndex: IPushExamsToSearchDTO = {
-      id: examHemograma.id,
+      objectID: examHemograma.id,
       title: examHemograma.title,
       slug: examHemograma.slug,
       alternative_titles: ['Hemograma', 'HT COMPLETO'],
     };
 
     const colesterolIndex: IPushExamsToSearchDTO = {
-      id: examColesterol.id,
+      objectID: examColesterol.id,
       title: examColesterol.title,
       slug: examColesterol.slug,
       alternative_titles: [
         'Colesterol total e frações, soro',
-        'Estudo Lipídico',
+        'COLESTEROL TOTAL E FRACOES COM TRIGLICERIDES',
       ],
     };
 
     const index = [hemogramaIndex, colesterolIndex];
 
-    const searchableExams = await pushExamsToSearch.execute();
+    const indexObjectIds = index.map(item => item.objectID);
 
-    expect(searchableExams).toContain(index);
+    const examsObjectIds = await pushExamsToSearch.execute();
+
+    expect(examsObjectIds).toEqual(indexObjectIds);
   });
 });

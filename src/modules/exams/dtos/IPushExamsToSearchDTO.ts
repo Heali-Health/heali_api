@@ -1,5 +1,5 @@
 export default interface IPushExamsToSearchDTO {
-  id: string;
+  objectID: string;
   title: string;
   slug: string;
   alternative_titles: string[];

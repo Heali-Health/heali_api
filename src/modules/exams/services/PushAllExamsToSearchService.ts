@@ -1,22 +1,24 @@
 import { injectable, inject } from 'tsyringe';
 
-// import Exam from '@modules/exams/infra/typeorm/entities/Exam';
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
+import ISearchProvider from '@shared/container/providers/SearchProvider/models/ISearchProvider';
 import IPushExamsToSearchDTO from '../dtos/IPushExamsToSearchDTO';
 import IOriginalExamsRepository from '../repositories/IOriginalExamsRepository';
-import OriginalExam from '../infra/typeorm/entities/OriginalExam';
 
 @injectable()
-export default class PushExamsToSearchService {
+export default class PushAllExamsToSearchService {
   constructor(
     @inject('ExamsRepository')
     private examsRepository: IExamsRepository,
 
     @inject('OriginalExamsRepository')
     private originalExamsRepository: IOriginalExamsRepository,
+
+    @inject('SearchProvider')
+    private searchProvider: ISearchProvider,
   ) {}
 
-  public async execute(): Promise<IPushExamsToSearchDTO[]> {
+  public async execute(): Promise<string[]> {
     const exams = await this.examsRepository.findAll();
     const examsIds = exams.map(exam => exam.id);
 
@@ -34,7 +36,7 @@ export default class PushExamsToSearchService {
       const alternativeTitles = [...new Set(examOriginalExamsTitles)];
 
       const examIndex: IPushExamsToSearchDTO = {
-        id: exam.id,
+        objectID: exam.id,
         title: exam.title,
         slug: exam.slug,
         alternative_titles: alternativeTitles,
@@ -43,6 +45,8 @@ export default class PushExamsToSearchService {
       return examIndex;
     });
 
-    return index;
+    const examsObjectIds = await this.searchProvider.addExamsToIndex(index);
+
+    return examsObjectIds;
   }
 }

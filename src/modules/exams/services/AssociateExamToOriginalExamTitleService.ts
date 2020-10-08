@@ -4,7 +4,7 @@ import IOriginalExamsRepository from '../repositories/IOriginalExamsRepository';
 import IAssociateExamToOriginalExamTitleDTO from '../dtos/IAssociateExamToOriginalExamTitleDTO';
 import IExamsRepository from '../repositories/IExamsRepository';
 import IPricesRepository from '../repositories/IPricesRepository';
-import OriginalExam from '../infra/typeorm/entities/OriginalExam';
+import Exam from '../infra/typeorm/entities/Exam';
 
 @injectable()
 export default class AssociateExamToOriginalExamTitleService {
@@ -25,7 +25,7 @@ export default class AssociateExamToOriginalExamTitleService {
   public async execute({
     examTitle,
     originalExamTitle,
-  }: IAssociateExamToOriginalExamTitleDTO): Promise<OriginalExam[]> {
+  }: IAssociateExamToOriginalExamTitleDTO): Promise<Exam> {
     const originalExams = await this.originalExamsRepository.findAllByTitle(
       originalExamTitle,
     );
@@ -61,30 +61,31 @@ export default class AssociateExamToOriginalExamTitleService {
       });
 
       await this.pricesRepository.saveMany(updatedPrices);
-    } else {
-      const updatedOriginalExams = originalExams.map(selectedOriginalExam => {
-        const updatedOriginalExam = selectedOriginalExam;
-        updatedOriginalExam.exam = examExists;
-        updatedOriginalExam.exam_id = examExists.id;
-        return updatedOriginalExam;
-      });
 
-      await this.originalExamsRepository.saveMany(updatedOriginalExams);
-
-      const selectedPrices = await this.pricesRepository.findByOriginalExamIdsArray(
-        originalExamsIds,
-      );
-
-      const updatedPrices = selectedPrices.map(selectedPrice => {
-        const updatedPrice = selectedPrice;
-        updatedPrice.exam = examExists;
-        updatedPrice.exam_id = examExists.id;
-        return updatedPrice;
-      });
-
-      await this.pricesRepository.saveMany(updatedPrices);
+      return exam;
     }
+    const updatedOriginalExams = originalExams.map(selectedOriginalExam => {
+      const updatedOriginalExam = selectedOriginalExam;
+      updatedOriginalExam.exam = examExists;
+      updatedOriginalExam.exam_id = examExists.id;
+      return updatedOriginalExam;
+    });
 
-    return originalExams;
+    await this.originalExamsRepository.saveMany(updatedOriginalExams);
+
+    const selectedPrices = await this.pricesRepository.findByOriginalExamIdsArray(
+      originalExamsIds,
+    );
+
+    const updatedPrices = selectedPrices.map(selectedPrice => {
+      const updatedPrice = selectedPrice;
+      updatedPrice.exam = examExists;
+      updatedPrice.exam_id = examExists.id;
+      return updatedPrice;
+    });
+
+    await this.pricesRepository.saveMany(updatedPrices);
+
+    return examExists;
   }
 }

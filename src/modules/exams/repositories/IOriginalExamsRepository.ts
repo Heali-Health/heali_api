@@ -10,6 +10,7 @@ export default interface IOriginalExamsRepository {
   findAllByLabsIds(labIdData: string[]): Promise<OriginalExam[]>;
   findAllByTitle(title: string | string[]): Promise<OriginalExam[]>;
   findAllByUserInput(query: string): Promise<OriginalExam[]>;
+  findAllByExamId(exam_id: string[]): Promise<OriginalExam[]>;
   upsertOriginalExams(
     originalExamData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]>;

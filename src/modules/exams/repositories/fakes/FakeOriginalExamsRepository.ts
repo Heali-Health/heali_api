@@ -112,6 +112,14 @@ export default class FakeOriginalExamsRepository
     return results;
   }
 
+  public async findAllByExamId(exam_id: string[]): Promise<OriginalExam[]> {
+    const originalExams = this.originalExams.filter(originalExam =>
+      exam_id.includes(originalExam.exam_id),
+    );
+
+    return originalExams;
+  }
+
   public async upsertOriginalExams(
     originalExamData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]> {

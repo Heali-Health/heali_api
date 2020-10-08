@@ -24,6 +24,10 @@ class ExamsRepository implements IExamsRepository {
     return this.ormRepository.save(exam);
   }
 
+  public async findAll(): Promise<Exam[]> {
+    return this.ormRepository.find();
+  }
+
   public async findAllByUserInput(query: string): Promise<Exam[]> {
     const exams = await this.ormRepository.find({
       where: `title ILIKE '%${query}%'`,

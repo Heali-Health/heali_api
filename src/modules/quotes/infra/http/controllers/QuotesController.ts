@@ -4,6 +4,7 @@ import { container } from 'tsyringe';
 import CreateQuoteService from '@modules/quotes/services/CreateQuoteService';
 import SendScheduleRequestEmailService from '@modules/quotes/services/SendScheduleRequestEmailService';
 import ShowProfileService from '@modules/users/services/ShowProfileService';
+import { classToClass } from 'class-transformer';
 
 export default class QuotesController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -29,6 +30,8 @@ export default class QuotesController {
         patient,
         prices: price,
       });
+
+      quote.user = classToClass(quote.user);
 
       return res.json(quote);
     } catch (err) {

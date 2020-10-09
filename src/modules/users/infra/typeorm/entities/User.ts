@@ -42,6 +42,7 @@ class User {
   avatar: string;
 
   @Column()
+  @Exclude()
   uploaded_avatar: boolean;
 
   @OneToMany(() => Patient, patient => patient.user)

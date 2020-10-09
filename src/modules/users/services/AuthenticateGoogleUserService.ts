@@ -8,8 +8,6 @@ import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
-import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
-
 interface IRequest {
   googleTokenId: string;
 }
@@ -17,6 +15,7 @@ interface IRequest {
 interface IResponse {
   user: User;
   token: string;
+  new_user: boolean;
 }
 
 @injectable()
@@ -24,9 +23,6 @@ export default class AuthenticateGoogleUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
-
-    @inject('HashProvider')
-    private hashProvider: IHashProvider,
   ) {}
 
   private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -63,6 +59,8 @@ export default class AuthenticateGoogleUserService {
         email,
         password: '',
         avatar,
+        uploaded_avatar: false,
+        defined_password: false,
       });
 
       const token = sign({}, secret, {
@@ -73,6 +71,7 @@ export default class AuthenticateGoogleUserService {
       return {
         user: createdUser,
         token,
+        new_user: true,
       };
     }
 
@@ -93,6 +92,7 @@ export default class AuthenticateGoogleUserService {
     return {
       user,
       token,
+      new_user: false,
     };
   }
 }

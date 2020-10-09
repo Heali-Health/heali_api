@@ -17,6 +17,7 @@ interface IRequest {
 interface IResponse {
   user: User;
   token: string;
+  new_user: boolean;
 }
 
 interface IFacebookAccessTokenResponse {
@@ -56,9 +57,6 @@ export default class AuthenticateFacebookUserService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
-
-    @inject('HashProvider')
-    private hashProvider: IHashProvider,
   ) {}
 
   public async execute({ facebookTokenId }: IRequest): Promise<IResponse> {
@@ -127,6 +125,8 @@ export default class AuthenticateFacebookUserService {
           email,
           password: '',
           avatar,
+          uploaded_avatar: false,
+          defined_password: false,
         });
 
         const token = sign({}, secret, {
@@ -137,6 +137,7 @@ export default class AuthenticateFacebookUserService {
         return {
           user: createdUser,
           token,
+          new_user: true,
         };
       }
 
@@ -157,6 +158,7 @@ export default class AuthenticateFacebookUserService {
       return {
         user,
         token,
+        new_user: false,
       };
     } catch (err) {
       throw new AppError(

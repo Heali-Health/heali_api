@@ -39,6 +39,12 @@ class Patient {
   mobility_restrictions: string;
 
   @Column()
+  sex: 'male' | 'female';
+
+  @Column('date')
+  birth_date: Date;
+
+  @Column()
   user_id: string;
 
   @ManyToOne(() => User, user => user.patient, { eager: true })

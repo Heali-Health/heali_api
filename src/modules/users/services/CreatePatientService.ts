@@ -10,6 +10,8 @@ interface IRequest {
   first_name: string;
   last_name: string;
   email?: string;
+  birth_date?: Date;
+  sex?: 'male' | 'female';
   document_id: string;
   document_type: 'RG' | 'CPF' | 'Passaporte' | 'RNE';
   height?: number;
@@ -34,6 +36,8 @@ export default class CreatePatientService {
     email,
     document_id,
     document_type,
+    birth_date,
+    sex,
     height,
     weight,
     mobility_restrictions,
@@ -49,6 +53,8 @@ export default class CreatePatientService {
       email,
       document_id,
       document_type,
+      birth_date,
+      sex,
       height,
       weight,
       mobility_restrictions,

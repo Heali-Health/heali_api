@@ -4,6 +4,8 @@ export default interface ICreatePatientDTO {
   email?: string;
   document_id: string;
   document_type: 'RG' | 'CPF' | 'Passaporte' | 'RNE';
+  birth_date?: Date;
+  sex?: 'male' | 'female';
   height?: number;
   weight?: number;
   mobility_restrictions?: string;

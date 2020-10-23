@@ -27,9 +27,6 @@ export default class GoogleSessionsController {
       sendRegisteredEmail.execute(user);
     }
 
-    const sendRegisteredEmail = container.resolve(SendRegisteredEmailService);
-    await sendRegisteredEmail.execute(user);
-
     return res.send({ user: classToClass(user), token });
   }
 }

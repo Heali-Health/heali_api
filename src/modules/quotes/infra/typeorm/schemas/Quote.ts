@@ -24,6 +24,15 @@ class Quote {
   @Column()
   price: Price[];
 
+  @Column()
+  dates: {
+    from: string;
+    to: string;
+  };
+
+  @Column()
+  hours: string[];
+
   @CreateDateColumn()
   created_at: Date;
 

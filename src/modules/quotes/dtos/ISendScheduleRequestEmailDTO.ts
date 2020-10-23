@@ -6,4 +6,9 @@ export default interface ISendScheduleRequestEmailDTO {
   user: User;
   patient: Patient;
   prices: Price[];
+  dates: {
+    from: string;
+    to: string;
+  };
+  hours: string[];
 }

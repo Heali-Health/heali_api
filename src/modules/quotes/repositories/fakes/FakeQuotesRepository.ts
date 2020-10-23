@@ -12,6 +12,8 @@ class FakeQuotesRepository implements IQuotesRepository {
     user,
     patient,
     price,
+    dates,
+    hours,
   }: ICreateQuoteDTO): Promise<Quote> {
     const quote = new Quote();
 
@@ -20,6 +22,8 @@ class FakeQuotesRepository implements IQuotesRepository {
       user,
       patient,
       price,
+      dates,
+      hours,
     });
 
     await this.quotes.push(quote);

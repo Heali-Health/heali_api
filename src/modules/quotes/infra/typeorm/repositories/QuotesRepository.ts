@@ -16,11 +16,15 @@ class QuotesRepository implements IQuotesRepository {
     user,
     patient,
     price,
+    dates,
+    hours,
   }: ICreateQuoteDTO): Promise<Quote> {
     const quote = this.ormRepository.create({
       user,
       patient,
       price,
+      dates,
+      hours,
     });
 
     await this.ormRepository.save(quote);

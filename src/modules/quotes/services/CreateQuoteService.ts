@@ -14,11 +14,15 @@ export default class CreateQuoteService {
     user,
     patient,
     price,
+    dates,
+    hours,
   }: ICreateQuoteDTO): Promise<Quote> {
     const quote = await this.quotesRepository.create({
       user,
       patient,
       price,
+      dates,
+      hours,
     });
 
     return quote;

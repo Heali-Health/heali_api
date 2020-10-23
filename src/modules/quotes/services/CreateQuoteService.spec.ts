@@ -85,11 +85,21 @@ describe('CreateQuote', () => {
       user,
       patient,
       price: [price],
+      dates: {
+        from: '23/10/2020',
+        to: '26/10/2020',
+      },
+      hours: ['das 9h às 12h', 'das 15h às 18h'],
     });
 
     expect(quote).toHaveProperty('id');
     expect(quote.user.id).toBe(user.id);
     expect(quote.patient.first_name).toBe('Mary');
     expect(quote.price).toContain(price);
+    expect(quote.dates).toEqual({
+      from: '23/10/2020',
+      to: '26/10/2020',
+    });
+    expect(quote.hours).toEqual(['das 9h às 12h', 'das 15h às 18h']);
   });
 });

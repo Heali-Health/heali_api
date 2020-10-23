@@ -9,7 +9,7 @@ import { classToClass } from 'class-transformer';
 export default class QuotesController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const { patient, price } = req.body;
+      const { patient, price, dates, hours } = req.body;
       const user_id = req.user.id;
 
       const showProfile = container.resolve(ShowProfileService);
@@ -20,6 +20,8 @@ export default class QuotesController {
         user,
         patient,
         price,
+        dates,
+        hours,
       });
 
       const sendScheduleRequestEmail = container.resolve(
@@ -29,6 +31,8 @@ export default class QuotesController {
         user,
         patient,
         prices: price,
+        dates,
+        hours,
       });
 
       quote.user = classToClass(quote.user);

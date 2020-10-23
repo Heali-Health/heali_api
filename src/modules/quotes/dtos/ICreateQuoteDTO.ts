@@ -6,4 +6,9 @@ export default interface ICreateQuoteDTO {
   user: User;
   patient: Patient;
   price: Price[];
+  dates: {
+    from: string;
+    to: string;
+  };
+  hours: string[];
 }

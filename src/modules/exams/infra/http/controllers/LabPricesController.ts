@@ -22,6 +22,14 @@ export default class LabPricesController {
         throw new AppError('No exam was informed');
       }
 
+      if (!add) {
+        throw new AppError('Address was not informed');
+      }
+
+      if (!lat || !lng) {
+        throw new AppError('Coordinates were not informed');
+      }
+
       const parsedExamsIds = ids.map(exam_id => exam_id.toString());
       const parsedAddress = add.toString();
       const parsedLatitude = Number(lat.toString());

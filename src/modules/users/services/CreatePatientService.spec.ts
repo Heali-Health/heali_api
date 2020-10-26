@@ -27,6 +27,8 @@ describe('CreatePatient', () => {
       password: '123456',
     });
 
+    const birth_date = new Date(1989, 8, 23);
+
     const patient = await createPatient.execute({
       first_name: 'Mary',
       last_name: 'Doe',
@@ -35,8 +37,12 @@ describe('CreatePatient', () => {
       height: 1.88,
       weight: 95.5,
       user_id: user.id,
+      birth_date,
     });
 
+    console.log(birth_date);
+
     expect(patient).toHaveProperty('id');
+    expect(patient.birth_date).toEqual(birth_date);
   });
 });

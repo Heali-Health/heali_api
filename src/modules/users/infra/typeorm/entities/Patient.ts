@@ -41,7 +41,7 @@ class Patient {
   @Column()
   sex: 'male' | 'female';
 
-  @Column('date')
+  @Column('timestamp with time zone')
   birth_date: Date;
 
   @Column()

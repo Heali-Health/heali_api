@@ -21,6 +21,7 @@ export default class PatientPatientsController {
         height,
         weight,
         mobility_restrictions,
+        relationship,
       } = req.body;
       const user_id = req.user.id;
 
@@ -37,6 +38,7 @@ export default class PatientPatientsController {
         weight,
         mobility_restrictions,
         user_id,
+        relationship,
       });
 
       return res.json(classToClass(patient));
@@ -84,6 +86,7 @@ export default class PatientPatientsController {
         height,
         weight,
         mobility_restrictions,
+        relationship,
       } = req.body;
       const { patient_id } = req.params;
 
@@ -100,6 +103,7 @@ export default class PatientPatientsController {
         height,
         weight,
         mobility_restrictions,
+        relationship,
       });
 
       return res.json(patient);

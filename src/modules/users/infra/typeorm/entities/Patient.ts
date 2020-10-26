@@ -47,6 +47,9 @@ class Patient {
   @Column()
   user_id: string;
 
+  @Column()
+  relationship: 'self' | string;
+
   @ManyToOne(() => User, user => user.patient, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;

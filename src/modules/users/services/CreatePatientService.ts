@@ -18,6 +18,7 @@ interface IRequest {
   weight?: number;
   mobility_restrictions?: string;
   user_id: string;
+  relationship?: 'self' | string;
 }
 
 @injectable()
@@ -42,6 +43,7 @@ export default class CreatePatientService {
     weight,
     mobility_restrictions,
     user_id,
+    relationship,
   }: IRequest): Promise<Patient> {
     if (!user_id) {
       throw new AppError('User not found');
@@ -59,6 +61,7 @@ export default class CreatePatientService {
       weight,
       mobility_restrictions,
       user_id,
+      relationship,
     });
 
     await this.cacheProvider.invalidate(`user-patients:${user_id}`);

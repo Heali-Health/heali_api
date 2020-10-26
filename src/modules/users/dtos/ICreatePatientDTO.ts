@@ -11,4 +11,5 @@ export default interface ICreatePatientDTO {
   mobility_restrictions?: string;
   medical_exam_request?: string;
   user_id: string;
+  relationship?: 'self' | string;
 }

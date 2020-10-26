@@ -18,6 +18,7 @@ interface IRequest {
   height?: number;
   weight?: number;
   mobility_restrictions?: string;
+  relationship?: 'self' | string;
 }
 
 @injectable()
@@ -42,6 +43,7 @@ export default class UpdatePatientService {
     height,
     weight,
     mobility_restrictions,
+    relationship,
   }: IRequest): Promise<Patient> {
     const patient = await this.patientsRepository.findById(id);
 
@@ -87,6 +89,10 @@ export default class UpdatePatientService {
 
     if (mobility_restrictions) {
       patient.mobility_restrictions = mobility_restrictions;
+    }
+
+    if (relationship) {
+      patient.relationship = relationship;
     }
 
     await this.cacheProvider.invalidatePrefix(

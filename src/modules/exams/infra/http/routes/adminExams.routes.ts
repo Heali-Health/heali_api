@@ -10,6 +10,7 @@ const examsAssociationController = new ExamsAssociationController();
 const pushExamsToSearchProvider = new PushExamsToSearchProviderController();
 
 adminExamsRouter.post('/', examsController.create);
+adminExamsRouter.put('/', examsController.update);
 adminExamsRouter.post('/association', examsAssociationController.create);
 adminExamsRouter.get('/search-provider', pushExamsToSearchProvider.index);
 

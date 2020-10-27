@@ -51,4 +51,10 @@ export default class FakeExamsRepository implements IExamsRepository {
 
     return findExams;
   }
+
+  public async findByExamId(exam_id: string): Promise<Exam | undefined> {
+    const findExam = this.exams.find(exam => exam_id === exam.id);
+
+    return findExam;
+  }
 }

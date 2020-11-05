@@ -45,7 +45,7 @@ export default class SendForgotPasswordEmailService {
         subject: 'Heali :: Recuperação de senha',
         mailVariables: {
           name: user.first_name,
-          link: `${process.env.APP_WEB_URL}/reset-password?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/redefinir-senha?token=${token}`,
         },
         templateFile: 'forgot_password.hbs',
       };

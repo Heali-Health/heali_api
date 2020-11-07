@@ -8,10 +8,21 @@ import Exam from '@modules/exams/infra/typeorm/entities/Exam';
 export default class FakeExamsRepository implements IExamsRepository {
   private exams: Exam[] = [];
 
-  public async create({ title }: ICreateExamDTO): Promise<Exam> {
+  public async create({
+    title,
+    slug,
+  }: // synonyms,
+  // original_exams_ids,
+  ICreateExamDTO): Promise<Exam> {
     const exam = new Exam();
 
-    Object.assign(exam, { id: uuid(), title });
+    Object.assign(exam, {
+      id: uuid(),
+      title,
+      slug,
+      // synonyms,
+      // original_exams_ids,
+    });
 
     this.exams.push(exam);
 

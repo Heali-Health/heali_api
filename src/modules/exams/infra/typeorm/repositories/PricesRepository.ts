@@ -31,10 +31,12 @@ export default class PricesRepository implements IPricesRepository {
     });
   }
 
-  public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
+  public async findAllRecentByExamsIds(
+    exams_ids: string[] | string,
+  ): Promise<Price[]> {
     const matchedPrices = await this.ormRepository.find({
       where: {
-        exam_id: In(exams_ids),
+        exam_id: Array.isArray(exams_ids) ? In(exams_ids) : exams_ids,
       },
     });
 
@@ -69,13 +71,65 @@ export default class PricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
+  public async findAllRecentByExamsSlugs(
+    examsSlugs: string[] | string,
+  ): Promise<Price[]> {
+    let matchedPrices: Price[];
+
+    if (Array.isArray(examsSlugs)) {
+      matchedPrices = await this.ormRepository
+        .createQueryBuilder('price')
+        .leftJoinAndSelect('price.exam', 'exam')
+        .leftJoinAndSelect('price.lab', 'lab')
+        .where('exam.slug IN (:...slug)', { slug: examsSlugs })
+        .getMany();
+    } else {
+      matchedPrices = await this.ormRepository
+        .createQueryBuilder('price')
+        .leftJoinAndSelect('price.exam', 'exam')
+        .leftJoinAndSelect('price.lab', 'lab')
+        .where('exam.slug = :slug', { slug: examsSlugs })
+        .getMany();
+    }
+
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
+
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
+
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
+      );
+
+      const matchedCreatedDates = labExamPrices.map(
+        price => price.created_date,
+      );
+
+      const maxCreatedDate = max(matchedCreatedDates);
+
+      const recentPriceIndex = matchedPrices.findIndex(
+        price =>
+          price.created_date.getTime() === maxCreatedDate.getTime() &&
+          price.lab_id_exam_original_id === labExam,
+      );
+
+      const recentPrice = matchedPrices[recentPriceIndex];
+
+      return recentPrice;
+    });
+
+    return recentMatchedPrices;
+  }
+
   public async findAllRecentByExamsIdsAndLab(
-    exams_ids: string[],
+    exams_ids: string[] | string,
     lab_id: string,
   ): Promise<Price[]> {
     const matchedPrices = await this.ormRepository.find({
       where: {
-        exam_id: In(exams_ids),
+        exam_id: Array.isArray(exams_ids) ? In(exams_ids) : exams_ids,
         lab_id,
       },
     });

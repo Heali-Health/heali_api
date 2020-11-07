@@ -5,35 +5,39 @@ import AppError from '@shared/errors/AppError';
 
 import ListPriceSearchResultsService from '@modules/exams/services/ListLabsSearchResultsService';
 
+interface IQueryType {
+  ids?: string | string[];
+  slg?: string | string[];
+  add?: string;
+  lat?: string;
+  lng?: string;
+}
+
 export default class PriceResultsController {
   public async index(req: Request, res: Response): Promise<Response> {
     try {
-      const { ids, add, lat, lng } = req.query;
+      const { ids, add, lat, lng, slg } = req.query as IQueryType;
 
-      const isArray = (arr: any): arr is Array<string> => {
-        return !!arr.length;
-      };
-
-      if (ids) {
-        if (!isArray(ids)) {
-          throw new AppError('Exam array informed incorrectly');
-        }
-      } else {
-        throw new AppError('No exam was informed');
+      if (!ids && !slg) {
+        throw new AppError('No exam info was provided');
       }
 
-      const parsedExamsIds = ids.map(exam_id => exam_id.toString());
-      const parsedAddress = add.toString();
-      const parsedLatitude = Number(lat.toString());
-      const parsedLongitude = Number(lng.toString());
+      if (!add) {
+        throw new AppError('Address was not informed');
+      }
+
+      if (!lat || !lng) {
+        throw new AppError('Coordinates were not informed');
+      }
 
       const searchExam = container.resolve(ListPriceSearchResultsService);
       const exams = await searchExam.execute({
-        exams_ids: parsedExamsIds,
+        examsIds: ids,
+        examsSlugs: slg,
         location: {
-          address: parsedAddress,
-          latitude: parsedLatitude,
-          longitude: parsedLongitude,
+          address: add,
+          latitude: Number(lat.toString()),
+          longitude: Number(lng.toString()),
         },
       });
 

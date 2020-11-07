@@ -9,6 +9,7 @@ import IDistanceProvider from '@shared/container/providers/DistanceProvider/mode
 // import sortByDistance from '@shared/utils/sortByDistance';
 import sortByRecommended from '@shared/utils/sortByRecommended';
 import ILabResultsDTO from '../dtos/ILabResultsDTO';
+import Price from '../infra/typeorm/entities/Price';
 
 @injectable()
 export default class ListPriceSearchResultsService {
@@ -21,12 +22,23 @@ export default class ListPriceSearchResultsService {
   ) {}
 
   public async execute({
-    exams_ids,
+    examsIds,
+    examsSlugs,
     location,
   }: IListPriceSearchResultsDTO): Promise<ILabResultsDTO[]> {
-    const matchedPrices = await this.pricesRepository.findAllRecentByExamsIds(
-      exams_ids,
-    );
+    if (!examsIds && !examsSlugs) {
+      throw new AppError('No exam info was provided');
+    }
+
+    const matchedPricesI = examsIds
+      ? await this.pricesRepository.findAllRecentByExamsIds(examsIds)
+      : [];
+
+    const matchedPricesII = examsSlugs
+      ? await this.pricesRepository.findAllRecentByExamsSlugs(examsSlugs)
+      : [];
+
+    const matchedPrices = [...matchedPricesI, ...matchedPricesII];
 
     const matchedPricesLabIdsDuplicated = matchedPrices.map(
       matchedPrice => matchedPrice.lab_id,
@@ -71,7 +83,9 @@ export default class ListPriceSearchResultsService {
         lab: matchedLab,
         distance,
         exams_found: examsFound,
-        total_exams: exams_ids.length,
+        total_exams:
+          (examsIds ? examsIds.length : 0) +
+          (examsSlugs ? examsSlugs.length : 0),
         total_price: totalPrice,
       };
 

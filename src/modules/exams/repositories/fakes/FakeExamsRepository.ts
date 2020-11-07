@@ -57,7 +57,7 @@ export default class FakeExamsRepository implements IExamsRepository {
     return findExam;
   }
 
-  public async findByExamIds(exam_ids: string[]): Promise<Exam[]> {
+  public async findByExamIds(exam_ids: string | string[]): Promise<Exam[]> {
     const findExams = this.exams.filter(exam => exam_ids.includes(exam.id));
 
     return findExams;
@@ -67,5 +67,11 @@ export default class FakeExamsRepository implements IExamsRepository {
     const findExam = this.exams.find(exam => exam_id === exam.id);
 
     return findExam;
+  }
+
+  public async findByExamSlugs(slugs: string | string[]): Promise<Exam[]> {
+    const findExams = this.exams.filter(exam => slugs.includes(exam.slug));
+
+    return findExams;
   }
 }

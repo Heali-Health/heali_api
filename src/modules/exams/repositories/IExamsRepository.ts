@@ -8,5 +8,6 @@ export default interface IExamsRepository {
   findAllByUserInput(query: string): Promise<Exam[]>;
   findByTitle(title: string | string[]): Promise<Exam | undefined>;
   findByExamId(exam_id: string): Promise<Exam | undefined>;
-  findByExamIds(exam_ids: string[]): Promise<Exam[]>;
+  findByExamIds(exam_ids: string | string[]): Promise<Exam[]>;
+  findByExamSlugs(slugs: string | string[]): Promise<Exam[]>;
 }

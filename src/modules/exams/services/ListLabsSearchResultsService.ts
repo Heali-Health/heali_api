@@ -9,7 +9,6 @@ import IDistanceProvider from '@shared/container/providers/DistanceProvider/mode
 // import sortByDistance from '@shared/utils/sortByDistance';
 import sortByRecommended from '@shared/utils/sortByRecommended';
 import ILabResultsDTO from '../dtos/ILabResultsDTO';
-import Price from '../infra/typeorm/entities/Price';
 
 @injectable()
 export default class ListPriceSearchResultsService {

@@ -40,6 +40,12 @@ class LabsRepository implements ILabsRepository {
     return lab;
   }
 
+  public async findBySlug(lab_slug: string): Promise<Lab | undefined> {
+    const lab = await this.ormRepository.findOne({ where: { slug: lab_slug } });
+
+    return lab;
+  }
+
   public async findSameLab({
     original_id,
     company_id,

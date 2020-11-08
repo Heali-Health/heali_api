@@ -56,6 +56,12 @@ export default class FakeLabsRepository implements ILabsRepository {
     return lab;
   }
 
+  public async findBySlug(lab_slug: string): Promise<Lab | undefined> {
+    const lab = this.labs.find(eachLab => eachLab.slug === lab_slug);
+
+    return lab;
+  }
+
   public async findSameLab({
     original_id,
     company_id,

@@ -1,6 +1,8 @@
 import { uuid } from 'uuidv4';
 import { max } from 'date-fns';
 
+import AppError from '@shared/errors/AppError';
+
 import Price from '@modules/exams/infra/typeorm/entities/Price';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
@@ -120,14 +122,14 @@ export default class FakePricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
-  public async findAllRecentByExamsIdsAndLab(
-    exams_ids: string[] | string,
-    lab_id: string,
+  public async findAllRecentByExamsAndLab(
+    examIds: string[],
+    labId: string,
   ): Promise<Price[]> {
-    const labPrices = this.prices.filter(price => price.lab_id === lab_id);
+    const labPrices = this.prices.filter(price => price.lab_id === labId);
 
     const matchedPrices = labPrices.filter(price =>
-      exams_ids.includes(price.exam.id),
+      examIds.includes(price.exam.id),
     );
 
     const duplicatedMatchedLabsExams = matchedPrices.map(

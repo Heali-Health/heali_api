@@ -3,23 +3,24 @@ import { container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 import ListSelectedLatestPricesFromLabService from '@modules/exams/services/ListSelectedLatestPricesFromLabService';
+import { isUuid } from 'uuidv4';
+
+interface IQueryType {
+  ids?: string | string[];
+  eSlg?: string | string[];
+  add?: string;
+  lat?: string;
+  lng?: string;
+}
 
 export default class LabPricesController {
   public async index(req: Request, res: Response): Promise<Response> {
     try {
-      const { ids, add, lat, lng } = req.query;
+      const { ids, add, lat, lng, eSlg } = req.query as IQueryType;
       const { lab } = req.params;
 
-      const isArray = (arr: any): arr is Array<string> => {
-        return !!arr.length;
-      };
-
-      if (ids) {
-        if (!isArray(ids)) {
-          throw new AppError('Exam array informed incorrectly');
-        }
-      } else {
-        throw new AppError('No exam was informed');
+      if (!ids && !eSlg) {
+        throw new AppError('No exam info was provided');
       }
 
       if (!add) {
@@ -30,23 +31,30 @@ export default class LabPricesController {
         throw new AppError('Coordinates were not informed');
       }
 
-      const parsedExamsIds = ids.map(exam_id => exam_id.toString());
-      const parsedAddress = add.toString();
-      const parsedLatitude = Number(lat.toString());
-      const parsedLongitude = Number(lng.toString());
-      const parsedLabId = lab.toString();
+      const checkIfIsId = isUuid(lab);
+
+      let labId: string | undefined;
+      let labSlug: string | undefined;
+
+      if (checkIfIsId) {
+        labId = lab;
+      } else {
+        labSlug = lab;
+      }
 
       const searchPrices = container.resolve(
         ListSelectedLatestPricesFromLabService,
       );
 
       const priceResults = await searchPrices.execute({
-        exams_ids: parsedExamsIds,
-        lab_id: parsedLabId,
+        examIds: ids,
+        examSlugs: eSlg,
+        labId,
+        labSlug,
         location: {
-          address: parsedAddress,
-          latitude: parsedLatitude,
-          longitude: parsedLongitude,
+          address: add,
+          latitude: Number(lat.toString()),
+          longitude: Number(lng.toString()),
         },
       });
 

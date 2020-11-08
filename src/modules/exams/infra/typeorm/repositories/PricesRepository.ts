@@ -1,5 +1,7 @@
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository, In, QueryBuilder } from 'typeorm';
 import { max } from 'date-fns';
+
+import AppError from '@shared/errors/AppError';
 
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
@@ -123,14 +125,14 @@ export default class PricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
-  public async findAllRecentByExamsIdsAndLab(
-    exams_ids: string[] | string,
-    lab_id: string,
+  public async findAllRecentByExamsAndLab(
+    examIds: string[],
+    labId: string,
   ): Promise<Price[]> {
     const matchedPrices = await this.ormRepository.find({
       where: {
-        exam_id: Array.isArray(exams_ids) ? In(exams_ids) : exams_ids,
-        lab_id,
+        exam_id: In(examIds),
+        lab_id: labId,
       },
     });
 

@@ -6,22 +6,22 @@ import AppError from '@shared/errors/AppError';
 import ListExamsService from '@modules/exams/services/ListExamsService';
 
 interface IQueryType {
-  id?: string | string[];
+  ids?: string | string[];
   slg?: string | string[];
 }
 
 export default class ExamsListController {
   public async index(req: Request, res: Response): Promise<Response> {
     try {
-      const { id, slg } = req.query as IQueryType;
+      const { ids, slg } = req.query as IQueryType;
 
-      if (!id && !slg) {
+      if (!ids && !slg) {
         throw new AppError('No exam was informed');
       }
 
       const listExams = container.resolve(ListExamsService);
       const exams = await listExams.execute({
-        exam_ids: id,
+        exam_ids: ids,
         slugs: slg,
       });
 

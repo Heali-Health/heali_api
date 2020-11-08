@@ -76,23 +76,17 @@ export default class PricesRepository implements IPricesRepository {
   public async findAllRecentByExamsSlugs(
     examsSlugs: string[] | string,
   ): Promise<Price[]> {
-    let matchedPrices: Price[];
+    const examIdQuery = Array.isArray(examsSlugs)
+      ? 'exam.slug IN (:...slug)'
+      : 'exam.slug = :slug';
 
-    if (Array.isArray(examsSlugs)) {
-      matchedPrices = await this.ormRepository
-        .createQueryBuilder('price')
-        .leftJoinAndSelect('price.exam', 'exam')
-        .leftJoinAndSelect('price.lab', 'lab')
-        .where('exam.slug IN (:...slug)', { slug: examsSlugs })
-        .getMany();
-    } else {
-      matchedPrices = await this.ormRepository
-        .createQueryBuilder('price')
-        .leftJoinAndSelect('price.exam', 'exam')
-        .leftJoinAndSelect('price.lab', 'lab')
-        .where('exam.slug = :slug', { slug: examsSlugs })
-        .getMany();
-    }
+    const matchedPrices = await this.ormRepository
+      .createQueryBuilder('price')
+      .leftJoinAndSelect('price.exam', 'exam')
+      .leftJoinAndSelect('price.lab', 'lab')
+      .leftJoinAndSelect('lab.company', 'company')
+      .where(examIdQuery, { slug: examsSlugs })
+      .getMany();
 
     const duplicatedMatchedLabsExams = matchedPrices.map(
       price => price.lab_id_exam_original_id,

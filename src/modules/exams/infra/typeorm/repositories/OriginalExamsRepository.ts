@@ -207,6 +207,13 @@ export default class OriginalExamsRepository
 
   public async findAllAssociatedToExams(): Promise<OriginalExam[]> {
     return this.ormRepository.find({
+      join: {
+        alias: 'originalExam',
+        leftJoinAndSelect: {
+          exam: 'originalExam.exam',
+          lab: 'originalExam.lab',
+        },
+      },
       where: {
         exam_id: Not(IsNull()),
       },

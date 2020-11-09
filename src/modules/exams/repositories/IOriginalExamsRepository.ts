@@ -11,6 +11,7 @@ export default interface IOriginalExamsRepository {
   findAllByTitle(title: string | string[]): Promise<OriginalExam[]>;
   findAllByUserInput(query: string): Promise<OriginalExam[]>;
   findAllByExamId(exam_id: string[]): Promise<OriginalExam[]>;
+  findAllAssociatedToExams(): Promise<OriginalExam[]>;
   upsertOriginalExams(
     originalExamData: ICreateOriginalExamDTO[],
   ): Promise<OriginalExam[]>;

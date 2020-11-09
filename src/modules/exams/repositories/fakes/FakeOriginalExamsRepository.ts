@@ -156,4 +156,8 @@ export default class FakeOriginalExamsRepository
 
     return upsertedOriginalExams;
   }
+
+  public async findAllAssociatedToExams(): Promise<OriginalExam[]> {
+    return this.originalExams.filter(originalExam => !!originalExam.exam_id);
+  }
 }

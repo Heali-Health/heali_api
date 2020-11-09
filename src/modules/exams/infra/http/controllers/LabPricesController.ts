@@ -23,13 +23,13 @@ export default class LabPricesController {
         throw new AppError('No exam info was provided');
       }
 
-      if (!add) {
-        throw new AppError('Address was not informed');
-      }
+      // if (!add) {
+      //   throw new AppError('Address was not informed');
+      // }
 
-      if (!lat || !lng) {
-        throw new AppError('Coordinates were not informed');
-      }
+      // if (!lat || !lng) {
+      //   throw new AppError('Coordinates were not informed');
+      // }
 
       const checkIfIsId = isUuid(lab);
 
@@ -52,9 +52,9 @@ export default class LabPricesController {
         labId,
         labSlug,
         location: {
-          address: add,
-          latitude: Number(lat.toString()),
-          longitude: Number(lng.toString()),
+          address: add ? add.toString() : '',
+          latitude: lat ? Number(lat.toString()) : 0,
+          longitude: lng ? Number(lng.toString()) : 0,
         },
       });
 

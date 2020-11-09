@@ -5,6 +5,7 @@ import { container } from 'tsyringe';
 import CreateExamService from '@modules/exams/services/CreateExamService';
 import UpdateExamService from '@modules/exams/services/UpdateExamService';
 import PushExamToSearchProviderService from '@modules/exams/services/PushExamToSearchProviderService';
+import ListExamsService from '@modules/exams/services/ListExamsService';
 
 export default class ExamsController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -44,6 +45,18 @@ export default class ExamsController {
       pushExamToSearchProvider.execute(exam);
 
       return res.json(classToClass(exam));
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+  }
+
+  public async index(req: Request, res: Response): Promise<Response> {
+    try {
+      const listExams = container.resolve(ListExamsService);
+
+      const exams = await listExams.execute();
+
+      return res.json(exams);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

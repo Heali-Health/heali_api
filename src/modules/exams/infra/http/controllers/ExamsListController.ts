@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import ListExamsService from '@modules/exams/services/ListExamsService';
+import GetExamsInfoService from '@modules/exams/services/GetExamsInfoService';
 
 interface IQueryType {
   ids?: string | string[];
@@ -19,8 +19,8 @@ export default class ExamsListController {
         throw new AppError('No exam was informed');
       }
 
-      const listExams = container.resolve(ListExamsService);
-      const exams = await listExams.execute({
+      const getExamsInfo = container.resolve(GetExamsInfoService);
+      const exams = await getExamsInfo.execute({
         exam_ids: ids,
         slugs: slg,
       });

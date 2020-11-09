@@ -5,7 +5,7 @@ import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
 import sortByTitle from '@shared/utils/sortByTitle';
 
 @injectable()
-export default class SearchExamService {
+export default class SearchExamByUserInputService {
   constructor(
     @inject('ExamsRepository')
     private examsRepository: IExamsRepository,

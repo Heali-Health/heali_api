@@ -1,5 +1,7 @@
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository, In, QueryBuilder } from 'typeorm';
 import { max } from 'date-fns';
+
+import AppError from '@shared/errors/AppError';
 
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
@@ -31,10 +33,12 @@ export default class PricesRepository implements IPricesRepository {
     });
   }
 
-  public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
+  public async findAllRecentByExamsIds(
+    exams_ids: string[] | string,
+  ): Promise<Price[]> {
     const matchedPrices = await this.ormRepository.find({
       where: {
-        exam_id: In(exams_ids),
+        exam_id: Array.isArray(exams_ids) ? In(exams_ids) : exams_ids,
       },
     });
 
@@ -69,14 +73,60 @@ export default class PricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
-  public async findAllRecentByExamsIdsAndLab(
-    exams_ids: string[],
-    lab_id: string,
+  public async findAllRecentByExamsSlugs(
+    examsSlugs: string[] | string,
+  ): Promise<Price[]> {
+    const examIdQuery = Array.isArray(examsSlugs)
+      ? 'exam.slug IN (:...slug)'
+      : 'exam.slug = :slug';
+
+    const matchedPrices = await this.ormRepository
+      .createQueryBuilder('price')
+      .leftJoinAndSelect('price.exam', 'exam')
+      .leftJoinAndSelect('price.lab', 'lab')
+      .leftJoinAndSelect('lab.company', 'company')
+      .where(examIdQuery, { slug: examsSlugs })
+      .getMany();
+
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
+
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
+
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
+      );
+
+      const matchedCreatedDates = labExamPrices.map(
+        price => price.created_date,
+      );
+
+      const maxCreatedDate = max(matchedCreatedDates);
+
+      const recentPriceIndex = matchedPrices.findIndex(
+        price =>
+          price.created_date.getTime() === maxCreatedDate.getTime() &&
+          price.lab_id_exam_original_id === labExam,
+      );
+
+      const recentPrice = matchedPrices[recentPriceIndex];
+
+      return recentPrice;
+    });
+
+    return recentMatchedPrices;
+  }
+
+  public async findAllRecentByExamsAndLab(
+    examIds: string[],
+    labId: string,
   ): Promise<Price[]> {
     const matchedPrices = await this.ormRepository.find({
       where: {
-        exam_id: In(exams_ids),
-        lab_id,
+        exam_id: In(examIds),
+        lab_id: labId,
       },
     });
 

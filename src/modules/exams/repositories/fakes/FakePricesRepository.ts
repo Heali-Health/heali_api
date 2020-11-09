@@ -1,6 +1,8 @@
 import { uuid } from 'uuidv4';
 import { max } from 'date-fns';
 
+import AppError from '@shared/errors/AppError';
+
 import Price from '@modules/exams/infra/typeorm/entities/Price';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import ICreatePriceDTO from '@modules/exams/dtos/ICreatePriceDTO';
@@ -48,7 +50,9 @@ export default class FakePricesRepository implements IPricesRepository {
     return updatedPrices;
   }
 
-  public async findAllRecentByExamsIds(exams_ids: string[]): Promise<Price[]> {
+  public async findAllRecentByExamsIds(
+    exams_ids: string[] | string,
+  ): Promise<Price[]> {
     const matchedPrices = this.prices.filter(price =>
       exams_ids.includes(price.exam_id),
     );
@@ -82,14 +86,50 @@ export default class FakePricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
-  public async findAllRecentByExamsIdsAndLab(
-    exams_ids: string[],
-    lab_id: string,
+  public async findAllRecentByExamsSlugs(
+    examsSlugs: string[] | string,
   ): Promise<Price[]> {
-    const labPrices = this.prices.filter(price => price.lab_id === lab_id);
+    const matchedPrices = this.prices.filter(price =>
+      examsSlugs.includes(price.exam.slug),
+    );
+
+    const duplicatedMatchedLabsExams = matchedPrices.map(
+      price => price.lab_id_exam_original_id,
+    );
+
+    const matchedLabsExams = Array.from(new Set(duplicatedMatchedLabsExams));
+
+    const recentMatchedPrices = matchedLabsExams.map(labExam => {
+      const labExamPrices = matchedPrices.filter(
+        price => labExam === price.lab_id_exam_original_id,
+      );
+
+      const matchedCreatedDates = labExamPrices.map(
+        price => price.created_date,
+      );
+
+      const maxCreatedDate = max(matchedCreatedDates);
+
+      const recentPriceIndex = labExamPrices.findIndex(
+        price => price.created_date.getTime() === maxCreatedDate.getTime(),
+      );
+
+      const recentPrice = labExamPrices[recentPriceIndex];
+
+      return recentPrice;
+    });
+
+    return recentMatchedPrices;
+  }
+
+  public async findAllRecentByExamsAndLab(
+    examIds: string[],
+    labId: string,
+  ): Promise<Price[]> {
+    const labPrices = this.prices.filter(price => price.lab_id === labId);
 
     const matchedPrices = labPrices.filter(price =>
-      exams_ids.includes(price.exam.id),
+      examIds.includes(price.exam.id),
     );
 
     const duplicatedMatchedLabsExams = matchedPrices.map(

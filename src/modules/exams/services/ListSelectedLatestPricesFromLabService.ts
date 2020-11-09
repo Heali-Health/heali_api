@@ -6,6 +6,7 @@ import ILabsRepository from '@modules/labs/repositories/ILabsRepository';
 import IPricesRepository from '../repositories/IPricesRepository';
 import ILabPricesResultsDTO from '../dtos/ILabPricesResultsDTO';
 import IListLabPricesDTO from '../dtos/IListLabPricesDTO';
+import IExamsRepository from '../repositories/IExamsRepository';
 
 @injectable()
 export default class ListSelectedLatestPricesFromLabService {
@@ -18,23 +19,50 @@ export default class ListSelectedLatestPricesFromLabService {
 
     @inject('DistanceProvider')
     private distanceProvider: IDistanceProvider,
+
+    @inject('ExamsRepository')
+    private examsRepository: IExamsRepository,
   ) {}
 
   public async execute({
-    exams_ids,
-    lab_id,
+    labId,
+    labSlug,
+    examIds,
+    examSlugs,
     location,
   }: IListLabPricesDTO): Promise<ILabPricesResultsDTO> {
-    const prices = await this.pricesRepository.findAllRecentByExamsIdsAndLab(
-      exams_ids,
-      lab_id,
-    );
+    if (!examIds && !examSlugs) {
+      throw new AppError('No exam info was provided');
+    }
 
-    const lab = await this.labsRepository.findById(lab_id);
+    if (!labId && !labSlug) {
+      throw new AppError('No lab info was provided');
+    }
+
+    const lab = labId
+      ? await this.labsRepository.findById(labId)
+      : labSlug && (await this.labsRepository.findBySlug(labSlug));
 
     if (!lab) {
       throw new AppError('Lab not found');
     }
+
+    const labIdToQueryPrices = lab.id;
+
+    const exams = examIds
+      ? await this.examsRepository.findByExamIds(examIds)
+      : examSlugs && (await this.examsRepository.findByExamSlugs(examSlugs));
+
+    if (!exams) {
+      throw new AppError('Exams not found');
+    }
+
+    const examIdsToQueryPrices = exams.map(exam => exam.id);
+
+    const prices = await this.pricesRepository.findAllRecentByExamsAndLab(
+      examIdsToQueryPrices,
+      labIdToQueryPrices,
+    );
 
     const distance = this.distanceProvider.calculateInKms({
       latitude1: Number(lab.latitude),
@@ -45,7 +73,26 @@ export default class ListSelectedLatestPricesFromLabService {
 
     const exams_found = prices.length;
 
-    const total_exams = exams_ids.length;
+    let total_examsI = 0;
+    let total_examsII = 0;
+
+    if (examIds) {
+      if (Array.isArray(examIds)) {
+        total_examsI = examIds.length;
+      } else {
+        total_examsI = 1;
+      }
+    }
+
+    if (examSlugs) {
+      if (Array.isArray(examSlugs)) {
+        total_examsII = examSlugs.length;
+      } else {
+        total_examsII = 1;
+      }
+    }
+
+    const total_exams = total_examsI + total_examsII;
 
     const totalPrice = prices.reduce(
       (accumulator, currentValue) => accumulator + currentValue.price,

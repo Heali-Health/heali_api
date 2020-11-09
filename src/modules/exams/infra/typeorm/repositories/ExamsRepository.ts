@@ -1,4 +1,4 @@
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, In } from 'typeorm';
 
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
 import ICreateExamDTO from '@modules/exams/dtos/ICreateExamDTO';
@@ -56,6 +56,16 @@ class ExamsRepository implements IExamsRepository {
     });
 
     return exam;
+  }
+
+  public async findByExamSlugs(slugs: string | string[]): Promise<Exam[]> {
+    const exams = await this.ormRepository.find({
+      where: {
+        slug: Array.isArray(slugs) ? In(slugs) : slugs,
+      },
+    });
+
+    return exams;
   }
 }
 

@@ -30,6 +30,7 @@ export default class CreateExamService {
   public async execute({
     title,
     // synonyms,
+    slug,
     original_exams_ids,
   }: ICreateExamDTO): Promise<Exam> {
     const checkExamExists = await this.examsRepository.findByTitle(title);
@@ -40,7 +41,7 @@ export default class CreateExamService {
 
     const exam = await this.examsRepository.create({
       title,
-      slug: this.slugTransformation.transform(title),
+      slug: !slug ? this.slugTransformation.transform(title) : slug,
     });
 
     if (original_exams_ids) {

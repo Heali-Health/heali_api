@@ -4,10 +4,14 @@ import FakeLabsRepository from '@modules/labs/repositories/fakes/FakeLabsReposit
 import FakeExamsRepository from '@modules/exams/repositories/fakes/FakeExamsRepository';
 import FakeSlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/fakes/FakeSlugTransformation';
 import FakeDistanceProvider from '@shared/container/providers/DistanceProvider/fakes/FakeDistanceProvider';
+import AppError from '@shared/errors/AppError';
 
 import CreateExamService from '@modules/exams/services/CreateExamService';
 import CreateLabService from '@modules/labs/services/CreateLabService';
 import ListLabsSearchResultsService from '@modules/exams/services/ListLabsSearchResultsService';
+import Lab from '@modules/labs/infra/typeorm/entities/Lab';
+import Exam from '../infra/typeorm/entities/Exam';
+import Price from '../infra/typeorm/entities/Price';
 
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
 let fakeExamsRepository: FakeExamsRepository;
@@ -19,32 +23,20 @@ let listLabsSearchResults: ListLabsSearchResultsService;
 let createLab: CreateLabService;
 let createExam: CreateExamService;
 
-describe('ListLabsSearchResultsService', () => {
-  beforeEach(() => {
-    fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
-    fakeExamsRepository = new FakeExamsRepository();
-    fakePricesRepository = new FakePricesRepository();
-    fakeLabsRepository = new FakeLabsRepository();
-    fakeDistanceProvider = new FakeDistanceProvider();
-    fakeSlugTransformationProvider = new FakeSlugTransformationProvider();
-    createLab = new CreateLabService(
-      fakeLabsRepository,
-      fakeSlugTransformationProvider,
-    );
-    listLabsSearchResults = new ListLabsSearchResultsService(
-      fakePricesRepository,
-      fakeDistanceProvider,
-    );
-    createExam = new CreateExamService(
-      fakeExamsRepository,
-      fakeOriginalExamsRepository,
-      fakePricesRepository,
-      fakeSlugTransformationProvider,
-    );
-  });
+let exam1: Exam;
+let exam2: Exam;
 
-  it('should be able to list labs search results from selected exams', async () => {
-    const lab1 = await createLab.execute({
+let price1: Price;
+let price2: Price;
+let price3: Price;
+let price4: Price;
+
+let lab1: Lab;
+let lab2: Lab;
+
+describe('ListLabsSearchResultsService', () => {
+  const initializePricesDatabase = async (): Promise<void> => {
+    lab1 = await createLab.execute({
       title: 'Pinheiros',
       slug: await fakeSlugTransformationProvider.transform('Pinheiros'),
       company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
@@ -59,7 +51,7 @@ describe('ListLabsSearchResultsService', () => {
       open_hour: 'Segunda a sexta das 7h às 15h e no sábado das 7h às 12h',
     });
 
-    const lab2 = await createLab.execute({
+    lab2 = await createLab.execute({
       title: 'Vila Mariana',
       slug: await fakeSlugTransformationProvider.transform('Vila Mariana'),
       company_id: '3b20687a-beec-4e83-b875-53c5f07c0e77',
@@ -92,12 +84,14 @@ describe('ListLabsSearchResultsService', () => {
       lab_id_exam_original_id: `${lab1.id}${originalExam1.id}`,
     });
 
-    const price1 = await fakePricesRepository.create({
+    price1 = await fakePricesRepository.create({
       price: 11,
       original_exam_id: originalExam1.id,
       lab_id: lab1.id,
       lab_id_exam_original_id: `${lab1.id}${originalExam1.id}`,
     });
+
+    price1.lab = lab1;
 
     jest.spyOn(Date, 'now').mockImplementationOnce(() => {
       return new Date(2020, 4, 15, 12).getTime();
@@ -110,12 +104,14 @@ describe('ListLabsSearchResultsService', () => {
       lab_id_exam_original_id: `${lab2.id}${originalExam1.id}`,
     });
 
-    const price2 = await fakePricesRepository.create({
+    price2 = await fakePricesRepository.create({
       price: 12,
       original_exam_id: originalExam1.id,
       lab_id: lab2.id,
       lab_id_exam_original_id: `${lab2.id}${originalExam1.id}`,
     });
+
+    price2.lab = lab2;
 
     const originalExam2 = await fakeOriginalExamsRepository.create({
       title: 'Glicemia',
@@ -135,12 +131,14 @@ describe('ListLabsSearchResultsService', () => {
       lab_id_exam_original_id: `${lab1.id}${originalExam2.id}`,
     });
 
-    const price3 = await fakePricesRepository.create({
+    price3 = await fakePricesRepository.create({
       price: 13,
       original_exam_id: originalExam2.id,
       lab_id: lab1.id,
       lab_id_exam_original_id: `${lab1.id}${originalExam2.id}`,
     });
+
+    price3.lab = lab1;
 
     jest.spyOn(Date, 'now').mockImplementationOnce(() => {
       return new Date(2020, 4, 15, 12).getTime();
@@ -153,27 +151,54 @@ describe('ListLabsSearchResultsService', () => {
       lab_id_exam_original_id: `${lab2.id}${originalExam2.id}`,
     });
 
-    const price4 = await fakePricesRepository.create({
+    price4 = await fakePricesRepository.create({
       price: 14,
       original_exam_id: originalExam2.id,
       lab_id: lab2.id,
       lab_id_exam_original_id: `${lab2.id}${originalExam2.id}`,
     });
 
-    const exam1 = await createExam.execute({
+    price4.lab = lab2;
+
+    exam1 = await createExam.execute({
       title: 'Hemograma',
-      slug: 'hemograma',
       original_exams_ids: [originalExam1.id],
     });
 
-    const exam2 = await createExam.execute({
+    exam2 = await createExam.execute({
       title: 'Glicemia',
-      slug: 'glicemia',
       original_exams_ids: [originalExam2.id],
     });
+  };
 
+  beforeEach(async () => {
+    fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
+    fakeExamsRepository = new FakeExamsRepository();
+    fakePricesRepository = new FakePricesRepository();
+    fakeLabsRepository = new FakeLabsRepository();
+    fakeDistanceProvider = new FakeDistanceProvider();
+    fakeSlugTransformationProvider = new FakeSlugTransformationProvider();
+    createLab = new CreateLabService(
+      fakeLabsRepository,
+      fakeSlugTransformationProvider,
+    );
+    listLabsSearchResults = new ListLabsSearchResultsService(
+      fakePricesRepository,
+      fakeDistanceProvider,
+    );
+    createExam = new CreateExamService(
+      fakeExamsRepository,
+      fakeOriginalExamsRepository,
+      fakePricesRepository,
+      fakeSlugTransformationProvider,
+    );
+
+    await initializePricesDatabase();
+  });
+
+  it('should be able to list labs search results from one selected exam id', async () => {
     const priceSearchResults = await listLabsSearchResults.execute({
-      exams_ids: [exam1.id, exam2.id],
+      examsIds: exam1.id,
       location: {
         address:
           'R. Conselheiro Brotero, 1092 - Santa Cecilia, São Paulo - SP, 01232-010, Brazil',
@@ -182,6 +207,65 @@ describe('ListLabsSearchResultsService', () => {
       },
     });
 
-    expect(priceSearchResults).toHaveLength(4);
+    expect(priceSearchResults).toHaveLength(2);
+    expect(priceSearchResults[0].lab).toEqual(lab1);
+    expect(priceSearchResults[1].lab).toEqual(lab2);
+  });
+
+  it('should be able to list labs search results from more than one selected exam id', async () => {
+    const priceSearchResults = await listLabsSearchResults.execute({
+      examsIds: [exam1.id, exam2.id],
+      location: {
+        address:
+          'R. Conselheiro Brotero, 1092 - Santa Cecilia, São Paulo - SP, 01232-010, Brazil',
+        latitude: -23.5358061,
+        longitude: -46.6606631,
+      },
+    });
+
+    expect(priceSearchResults).toHaveLength(2);
+  });
+
+  it('should be able to list labs search results from one selected exam slug', async () => {
+    const priceSearchResults = await listLabsSearchResults.execute({
+      examsSlugs: exam1.slug,
+      location: {
+        address:
+          'R. Conselheiro Brotero, 1092 - Santa Cecilia, São Paulo - SP, 01232-010, Brazil',
+        latitude: -23.5358061,
+        longitude: -46.6606631,
+      },
+    });
+
+    expect(priceSearchResults).toHaveLength(2);
+    expect(priceSearchResults[0].lab).toEqual(lab1);
+    expect(priceSearchResults[1].lab).toEqual(lab2);
+  });
+
+  it('should be able to list labs search results from more than one selected exam slug', async () => {
+    const priceSearchResults = await listLabsSearchResults.execute({
+      examsSlugs: [exam1.slug, exam2.slug],
+      location: {
+        address:
+          'R. Conselheiro Brotero, 1092 - Santa Cecilia, São Paulo - SP, 01232-010, Brazil',
+        latitude: -23.5358061,
+        longitude: -46.6606631,
+      },
+    });
+
+    expect(priceSearchResults).toHaveLength(2);
+  });
+
+  it('should be able to throw an error if there is no appointed exam id nor exam slug', async () => {
+    await expect(
+      listLabsSearchResults.execute({
+        location: {
+          address:
+            'R. Conselheiro Brotero, 1092 - Santa Cecilia, São Paulo - SP, 01232-010, Brazil',
+          latitude: -23.5358061,
+          longitude: -46.6606631,
+        },
+      }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

@@ -19,6 +19,7 @@ export default interface ILabsRepository {
   findAll(): Promise<Lab[]>;
   findAllByCompanyId(company_id: string): Promise<Lab[]>;
   findById(lab_id: string): Promise<Lab | undefined>;
+  findBySlug(lab_slug: string): Promise<Lab | undefined>;
   findSameLab(labData: IFindSameLab): Promise<Lab | undefined>;
   upsertLabs(labData: ICreateLabDTO[]): Promise<Lab[]>;
 }

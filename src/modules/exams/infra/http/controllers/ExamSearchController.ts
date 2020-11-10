@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import SearchExamService from '@modules/exams/services/SearchExamService';
+import SearchExamByUserInputService from '@modules/exams/services/SearchExamByUserInputService';
 
 export default class ExamSearchController {
   public async index(req: Request, res: Response): Promise<Response> {
@@ -14,8 +14,10 @@ export default class ExamSearchController {
         throw new AppError('No data was requested');
       }
 
-      const searchExam = container.resolve(SearchExamService);
-      const exams = await searchExam.execute(exam.toString());
+      const searchExamByUserInput = container.resolve(
+        SearchExamByUserInputService,
+      );
+      const exams = await searchExamByUserInput.execute(exam.toString());
 
       return res.json(exams);
     } catch (err) {

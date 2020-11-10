@@ -1,14 +1,16 @@
 import FakeExamsRepository from '@modules/exams/repositories/fakes/FakeExamsRepository';
-import SearchExamService from '@modules/exams/services/SearchExamService';
+import SearchExamByUserInputService from '@modules/exams/services/SearchExamByUserInputService';
 
 let fakeExamsRepository: FakeExamsRepository;
-let searchExam: SearchExamService;
+let searchExamByUserInput: SearchExamByUserInputService;
 
-describe('SearchExam', () => {
+describe('SearchExamByUserInput', () => {
   beforeEach(() => {
     fakeExamsRepository = new FakeExamsRepository();
 
-    searchExam = new SearchExamService(fakeExamsRepository);
+    searchExamByUserInput = new SearchExamByUserInputService(
+      fakeExamsRepository,
+    );
   });
 
   it('should be able to search exam based on an user entry', async () => {
@@ -27,10 +29,10 @@ describe('SearchExam', () => {
       slug: 'glicose',
     });
 
-    const results1 = await searchExam.execute('hemograma');
-    const results2 = await searchExam.execute('colesterol');
-    const results3 = await searchExam.execute('glicose');
-    const results4 = await searchExam.execute('e');
+    const results1 = await searchExamByUserInput.execute('hemograma');
+    const results2 = await searchExamByUserInput.execute('colesterol');
+    const results3 = await searchExamByUserInput.execute('glicose');
+    const results4 = await searchExamByUserInput.execute('e');
 
     expect(results1).toEqual([exam1]);
     expect(results2).toEqual([exam2]);

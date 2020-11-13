@@ -12,12 +12,14 @@ import updateExamsFromLabsApiRouter from '@modules/exams/infra/http/routes/updat
 import updatePricesFromLabsApiRouter from '@modules/exams/infra/http/routes/updatePricesFromLabsApi.routes';
 import quotesRouter from '@modules/quotes/infra/http/routes/quotes.routes';
 import examsRouter from '@modules/exams/infra/http/routes/exams.routes';
+import pricesRouter from '@modules/exams/infra/http/routes/prices.routes';
 import originalExamsRouter from '@modules/exams/infra/http/routes/originalExams.routes';
 
 const routes = Router();
 
 routes.use('/search', searchRouter);
 routes.use('/exams', examsRouter);
+routes.use('/prices', pricesRouter);
 routes.use('/originalexams', originalExamsRouter);
 routes.use('/patients', patientsRouter);
 routes.use('/users', usersRouter);

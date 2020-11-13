@@ -161,6 +161,22 @@ export default class PricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
+  public async findByIds(id: string | string[]): Promise<Price[]> {
+    let idArray: string[];
+
+    if (Array.isArray(id)) {
+      idArray = id;
+    } else {
+      idArray = [id];
+    }
+
+    const teste = await this.ormRepository.findByIds(idArray);
+
+    // console.log(teste);
+
+    return teste;
+  }
+
   public async findByOriginalExamIdsArray(
     original_exams_ids: string[],
   ): Promise<Price[]> {

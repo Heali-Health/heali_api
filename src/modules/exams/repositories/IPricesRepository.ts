@@ -11,6 +11,7 @@ export default interface IPricesRepository {
     examIds: string[],
     labId: string,
   ): Promise<Price[]>;
+  findByIds(id: string | string[]): Promise<Price[]>;
   findByOriginalExamIdsArray(original_exams_ids: string[]): Promise<Price[]>;
   insertPrices(priceData: ICreatePriceDTO[]): Promise<Price[]>;
 }

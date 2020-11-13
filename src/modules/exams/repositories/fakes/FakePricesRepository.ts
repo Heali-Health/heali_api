@@ -161,6 +161,15 @@ export default class FakePricesRepository implements IPricesRepository {
     return recentMatchedPrices;
   }
 
+  public async findByIds(id: string | string[]): Promise<Price[]> {
+    return this.prices.filter(price => {
+      if (Array.isArray(id)) {
+        return id.includes(price.id);
+      }
+      return id === price.id;
+    });
+  }
+
   public async findByOriginalExamIdsArray(
     original_exams_ids: string[],
   ): Promise<Price[]> {

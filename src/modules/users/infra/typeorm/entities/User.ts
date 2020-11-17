@@ -46,7 +46,7 @@ class User {
   uploaded_avatar: boolean;
 
   @OneToMany(() => Patient, patient => patient.user)
-  patient: Patient;
+  patient: Patient[];
 
   @CreateDateColumn()
   created_date: Date;

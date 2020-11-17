@@ -30,6 +30,9 @@ import OriginalExamsRepository from '@modules/exams/infra/typeorm/repositories/O
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
 import PricesRepository from '@modules/exams/infra/typeorm/repositories/PricesRepository';
 
+import IBagsRepository from '@modules/bags/repositories/IBagsRepository';
+import BagsRepository from '@modules/bags/infra/typeorm/repositories/BagsRepository';
+
 container.registerSingleton<IPatientsRepository>(
   'PatientsRepository',
   PatientsRepository,
@@ -71,3 +74,5 @@ container.registerSingleton<IPricesRepository>(
   'PricesRepository',
   PricesRepository,
 );
+
+container.registerSingleton<IBagsRepository>('BagsRepository', BagsRepository);

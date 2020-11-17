@@ -14,6 +14,7 @@ import quotesRouter from '@modules/quotes/infra/http/routes/quotes.routes';
 import examsRouter from '@modules/exams/infra/http/routes/exams.routes';
 import pricesRouter from '@modules/exams/infra/http/routes/prices.routes';
 import originalExamsRouter from '@modules/exams/infra/http/routes/originalExams.routes';
+import bagsRouter from '@modules/bags/infra/http/routes/bags.routes';
 
 const routes = Router();
 
@@ -27,6 +28,7 @@ routes.use('/sessions', sessionsRouter);
 routes.use('/password', passwordRouter);
 routes.use('/profile', profileRouter);
 routes.use('/quotes', quotesRouter);
+routes.use('/bags', bagsRouter);
 routes.use('/admin/exam', adminExamsRouter);
 routes.use('/admin/update/labs', updateLabsFromLabsApiRouter);
 routes.use('/admin/update/originalexams', updateExamsFromLabsApiRouter);

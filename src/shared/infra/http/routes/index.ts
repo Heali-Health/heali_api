@@ -15,6 +15,8 @@ import examsRouter from '@modules/exams/infra/http/routes/exams.routes';
 import pricesRouter from '@modules/exams/infra/http/routes/prices.routes';
 import originalExamsRouter from '@modules/exams/infra/http/routes/originalExams.routes';
 import bagsRouter from '@modules/bags/infra/http/routes/bags.routes';
+import cardsRouter from '@modules/payments/infra/http/routes/cards.routes';
+import paymentsRouter from '@modules/payments/infra/http/routes/payments.routes';
 
 const routes = Router();
 
@@ -29,6 +31,8 @@ routes.use('/password', passwordRouter);
 routes.use('/profile', profileRouter);
 routes.use('/quotes', quotesRouter);
 routes.use('/bags', bagsRouter);
+routes.use('/payments', paymentsRouter);
+routes.use('/cards', cardsRouter);
 routes.use('/admin/exam', adminExamsRouter);
 routes.use('/admin/update/labs', updateLabsFromLabsApiRouter);
 routes.use('/admin/update/originalexams', updateExamsFromLabsApiRouter);

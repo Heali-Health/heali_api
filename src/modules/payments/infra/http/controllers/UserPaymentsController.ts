@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import AppError from 'shared/errors/AppError';
+import AppError from '@shared/errors/AppError';
 
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';

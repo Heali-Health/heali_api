@@ -14,11 +14,11 @@ export default class CreateUserCardService {
     userId,
     card,
   }: ICreateUserCardDTO): Promise<UserCard> {
-    const bag = await this.userCardsRepository.create({
+    const userCard = await this.userCardsRepository.create({
       userId,
       card,
     });
 
-    return bag;
+    return userCard;
   }
 }

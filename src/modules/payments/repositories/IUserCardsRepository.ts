@@ -4,5 +4,5 @@ import UserCard from '../infra/typeorm/schemas/UserCard';
 
 export default interface IUserCardsRepository {
   create({ userId, card }: ICreateUserCardDTO): Promise<UserCard>;
-  findAllByUser(userId: string): Promise<UserCard[]>;
+  findAllByUserId(userId: string): Promise<UserCard[]>;
 }

@@ -31,7 +31,7 @@ class FakeUserCardsRepository implements IUserCardsRepository {
     return userCard;
   }
 
-  public async findAllByUser(userId: string): Promise<UserCard[]> {
+  public async findAllByUserId(userId: string): Promise<UserCard[]> {
     return this.userCards.filter(card => card.user_id === userId);
   }
 }

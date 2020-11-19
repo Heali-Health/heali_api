@@ -32,7 +32,7 @@ class UserCardsRepository implements IUserCardsRepository {
     return bag;
   }
 
-  public async findAllByUser(userId: string): Promise<UserCard[]> {
+  public async findAllByUserId(userId: string): Promise<UserCard[]> {
     const bags = await this.ormRepository.find({
       where: {
         user_id: userId,

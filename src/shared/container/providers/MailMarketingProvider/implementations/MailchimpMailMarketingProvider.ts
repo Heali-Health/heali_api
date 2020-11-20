@@ -1,9 +1,11 @@
 import axios from 'axios';
 import IAddCartToProvider from '../dtos/IAddCartToProvider';
 import IAddCustomerToProvider from '../dtos/IAddCustomerToProvider';
+import IAddOrderTOProvider from '../dtos/IAddOrderToProvider';
 import IAddProductToProvider from '../dtos/IAddProductToProvider';
 import IMailMarketingCart from '../dtos/IMailMarketingCart';
 import IMailMarketingCustomer from '../dtos/IMailMarketingCustomer';
+import IMailMarketingOrder from '../dtos/IMailMarketingOrder';
 import IMailMarketingProduct from '../dtos/IMailMarketingProduct';
 import IMailMarketingProvider from '../models/IMailMarketingProvider';
 
@@ -67,6 +69,20 @@ export default class MailchimpMailMarketingProvider
     return products;
   }
 
+  public async getProductInfo(
+    productId: string,
+  ): Promise<IMailMarketingProduct | undefined> {
+    const { data: product } = await this.mailchimpEcommerceClient.get<
+      IMailMarketingProduct
+    >(`/products/${productId}`);
+
+    if (!product.id) {
+      return undefined;
+    }
+
+    return product;
+  }
+
   public async addCart(data: IAddCartToProvider): Promise<IMailMarketingCart> {
     const { data: cart } = await this.mailchimpEcommerceClient.post<
       IMailMarketingCart
@@ -81,5 +97,23 @@ export default class MailchimpMailMarketingProvider
     >('/carts');
 
     return carts;
+  }
+
+  public async addOrder(
+    data: IAddOrderTOProvider,
+  ): Promise<IMailMarketingOrder> {
+    const { data: order } = await this.mailchimpEcommerceClient.post<
+      IMailMarketingOrder
+    >('/orders', data);
+
+    return order;
+  }
+
+  public async listOrders(): Promise<IMailMarketingOrder[]> {
+    const { data: orders } = await this.mailchimpEcommerceClient.get<
+      IMailMarketingOrder[]
+    >('/orders');
+
+    return orders;
   }
 }

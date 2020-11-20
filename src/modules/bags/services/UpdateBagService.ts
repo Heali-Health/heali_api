@@ -49,27 +49,33 @@ export default class UpdateBagService {
 
     const cartIdString = bag.id.toString();
 
-    await this.mailMarketingProvider.addCart({
-      id: cartIdString,
-      customer: {
-        id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email_address: user.email,
-        opt_in_status: true,
-      },
-      lines: prices.map(price => ({
-        id: price.exam.id,
-        title: price.exam.title,
-        price: price.price,
-        product_id: price.exam.id,
-        product_variant_id: price.exam.id,
-        quantity: 1,
-      })),
-      checkout_url: `https://heali.me/carrinho?id=${bag.id}`,
-      currency_code: 'BRL',
-      order_total: prices.map(price => price.price).reduce((a, b) => a + b, 0),
-    });
+    try {
+      await this.mailMarketingProvider.addCart({
+        id: cartIdString,
+        customer: {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email_address: user.email,
+          opt_in_status: true,
+        },
+        lines: prices.map(price => ({
+          id: price.exam.id,
+          title: price.exam.title,
+          price: price.price,
+          product_id: price.exam.id,
+          product_variant_id: price.exam.id,
+          quantity: 1,
+        })),
+        checkout_url: `https://heali.me/carrinho?id=${bag.id}`,
+        currency_code: 'BRL',
+        order_total: prices
+          .map(price => price.price)
+          .reduce((a, b) => a + b, 0),
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     return bag;
   }

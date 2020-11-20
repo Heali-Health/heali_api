@@ -1,8 +1,10 @@
 import IAddCartToProvider from '../dtos/IAddCartToProvider';
 import IAddCustomerToProvider from '../dtos/IAddCustomerToProvider';
+import IAddOrderTOProvider from '../dtos/IAddOrderToProvider';
 import IAddProductToProvider from '../dtos/IAddProductToProvider';
 import IMailMarketingCart from '../dtos/IMailMarketingCart';
 import IMailMarketingCustomer from '../dtos/IMailMarketingCustomer';
+import IMailMarketingOrder from '../dtos/IMailMarketingOrder';
 import IMailMarketingProduct from '../dtos/IMailMarketingProduct';
 import IMailMarketingProvider from '../models/IMailMarketingProvider';
 
@@ -14,6 +16,8 @@ export default class FakeMailMarketingProvider
 
   private products: IMailMarketingProduct[] = [];
 
+  private orders: IMailMarketingOrder[] = [];
+
   public async listCarts(): Promise<IMailMarketingCart[]> {
     return this.carts;
   }
@@ -24,6 +28,12 @@ export default class FakeMailMarketingProvider
 
   public async listProducts(): Promise<IMailMarketingProduct[]> {
     return this.products;
+  }
+
+  public async getProductInfo(
+    productId: string,
+  ): Promise<IMailMarketingProduct | undefined> {
+    return this.products.find(product => product.id === productId);
   }
 
   public async addCart(data: IAddCartToProvider): Promise<IMailMarketingCart> {
@@ -92,5 +102,25 @@ export default class FakeMailMarketingProvider
     this.products.push(product);
 
     return product;
+  }
+
+  public async listOrders(): Promise<IMailMarketingOrder[]> {
+    return this.orders;
+  }
+
+  public async addOrder(
+    data: IAddOrderTOProvider,
+  ): Promise<IMailMarketingOrder> {
+    const order: IAddOrderTOProvider = {
+      id: data.id,
+      currency_code: 'BRL',
+      customer: data.customer,
+      lines: data.lines,
+      order_total: 100,
+    };
+
+    this.orders.push(order);
+
+    return order;
   }
 }

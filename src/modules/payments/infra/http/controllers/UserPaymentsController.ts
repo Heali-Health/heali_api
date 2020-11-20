@@ -5,6 +5,7 @@ import AppError from 'shared/errors/AppError';
 
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
+import CreateOrderService from '@modules/payments/services/CreateOrderService';
 // import CreateUserPaymentService from '@modules/payments/services/CreateUserPaymentService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
@@ -31,6 +32,13 @@ export default class UserPaymentsController {
       const userCard = createUserCard.execute({
         userId,
         card,
+      });
+
+      const createOrder = container.resolve(CreateOrderService);
+
+      const order = createOrder.execute({
+        userId,
+        payment,
       });
 
       return res.json({ userCard });

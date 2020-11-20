@@ -1,5 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 import IOriginalExamsRepository from '../repositories/IOriginalExamsRepository';
 import IAssociateExamToOriginalExamTitleDTO from '../dtos/IAssociateExamToOriginalExamTitleDTO';
 import IExamsRepository from '../repositories/IExamsRepository';
@@ -20,6 +21,9 @@ export default class AssociateExamToOriginalExamTitleService {
 
     @inject('SlugTransformationProvider')
     private slugTransformation: ISlugTransformationProvider,
+
+    @inject('MailMarketingProvider')
+    private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
   public async execute({
@@ -61,6 +65,17 @@ export default class AssociateExamToOriginalExamTitleService {
       });
 
       await this.pricesRepository.saveMany(updatedPrices);
+
+      await this.mailMarketingProvider.addProduct({
+        id: exam.id,
+        title: exam.title,
+        variants: [
+          {
+            id: exam.id,
+            title: exam.title,
+          },
+        ],
+      });
 
       return exam;
     }

@@ -14,6 +14,14 @@ export default class CreateUserCardService {
     userId,
     card,
   }: ICreateUserCardDTO): Promise<UserCard> {
+    const checkIfUserCardExists = await this.userCardsRepository.findUserCardByForeignId(
+      card.id,
+    );
+
+    if (checkIfUserCardExists) {
+      return checkIfUserCardExists;
+    }
+
     const userCard = await this.userCardsRepository.create({
       userId,
       card,

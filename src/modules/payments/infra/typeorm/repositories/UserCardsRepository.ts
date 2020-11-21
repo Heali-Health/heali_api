@@ -14,7 +14,7 @@ class UserCardsRepository implements IUserCardsRepository {
     const bag = this.ormRepository.create({
       user_id: userId,
       object: card.object,
-      pagarme_id: card.id,
+      foreign_id: card.id,
       brand: card.brand,
       first_digits: card.first_digits,
       last_digits: card.last_digits,
@@ -23,8 +23,8 @@ class UserCardsRepository implements IUserCardsRepository {
       country: card.country,
       fingerprint: card.fingerprint,
       valid: card.valid,
-      pagarme_date_created: card.date_created,
-      pagarme_date_updated: card.date_updated,
+      foreign_date_created: card.date_created,
+      foreign_date_updated: card.date_updated,
     });
 
     await this.ormRepository.save(bag);
@@ -40,6 +40,22 @@ class UserCardsRepository implements IUserCardsRepository {
     });
 
     return bags;
+  }
+
+  public async findUserCardByForeignId(
+    foreignId: string,
+  ): Promise<UserCard | undefined> {
+    return this.ormRepository.findOne({
+      where: {
+        foreign_id: foreignId,
+      },
+    });
+  }
+
+  public async save(userCard: UserCard): Promise<UserCard> {
+    await this.ormRepository.save(userCard);
+
+    return userCard;
   }
 }
 

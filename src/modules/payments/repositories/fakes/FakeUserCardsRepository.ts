@@ -13,7 +13,7 @@ class FakeUserCardsRepository implements IUserCardsRepository {
       id: new ObjectId(),
       user_id: userId,
       object: card.object,
-      pagarme_id: card.id,
+      foreign_id: card.id,
       brand: card.brand,
       first_digits: card.first_digits,
       last_digits: card.last_digits,
@@ -22,8 +22,9 @@ class FakeUserCardsRepository implements IUserCardsRepository {
       country: card.country,
       fingerprint: card.fingerprint,
       valid: card.valid,
-      pagarme_date_created: card.date_created,
-      pagarme_date_updated: card.date_updated,
+      foreign_date_created: card.date_created,
+      foreign_date_updated: card.date_updated,
+      isMain: false,
     });
 
     this.userCards.push(userCard);
@@ -33,6 +34,18 @@ class FakeUserCardsRepository implements IUserCardsRepository {
 
   public async findAllByUserId(userId: string): Promise<UserCard[]> {
     return this.userCards.filter(card => card.user_id === userId);
+  }
+
+  public async findUserCardByForeignId(
+    foreignId: string,
+  ): Promise<UserCard | undefined> {
+    return this.userCards.find(card => card.foreign_id === foreignId);
+  }
+
+  public async save(userCard: UserCard): Promise<UserCard> {
+    this.userCards.push(userCard);
+
+    return userCard;
   }
 }
 

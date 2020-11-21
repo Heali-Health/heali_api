@@ -5,6 +5,7 @@ import AppError from '@shared/errors/AppError';
 
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
+import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
 // import CreateUserPaymentService from '@modules/payments/services/CreateUserPaymentService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
@@ -28,10 +29,14 @@ export default class UserPaymentsController {
       //   payment,
       // });
 
-      const userCard = createUserCard.execute({
+      const userCard = await createUserCard.execute({
         userId,
         card,
       });
+
+      const updateMainUserCard = container.resolve(UpdateMainUserCardService);
+
+      await updateMainUserCard.execute(userId, userCard.foreign_id);
 
       return res.json({ userCard });
     } catch (err) {

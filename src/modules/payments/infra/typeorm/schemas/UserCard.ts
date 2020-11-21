@@ -19,13 +19,16 @@ class UserCard {
   object: string;
 
   @Column()
-  pagarme_id: string;
+  foreign_id: string;
 
   @Column()
-  pagarme_date_created: Date;
+  isMain: boolean;
 
   @Column()
-  pagarme_date_updated: Date;
+  foreign_date_created: Date;
+
+  @Column()
+  foreign_date_updated: Date;
 
   @Column()
   brand: string;

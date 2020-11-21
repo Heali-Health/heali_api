@@ -48,4 +48,18 @@ describe('CreateUserCard', () => {
 
     expect(userCard).toHaveProperty('id');
   });
+
+  it('should not create a new user card if a card with the same foreign id is informed', async () => {
+    const userCard1 = await createUserCard.execute({
+      userId: user.id,
+      card,
+    });
+
+    const userCard2 = await createUserCard.execute({
+      userId: user.id,
+      card,
+    });
+
+    expect(userCard2.id).toEqual(userCard1.id);
+  });
 });

@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 
 import IExamsRepository from '@modules/exams/repositories/IExamsRepository';
 import ISearchProvider from '@shared/container/providers/SearchProvider/models/ISearchProvider';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 import IPushExamsToSearchDTO from '../dtos/IPushExamsToSearchDTO';
 import IOriginalExamsRepository from '../repositories/IOriginalExamsRepository';
 
@@ -16,6 +17,9 @@ export default class PushAllExamsToSearchService {
 
     @inject('SearchProvider')
     private searchProvider: ISearchProvider,
+
+    @inject('MailMarketingProvider')
+    private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
   public async execute(): Promise<string[]> {
@@ -41,6 +45,17 @@ export default class PushAllExamsToSearchService {
         slug: exam.slug,
         alternative_titles: alternativeTitles,
       };
+
+      this.mailMarketingProvider.addProduct({
+        id: exam.id,
+        title: exam.title,
+        variants: [
+          {
+            id: exam.id,
+            title: exam.title,
+          },
+        ],
+      });
 
       return examIndex;
     });

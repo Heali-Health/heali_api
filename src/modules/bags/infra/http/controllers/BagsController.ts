@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-
 import { ObjectID } from 'mongodb';
+
+import AppError from '@shared/errors/AppError';
 import CreateBagService from '@modules/bags/services/CreateBagService';
 import ShowBagService from '@modules/bags/services/ShowBagService';
 import UpdateBagService from '@modules/bags/services/UpdateBagService';
@@ -44,9 +45,19 @@ export default class BagsController {
 
   public async update(req: Request, res: Response): Promise<Response> {
     try {
-      const userId = req.user && req.user.id;
-      const { id } = req.params;
+      if (!req.user) {
+        throw new AppError('No valid user credential was received');
+      }
+
       const { priceId } = req.body;
+
+      if (!priceId) {
+        throw new AppError('No priceId was received');
+      }
+
+      const userId = req.user.id;
+
+      const { id } = req.params;
 
       const bagId = new ObjectID(id);
 

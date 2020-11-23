@@ -5,11 +5,13 @@ import FakeOriginalExamsRepository from '@modules/exams/repositories/fakes/FakeO
 import FakePricesRepository from '@modules/exams/repositories/fakes/FakePricesRepository';
 import FakeSlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/fakes/FakeSlugTransformation';
 import CreateExamService from '@modules/exams/services/CreateExamService';
+import FakeMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/fakes/FakeMailMarketingProvider';
 
 let fakeExamsRepository: FakeExamsRepository;
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
 let fakePricesRepository: FakePricesRepository;
 let fakeSlugTransformationProvider: FakeSlugTransformationProvider;
+let fakeMailMarketingProvider: FakeMailMarketingProvider;
 let createExam: CreateExamService;
 
 describe('CreateExam', () => {
@@ -18,11 +20,13 @@ describe('CreateExam', () => {
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
     fakePricesRepository = new FakePricesRepository();
     fakeSlugTransformationProvider = new FakeSlugTransformationProvider();
+    fakeMailMarketingProvider = new FakeMailMarketingProvider();
     createExam = new CreateExamService(
       fakeExamsRepository,
       fakeOriginalExamsRepository,
       fakePricesRepository,
       fakeSlugTransformationProvider,
+      fakeMailMarketingProvider,
     );
   });
 

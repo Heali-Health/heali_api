@@ -5,13 +5,14 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
 import { ObjectID } from 'typeorm';
 import IPricesRepository from '@modules/exams/repositories/IPricesRepository';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 import IBagsRepository from '../repositories/IBagsRepository';
 import Bag from '../infra/typeorm/schemas/Bag';
 
 interface IRequest {
   bagId: ObjectID;
-  userId?: string;
-  priceId?: string | string[];
+  userId: string;
+  priceId: string | string[];
 }
 
 @injectable()
@@ -25,24 +26,56 @@ export default class UpdateBagService {
 
     @inject('PricesRepository')
     private pricesRepository: IPricesRepository,
+
+    @inject('MailMarketingProvider')
+    private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
   public async execute({ bagId, userId, priceId }: IRequest): Promise<Bag> {
-    let user: User | undefined;
-    let prices: Price[] | undefined;
+    const user = await this.usersRepository.findById(userId);
 
-    if (userId) user = await this.usersRepository.findById(userId);
+    if (!user) throw new AppError('No user found with this credentials');
 
-    if (priceId) prices = await this.pricesRepository.findByIds(priceId);
+    const prices = await this.pricesRepository.findByIds(priceId);
 
     const bag = await this.bagsRepository.findById(bagId);
 
     if (!bag) throw new AppError('No bag was found with the informed id');
 
-    if (user) bag.user = user;
-    if (prices) bag.prices = prices;
+    bag.user = user;
+    bag.prices = prices;
 
     await this.bagsRepository.save(bag);
+
+    const cartIdString = bag.id.toString();
+
+    try {
+      await this.mailMarketingProvider.addCart({
+        id: cartIdString,
+        customer: {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email_address: user.email,
+          opt_in_status: true,
+        },
+        lines: prices.map(price => ({
+          id: price.exam.id,
+          title: price.exam.title,
+          price: price.price,
+          product_id: price.exam.id,
+          product_variant_id: price.exam.id,
+          quantity: 1,
+        })),
+        checkout_url: `https://heali.me/carrinho?id=${bag.id}`,
+        currency_code: 'BRL',
+        order_total: prices
+          .map(price => price.price)
+          .reduce((a, b) => a + b, 0),
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     return bag;
   }

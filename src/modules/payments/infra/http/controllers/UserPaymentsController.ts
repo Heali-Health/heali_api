@@ -6,6 +6,7 @@ import AppError from '@shared/errors/AppError';
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
 import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
+import CreateOrderService from '@modules/payments/services/CreateOrderService';
 // import CreateUserPaymentService from '@modules/payments/services/CreateUserPaymentService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
@@ -37,8 +38,15 @@ export default class UserPaymentsController {
       const updateMainUserCard = container.resolve(UpdateMainUserCardService);
 
       await updateMainUserCard.execute(userId, userCard.foreign_id);
+      
+      const createOrder = container.resolve(CreateOrderService);
 
-      return res.json({ userCard });
+      const order = createOrder.execute({
+        userId,
+        payment,
+      });
+
+      return res.json({ order, userCard });
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

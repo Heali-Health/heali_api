@@ -11,6 +11,7 @@ import OriginalExam from '@modules/exams/infra/typeorm/entities/OriginalExam';
 import Exam from '@modules/exams/infra/typeorm/entities/Exam';
 import Price from '@modules/exams/infra/typeorm/entities/Price';
 import { ObjectID } from 'typeorm';
+import FakeMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/fakes/FakeMailMarketingProvider';
 import FakeBagsRepository from '../repositories/fakes/FakeBagsRepository';
 import UpdateBagService from './UpdateBagService';
 import Bag from '../infra/typeorm/schemas/Bag';
@@ -22,6 +23,7 @@ let fakePricesRepository: FakePricesRepository;
 let fakeOriginalExamsRepository: FakeOriginalExamsRepository;
 let fakeExamsRepository: FakeExamsRepository;
 let fakeBagsRepository: FakeBagsRepository;
+let fakeMailMarketingProvider: FakeMailMarketingProvider;
 let updateBag: UpdateBagService;
 
 let user: User;
@@ -41,10 +43,12 @@ describe('updateBag', () => {
     fakeOriginalExamsRepository = new FakeOriginalExamsRepository();
     fakeExamsRepository = new FakeExamsRepository();
     fakeBagsRepository = new FakeBagsRepository();
+    fakeMailMarketingProvider = new FakeMailMarketingProvider();
     updateBag = new UpdateBagService(
       fakeBagsRepository,
       fakeUsersRepository,
       fakePricesRepository,
+      fakeMailMarketingProvider,
     );
 
     user = await fakeUsersRepository.create({
@@ -99,6 +103,9 @@ describe('updateBag', () => {
       original_exam_id: originalExam.id,
     });
 
+    price.exam = exam;
+    price.lab = lab;
+
     bag = await fakeBagsRepository.create({
       user: {
         id: 'user-id',
@@ -139,7 +146,7 @@ describe('updateBag', () => {
     const updatedBag = await updateBag.execute({
       bagId: bag.id,
       userId: user.id,
-      priceId: undefined,
+      priceId: price.id,
     });
 
     expect(updatedBag.user).toEqual(user);
@@ -148,7 +155,7 @@ describe('updateBag', () => {
   it('should be able to update an existent bag prices', async () => {
     const updatedBag = await updateBag.execute({
       bagId: bag.id,
-      userId: undefined,
+      userId: user.id,
       priceId: price.id,
     });
 

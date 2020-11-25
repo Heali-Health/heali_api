@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import Price from '@modules/exams/infra/typeorm/entities/Price';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 import IBagsRepository from '../repositories/IBagsRepository';
 import Bag from '../infra/typeorm/schemas/Bag';
 

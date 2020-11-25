@@ -47,7 +47,7 @@ describe('ListUserCards', () => {
     });
   });
 
-  it('should create a new user card given informed user id and card', async () => {
+  it('should list all user cards given informed user id', async () => {
     const userCards = await listUserCards.execute(user.id);
 
     expect(userCards[0]).toEqual(userCard);

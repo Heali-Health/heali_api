@@ -13,7 +13,7 @@ export default class PostbackPaymentsController {
     try {
       const postbackPayment = req.body as ICreatePaymentPostbackDTO;
 
-      const apiKey = 'ak_test_hb9VtvBUDspU35cOKytOH1v3gtfJkt';
+      const apiKey = process.env.PAGARME_API_KEY;
       const verifyBody = stringify(req.body);
       const headerSignature = req.headers['x-hub-signature'];
       const signature =

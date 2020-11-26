@@ -36,6 +36,8 @@ import IUserCardsRepository from '@modules/payments/repositories/IUserCardsRepos
 import UserCardsRepository from '@modules/payments/infra/typeorm/repositories/UserCardsRepository';
 import IPaymentsRepository from '@modules/payments/repositories/IPaymentsRepository';
 import PaymentsRepository from '@modules/payments/infra/typeorm/repositories/PaymentsRepository';
+import IPostbacksPaymentsRepository from '@modules/payments/repositories/IPostbacksPaymentsRepository';
+import PostbacksPaymentsRepository from '@modules/payments/infra/typeorm/repositories/PostbacksPaymentsRepository';
 
 container.registerSingleton<IPatientsRepository>(
   'PatientsRepository',
@@ -89,4 +91,9 @@ container.registerSingleton<IUserCardsRepository>(
 container.registerSingleton<IPaymentsRepository>(
   'PaymentsRepository',
   PaymentsRepository,
+);
+
+container.registerSingleton<IPostbacksPaymentsRepository>(
+  'PostbacksPaymentsRepository',
+  PostbacksPaymentsRepository,
 );

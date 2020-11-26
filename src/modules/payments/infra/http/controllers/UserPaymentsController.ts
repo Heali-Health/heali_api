@@ -6,8 +6,8 @@ import AppError from '@shared/errors/AppError';
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
 import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
+import LogPaymentTrialService from '@modules/payments/services/LogPaymentTrialService';
 import CreateOrderService from '@modules/payments/services/CreateOrderService';
-// import CreateUserPaymentService from '@modules/payments/services/CreateUserPaymentService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
 export default class UserPaymentsController {
@@ -22,17 +22,18 @@ export default class UserPaymentsController {
         throw new AppError('User must be logged in to perform this action');
       }
 
-      // const createUserPayment = container.resolve(CreateUserPaymentService);
       const createUserCard = container.resolve(CreateUserCardService);
-
-      // const userPayment = await createUserPayment.execute({
-      //   userId,
-      //   payment,
-      // });
 
       const userCard = await createUserCard.execute({
         userId,
         card,
+      });
+
+      const logPaymentTrial = container.resolve(LogPaymentTrialService);
+
+      const paymentTrialLog = await logPaymentTrial.execute({
+        payment,
+        userId,
       });
 
       const updateMainUserCard = container.resolve(UpdateMainUserCardService);
@@ -41,12 +42,7 @@ export default class UserPaymentsController {
       
       const createOrder = container.resolve(CreateOrderService);
 
-      const order = createOrder.execute({
-        userId,
-        payment,
-      });
-
-      return res.json({ order, userCard });
+      return res.json(paymentTrialLog);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

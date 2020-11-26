@@ -1,4 +1,3 @@
-import User from '@modules/users/infra/typeorm/entities/User';
 import ICreateUserCardDTO from '../dtos/ICreateUserCardDTO';
 import UserCard from '../infra/typeorm/schemas/UserCard';
 

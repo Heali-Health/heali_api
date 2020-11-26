@@ -34,6 +34,8 @@ import IBagsRepository from '@modules/bags/repositories/IBagsRepository';
 import BagsRepository from '@modules/bags/infra/typeorm/repositories/BagsRepository';
 import IUserCardsRepository from '@modules/payments/repositories/IUserCardsRepository';
 import UserCardsRepository from '@modules/payments/infra/typeorm/repositories/UserCardsRepository';
+import IPaymentsRepository from '@modules/payments/repositories/IPaymentsRepository';
+import PaymentsRepository from '@modules/payments/infra/typeorm/repositories/PaymentsRepository';
 
 container.registerSingleton<IPatientsRepository>(
   'PatientsRepository',
@@ -82,4 +84,9 @@ container.registerSingleton<IBagsRepository>('BagsRepository', BagsRepository);
 container.registerSingleton<IUserCardsRepository>(
   'UserCardsRepository',
   UserCardsRepository,
+);
+
+container.registerSingleton<IPaymentsRepository>(
+  'PaymentsRepository',
+  PaymentsRepository,
 );

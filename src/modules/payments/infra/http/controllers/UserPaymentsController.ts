@@ -6,7 +6,7 @@ import AppError from '@shared/errors/AppError';
 // import { ObjectID } from 'mongodb';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
 import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
-// import CreateUserPaymentService from '@modules/payments/services/CreateUserPaymentService';
+import LogPaymentTrialService from '@modules/payments/services/LogPaymentTrialService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
 export default class UserPaymentsController {
@@ -21,24 +21,25 @@ export default class UserPaymentsController {
         throw new AppError('User must be logged in to perform this action');
       }
 
-      // const createUserPayment = container.resolve(CreateUserPaymentService);
       const createUserCard = container.resolve(CreateUserCardService);
-
-      // const userPayment = await createUserPayment.execute({
-      //   userId,
-      //   payment,
-      // });
 
       const userCard = await createUserCard.execute({
         userId,
         card,
       });
 
+      const logPaymentTrial = container.resolve(LogPaymentTrialService);
+
+      const paymentTrialLog = await logPaymentTrial.execute({
+        payment,
+        userId,
+      });
+
       const updateMainUserCard = container.resolve(UpdateMainUserCardService);
 
       await updateMainUserCard.execute(userId, userCard.foreign_id);
 
-      return res.json({ userCard });
+      return res.json({ paymentTrialLog });
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

@@ -39,8 +39,13 @@ export default class UserPaymentsController {
       const updateMainUserCard = container.resolve(UpdateMainUserCardService);
 
       await updateMainUserCard.execute(userId, userCard.foreign_id);
-      
+
       const createOrder = container.resolve(CreateOrderService);
+
+      await createOrder.execute({
+        payment,
+        userId,
+      });
 
       return res.json(paymentTrialLog);
     } catch (err) {

@@ -7,6 +7,7 @@ import AppError from '@shared/errors/AppError';
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
 import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
 import LogPaymentTrialService from '@modules/payments/services/LogPaymentTrialService';
+import CreateOrderService from '@modules/payments/services/CreateOrderService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
 export default class UserPaymentsController {
@@ -38,8 +39,10 @@ export default class UserPaymentsController {
       const updateMainUserCard = container.resolve(UpdateMainUserCardService);
 
       await updateMainUserCard.execute(userId, userCard.foreign_id);
+      
+      const createOrder = container.resolve(CreateOrderService);
 
-      return res.json({ paymentTrialLog });
+      return res.json(paymentTrialLog);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

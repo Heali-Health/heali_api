@@ -10,6 +10,7 @@ import ICreateExamDTO from '@modules/exams/dtos/ICreateExamDTO';
 import Exam from '@modules/exams/infra/typeorm/entities/Exam';
 
 import ISlugTransformationProvider from '@shared/container/providers/SlugTransformationProvider/models/ISlugTransformationProvider';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 
 @injectable()
 export default class CreateExamService {
@@ -25,6 +26,9 @@ export default class CreateExamService {
 
     @inject('SlugTransformationProvider')
     private slugTransformation: ISlugTransformationProvider,
+
+    @inject('MailMarketingProvider')
+    private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
   public async execute({
@@ -73,6 +77,17 @@ export default class CreateExamService {
 
       await this.pricesRepository.saveMany(updatedPrices);
     }
+
+    await this.mailMarketingProvider.addProduct({
+      id: exam.id,
+      title: exam.title,
+      variants: [
+        {
+          id: exam.id,
+          title: exam.title,
+        },
+      ],
+    });
 
     return exam;
   }

@@ -13,6 +13,7 @@
    },
    "dependencies": {
       "@googlemaps/google-maps-services-js": "^3.0.0",
+      "@mailchimp/mailchimp_marketing": "^3.0.23",
       "@sentry/node": "^5.20.1",
       "algoliasearch": "^4.5.1",
       "aws-sdk": "^2.678.0",

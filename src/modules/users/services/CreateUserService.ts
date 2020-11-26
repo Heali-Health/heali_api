@@ -6,6 +6,7 @@ import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
+import IMailMarketingProvider from '@shared/container/providers/MailMarketingProvider/models/IMailMarketingProvider';
 
 interface IRequest {
   first_name: string;
@@ -23,6 +24,9 @@ export default class CreateUserService {
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
+
+    @inject('MailMarketingProvider')
+    private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
   public async execute({
@@ -47,6 +51,14 @@ export default class CreateUserService {
       password: hashedPassword,
       phone_whatsapp,
       defined_password: true,
+    });
+
+    await this.mailMarketingProvider.addCustomer({
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email_address: user.email,
+      opt_in_status: true,
     });
 
     return user;

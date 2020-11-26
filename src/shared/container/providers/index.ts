@@ -1,6 +1,7 @@
 import '@shared/container/providers/CacheProvider';
 import '@shared/container/providers/DistanceProvider';
 import '@shared/container/providers/LabInfoProvider';
+import '@shared/container/providers/MailMarketingProvider';
 import '@shared/container/providers/MailTemplateProvider';
 import '@shared/container/providers/MailProvider';
 import '@shared/container/providers/SearchProvider';

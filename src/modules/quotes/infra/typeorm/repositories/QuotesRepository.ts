@@ -20,13 +20,25 @@ class QuotesRepository implements IQuotesRepository {
     hours,
   }: ICreateQuoteDTO): Promise<Quote> {
     const quote = this.ormRepository.create({
+      status: 'awaiting-payment',
       user,
       patient,
       price,
       dates,
       hours,
+      paymentTrialIds: [],
     });
 
+    await this.ormRepository.save(quote);
+
+    return quote;
+  }
+
+  public async findById(id: string): Promise<Quote | undefined> {
+    return this.ormRepository.findOne({ where: { id } });
+  }
+
+  public async save(quote: Quote): Promise<Quote> {
     await this.ormRepository.save(quote);
 
     return quote;

@@ -2,11 +2,15 @@ import User from '@modules/users/infra/typeorm/entities/User';
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
 import { IPagarmeLog } from '../dtos/ICreatePaymentLogDTO';
 import ICreatePaymentPostbackDTO from '../dtos/ICreatePaymentPostbackDTO';
+import FakePaymentsRepository from '../repositories/fakes/FakePaymentsRepository';
 import FakePostbacksPaymentsRepository from '../repositories/fakes/FakePostbacksPaymentsRepository';
+import FakeUserCardsRepository from '../repositories/fakes/FakeUserCardsRepository';
 import LogPostbackPaymentService from './LogPostbackPaymentService';
 
 let fakeUsersRepository: FakeUsersRepository;
+let fakeUserCardsRepository: FakeUserCardsRepository;
 let fakePostbacksPaymentsRepository: FakePostbacksPaymentsRepository;
+let fakePaymentsRepository: FakePaymentsRepository;
 let logPostbackPayment: LogPostbackPaymentService;
 
 let user: User;
@@ -15,11 +19,15 @@ let postbackPayment: ICreatePaymentPostbackDTO;
 
 describe('PostbackPayment', () => {
   beforeEach(async () => {
+    fakePaymentsRepository = new FakePaymentsRepository();
     fakePostbacksPaymentsRepository = new FakePostbacksPaymentsRepository();
     fakeUsersRepository = new FakeUsersRepository();
+    fakeUserCardsRepository = new FakeUserCardsRepository();
     logPostbackPayment = new LogPostbackPaymentService(
       fakePostbacksPaymentsRepository,
       fakeUsersRepository,
+      fakePaymentsRepository,
+      fakeUserCardsRepository,
     );
 
     user = await fakeUsersRepository.create({
@@ -148,8 +156,10 @@ describe('PostbackPayment', () => {
       antifraud_metadata: {},
     };
 
+    await fakePaymentsRepository.create(payment, user, '123', '123');
+
     postbackPayment = {
-      id: '10599403',
+      id: '1830855',
       fingerprint: 'e5b418bc68bc9169d3270a3a2acb65859ef3711d',
       event: 'transaction_status_changed',
       old_status: 'waiting_payment',
@@ -161,11 +171,11 @@ describe('PostbackPayment', () => {
   });
 
   it('should log an payment response along with its user', async () => {
-    const postbackPaymentLog = await logPostbackPayment.execute({
+    const response = await logPostbackPayment.execute({
       postbackPayment,
       userId: user.id,
     });
 
-    expect(postbackPaymentLog.id).toEqual(postbackPayment.id);
+    expect(response.postbackPaymentLog.id).toEqual(postbackPayment.id);
   });
 });

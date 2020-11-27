@@ -24,6 +24,12 @@ class Payment {
   user: User;
 
   @Column()
+  bagId: string;
+
+  @Column()
+  quoteId: string;
+
+  @Column()
   object: string;
 
   @Column()

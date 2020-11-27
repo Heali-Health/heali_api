@@ -15,7 +15,11 @@ export default class CreateOrderService {
     private mailMarketingProvider: IMailMarketingProvider,
   ) {}
 
-  public async execute({ userId, payment }: ICreateOrderDTO): Promise<void> {
+  public async execute({
+    bagId,
+    userId,
+    payment,
+  }: ICreateOrderDTO): Promise<void> {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {
@@ -23,7 +27,7 @@ export default class CreateOrderService {
     }
 
     await this.mailMarketingProvider.addOrder({
-      id: payment.id,
+      id: payment.id.toString(),
       currency_code: 'BRL',
       customer: {
         id: user.id,
@@ -43,5 +47,7 @@ export default class CreateOrderService {
       })),
       order_total: payment.amount,
     });
+
+    await this.mailMarketingProvider.deleteCart(bagId);
   }
 }

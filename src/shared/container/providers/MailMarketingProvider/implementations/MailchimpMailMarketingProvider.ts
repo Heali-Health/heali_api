@@ -99,6 +99,10 @@ export default class MailchimpMailMarketingProvider
     return carts;
   }
 
+  public async deleteCart(cartId: string): Promise<void> {
+    await this.mailchimpEcommerceClient.delete(`/carts/${cartId}`);
+  }
+
   public async addOrder(
     data: IAddOrderTOProvider,
   ): Promise<IMailMarketingOrder> {

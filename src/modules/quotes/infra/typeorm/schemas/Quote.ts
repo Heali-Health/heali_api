@@ -16,6 +16,9 @@ class Quote {
   id: ObjectID;
 
   @Column()
+  status: string;
+
+  @Column()
   user: User;
 
   @Column()
@@ -32,6 +35,9 @@ class Quote {
 
   @Column()
   hours: string[];
+
+  @Column()
+  paymentTrialIds: number[];
 
   @CreateDateColumn()
   created_at: Date;

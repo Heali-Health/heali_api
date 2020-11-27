@@ -4,48 +4,74 @@ import { container } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 
 // import { ObjectID } from 'mongodb';
-import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
-import UpdateMainUserCardService from '@modules/payments/services/UpdateMainUserCardService';
+import ManagePaymentStatusService from '@modules/payments/services/ManagePaymentStatusService';
 import LogPaymentTrialService from '@modules/payments/services/LogPaymentTrialService';
+import UpdateQuoteService from '@modules/quotes/services/UpdateQuoteStatusService';
+import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
+import UpdateMainUserCardsService from '@modules/payments/services/UpdateMainUserCardService';
 import CreateOrderService from '@modules/payments/services/CreateOrderService';
+import LogPostbackPaymentService from '@modules/payments/services/LogPostbackPaymentService';
 // import ListUserPaymentsService from '@modules/payments/services/ListUserPaymentsService';
 
 export default class UserPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
       const { id: userId } = req.user;
-      const payment = req.body;
-
-      const { card } = payment;
+      const { payment, bagId, quoteId } = req.body;
 
       if (!userId) {
         throw new AppError('User must be logged in to perform this action');
       }
 
-      const createUserCard = container.resolve(CreateUserCardService);
+      // const managePaymentStatus = container.resolve(ManagePaymentStatusService);
 
-      const userCard = await createUserCard.execute({
-        userId,
-        card,
-      });
+      // const paymentTrialLog = managePaymentStatus.execute({
+      //   data: {
+      //     type: 'payment',
+      //     bagId,
+      //     quoteId,
+      //     userId,
+      //     payment,
+      //   },
+      // });
 
       const logPaymentTrial = container.resolve(LogPaymentTrialService);
+      const updateQuote = container.resolve(UpdateQuoteService);
+      const createUserCard = container.resolve(CreateUserCardService);
+      const updateMainUserCard = container.resolve(UpdateMainUserCardsService);
+      const createOrder = container.resolve(CreateOrderService);
+
+      const { status } = payment;
+      const { card } = payment;
+      const cardId = card.id;
 
       const paymentTrialLog = await logPaymentTrial.execute({
         payment,
         userId,
+        bagId,
+        quoteId,
       });
 
-      const updateMainUserCard = container.resolve(UpdateMainUserCardService);
-
-      await updateMainUserCard.execute(userId, userCard.foreign_id);
-
-      const createOrder = container.resolve(CreateOrderService);
-
-      await createOrder.execute({
-        payment,
-        userId,
+      await updateQuote.execute({
+        newStatus: payment.status,
+        quoteId,
+        paymentTrialId: payment.id,
       });
+
+      if (status === 'paid') {
+        await createUserCard.execute({
+          card,
+          userId,
+        });
+
+        await updateMainUserCard.execute(userId, cardId);
+
+        await createOrder.execute({
+          bagId,
+          userId,
+          payment,
+        });
+      }
 
       return res.json(paymentTrialLog);
     } catch (err) {

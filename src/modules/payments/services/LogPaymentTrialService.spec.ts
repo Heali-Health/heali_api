@@ -151,6 +151,8 @@ describe('LogPaymentTrial', () => {
     const paymentTrialLog = await logPaymentTrial.execute({
       payment,
       userId: user.id,
+      bagId: '123',
+      quoteId: '123',
     });
 
     expect(paymentTrialLog.user).toEqual(user);

@@ -5,8 +5,11 @@ import pagarme from 'pagarme';
 
 import AppError from '@shared/errors/AppError';
 import ICreatePaymentPostbackDTO from '@modules/payments/dtos/ICreatePaymentPostbackDTO';
-import LogPaymentTrialService from '@modules/payments/services/LogPaymentTrialService';
 import LogPostbackPaymentService from '@modules/payments/services/LogPostbackPaymentService';
+import UpdateQuoteService from '@modules/quotes/services/UpdateQuoteStatusService';
+import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
+import UpdateMainUserCardsService from '@modules/payments/services/UpdateMainUserCardService';
+import CreateOrderService from '@modules/payments/services/CreateOrderService';
 
 export default class PostbackPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -32,19 +35,42 @@ export default class PostbackPaymentsController {
       const { transaction: payment } = postbackPayment;
       const userId = payment.customer.external_id;
 
-      const logPaymentTrial = container.resolve(LogPaymentTrialService);
-
-      await logPaymentTrial.execute({
-        payment,
-        userId,
-      });
-
+      const updateQuote = container.resolve(UpdateQuoteService);
+      const createUserCard = container.resolve(CreateUserCardService);
+      const updateMainUserCard = container.resolve(UpdateMainUserCardsService);
+      const createOrder = container.resolve(CreateOrderService);
       const logPostbackPayment = container.resolve(LogPostbackPaymentService);
 
-      await logPostbackPayment.execute({
+      const { status, card } = payment;
+      const cardId = card.id;
+
+      const { bagId, quoteId, cardExists } = await logPostbackPayment.execute({
         postbackPayment,
         userId,
       });
+
+      await updateQuote.execute({
+        newStatus: payment.status,
+        quoteId,
+        paymentTrialId: payment.id,
+      });
+
+      if (status === 'paid') {
+        if (!cardExists) {
+          await createUserCard.execute({
+            card,
+            userId,
+          });
+        }
+
+        await updateMainUserCard.execute(userId, cardId);
+
+        await createOrder.execute({
+          bagId,
+          userId,
+          payment,
+        });
+      }
 
       return res.json({ success: true });
     } catch (err) {

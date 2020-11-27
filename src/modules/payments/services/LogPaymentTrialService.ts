@@ -17,8 +17,10 @@ export default class LogPaymentTrialService {
   ) {}
 
   public async execute({
-    payment,
+    bagId,
     userId,
+    quoteId,
+    payment,
   }: ICreatePaymentLogDTO): Promise<Payment> {
     const user = await this.usersRepository.findById(userId);
 
@@ -26,7 +28,12 @@ export default class LogPaymentTrialService {
       throw new AppError('No user found with this userId');
     }
 
-    const paymentTrialLog = await this.paymentsRepository.create(payment, user);
+    const paymentTrialLog = await this.paymentsRepository.create(
+      payment,
+      user,
+      bagId,
+      quoteId,
+    );
 
     return paymentTrialLog;
   }

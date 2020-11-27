@@ -10,6 +10,7 @@ import IMailMarketingProduct from '../dtos/IMailMarketingProduct';
 export default interface IMailMarketingProvider {
   listCarts(): Promise<IMailMarketingCart[]>;
   addCart(data: IAddCartToProvider): Promise<IMailMarketingCart>;
+  deleteCart(cartId: string): Promise<void>;
   listProducts(): Promise<IMailMarketingProduct[]>;
   addProduct(data: IAddProductToProvider): Promise<IMailMarketingProduct>;
   getProductInfo(productId: string): Promise<IMailMarketingProduct | undefined>;

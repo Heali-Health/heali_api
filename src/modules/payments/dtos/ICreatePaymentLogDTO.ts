@@ -118,6 +118,8 @@ export interface IPagarmeLog {
 }
 
 export default interface ICreatePaymentLogDTO {
-  payment: IPagarmeLog;
+  bagId: string;
   userId: string;
+  quoteId: string;
+  payment: IPagarmeLog;
 }

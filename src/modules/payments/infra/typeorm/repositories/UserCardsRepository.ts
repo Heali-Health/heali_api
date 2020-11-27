@@ -10,7 +10,12 @@ class UserCardsRepository implements IUserCardsRepository {
     this.ormRepository = getMongoRepository(UserCard, 'mongo');
   }
 
-  public async create({ userId, card }: ICreateUserCardDTO): Promise<UserCard> {
+  public async create({
+    userId,
+    card,
+    paying_customer,
+    billing_address,
+  }: ICreateUserCardDTO): Promise<UserCard> {
     const bag = this.ormRepository.create({
       user_id: userId,
       object: card.object,
@@ -25,6 +30,8 @@ class UserCardsRepository implements IUserCardsRepository {
       valid: card.valid,
       foreign_date_created: card.date_created,
       foreign_date_updated: card.date_updated,
+      paying_customer,
+      billing_address,
     });
 
     await this.ormRepository.save(bag);

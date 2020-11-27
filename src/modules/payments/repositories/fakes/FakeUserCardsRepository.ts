@@ -6,7 +6,12 @@ import IUserCardsRepository from '../IUserCardsRepository';
 class FakeUserCardsRepository implements IUserCardsRepository {
   private userCards: UserCard[] = [];
 
-  public async create({ userId, card }: ICreateUserCardDTO): Promise<UserCard> {
+  public async create({
+    userId,
+    card,
+    paying_customer,
+    billing_address,
+  }: ICreateUserCardDTO): Promise<UserCard> {
     const userCard = new UserCard();
 
     Object.assign(userCard, {
@@ -25,6 +30,8 @@ class FakeUserCardsRepository implements IUserCardsRepository {
       foreign_date_created: card.date_created,
       foreign_date_updated: card.date_updated,
       isMain: false,
+      paying_customer,
+      billing_address,
     });
 
     this.userCards.push(userCard);

@@ -1,3 +1,5 @@
+import { IPagarmeBilling, IPagarmeCustomer } from './ICreatePaymentLogDTO';
+
 export interface ICard {
   object: string;
   id: string;
@@ -16,4 +18,6 @@ export interface ICard {
 export default interface ICreateUserCardDTO {
   userId: string;
   card: ICard;
+  paying_customer: IPagarmeCustomer;
+  billing_address: IPagarmeBilling;
 }

@@ -4,6 +4,7 @@ import IQuotesRepository from '@modules/quotes/repositories/IQuotesRepository';
 import ICreateQuoteDTO from '@modules/quotes/dtos/ICreateQuoteDTO';
 
 import Quote from '@modules/quotes/infra/typeorm/schemas/Quote';
+import { ObjectId } from 'mongodb';
 
 class QuotesRepository implements IQuotesRepository {
   private ormRepository: MongoRepository<Quote>;
@@ -35,7 +36,7 @@ class QuotesRepository implements IQuotesRepository {
   }
 
   public async findById(id: string): Promise<Quote | undefined> {
-    return this.ormRepository.findOne({ where: { id } });
+    return this.ormRepository.findOne(id);
   }
 
   public async save(quote: Quote): Promise<Quote> {

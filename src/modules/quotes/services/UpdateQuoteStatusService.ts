@@ -28,6 +28,11 @@ export default class UpdateQuoteService {
     if (!quote) throw new AppError('No quote found with this id');
 
     quote.status = newStatus;
+
+    if (!quote.paymentTrialIds) {
+      quote.paymentTrialIds = [];
+    }
+
     quote.paymentTrialIds.push(paymentTrialId);
 
     await this.quotesRepository.save(quote);

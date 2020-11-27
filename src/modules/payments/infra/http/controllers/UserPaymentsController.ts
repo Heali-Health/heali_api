@@ -41,8 +41,7 @@ export default class UserPaymentsController {
       const updateMainUserCard = container.resolve(UpdateMainUserCardsService);
       const createOrder = container.resolve(CreateOrderService);
 
-      const { status } = payment;
-      const { card } = payment;
+      const { status, card, customer, billing } = payment;
       const cardId = card.id;
 
       const paymentTrialLog = await logPaymentTrial.execute({
@@ -62,6 +61,8 @@ export default class UserPaymentsController {
         await createUserCard.execute({
           card,
           userId,
+          paying_customer: customer,
+          billing_address: billing,
         });
 
         await updateMainUserCard.execute(userId, cardId);

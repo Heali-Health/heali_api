@@ -41,7 +41,7 @@ export default class PostbackPaymentsController {
       const createOrder = container.resolve(CreateOrderService);
       const logPostbackPayment = container.resolve(LogPostbackPaymentService);
 
-      const { status, card } = payment;
+      const { status, card, customer, billing } = payment;
       const cardId = card.id;
 
       const { bagId, quoteId, cardExists } = await logPostbackPayment.execute({
@@ -60,6 +60,8 @@ export default class PostbackPaymentsController {
           await createUserCard.execute({
             card,
             userId,
+            paying_customer: customer,
+            billing_address: billing,
           });
         }
 

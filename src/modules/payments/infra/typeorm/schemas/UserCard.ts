@@ -1,4 +1,8 @@
 import {
+  IPagarmeBilling,
+  IPagarmeCustomer,
+} from '@modules/payments/dtos/ICreatePaymentLogDTO';
+import {
   Entity,
   Column,
   CreateDateColumn,
@@ -50,6 +54,12 @@ class UserCard {
 
   @Column()
   valid: boolean;
+
+  @Column()
+  billing_address: IPagarmeBilling;
+
+  @Column()
+  paying_customer: IPagarmeCustomer;
 
   @Column()
   expiration_date: string;

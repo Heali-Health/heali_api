@@ -13,6 +13,8 @@ export default class CreateUserCardService {
   public async execute({
     userId,
     card,
+    paying_customer,
+    billing_address,
   }: ICreateUserCardDTO): Promise<UserCard> {
     const checkIfUserCardExists = await this.userCardsRepository.findUserCardByForeignId(
       card.id,
@@ -25,6 +27,8 @@ export default class CreateUserCardService {
     const userCard = await this.userCardsRepository.create({
       userId,
       card,
+      paying_customer,
+      billing_address,
     });
 
     return userCard;

@@ -15,9 +15,15 @@ export default class CreateUserCardService {
     card,
     paying_customer,
     billing_address,
+    payment_method,
+    boleto_barcode,
+    boleto_expiration_date,
+    boleto_url,
   }: ICreateUserCardDTO): Promise<UserCard> {
+    const id = card ? card.id : `${payment_method}${userId}`;
+
     const checkIfUserCardExists = await this.userCardsRepository.findUserCardByForeignId(
-      card.id,
+      id,
     );
 
     if (checkIfUserCardExists) {
@@ -29,6 +35,10 @@ export default class CreateUserCardService {
       card,
       paying_customer,
       billing_address,
+      payment_method,
+      boleto_barcode,
+      boleto_expiration_date,
+      boleto_url,
     });
 
     return userCard;

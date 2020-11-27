@@ -90,6 +90,10 @@ describe('CreateUserCard', () => {
       card,
       paying_customer: customer,
       billing_address: billing,
+      payment_method: 'credit-card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
     });
 
     expect(userCard).toHaveProperty('id');
@@ -101,6 +105,10 @@ describe('CreateUserCard', () => {
       card,
       paying_customer: customer,
       billing_address: billing,
+      payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
     });
 
     const userCard2 = await createUserCard.execute({
@@ -108,6 +116,51 @@ describe('CreateUserCard', () => {
       card,
       paying_customer: customer,
       billing_address: billing,
+      payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
+    });
+
+    expect(userCard2.id).toEqual(userCard1.id);
+  });
+
+  it('should create a new user card given informed user id and boleto details', async () => {
+    const userCard = await createUserCard.execute({
+      userId: user.id,
+      card: null,
+      paying_customer: customer,
+      billing_address: billing,
+      payment_method: 'boleto',
+      boleto_barcode: 'boleto-barcode',
+      boleto_expiration_date: 'tomorrow-omg',
+      boleto_url: 'http://boleto.pay.me',
+    });
+
+    expect(userCard).toHaveProperty('id');
+  });
+
+  it('should not create a new user card if a card with the same foreign id is informed', async () => {
+    const userCard1 = await createUserCard.execute({
+      userId: user.id,
+      card: null,
+      paying_customer: customer,
+      billing_address: billing,
+      payment_method: 'boleto',
+      boleto_barcode: 'boleto-barcode',
+      boleto_expiration_date: 'tomorrow-omg',
+      boleto_url: 'http://boleto.pay.me',
+    });
+
+    const userCard2 = await createUserCard.execute({
+      userId: user.id,
+      card: null,
+      paying_customer: customer,
+      billing_address: billing,
+      payment_method: 'boleto',
+      boleto_barcode: 'boleto-barcode',
+      boleto_expiration_date: 'tomorrow-omg',
+      boleto_url: 'http://boleto.pay.me',
     });
 
     expect(userCard2.id).toEqual(userCard1.id);

@@ -17,7 +17,11 @@ export interface ICard {
 
 export default interface ICreateUserCardDTO {
   userId: string;
-  card: ICard;
+  card: ICard | null;
   paying_customer: IPagarmeCustomer;
   billing_address: IPagarmeBilling;
+  payment_method: string;
+  boleto_barcode: string | null;
+  boleto_expiration_date: string | null;
+  boleto_url: string | null;
 }

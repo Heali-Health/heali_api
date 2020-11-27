@@ -10,6 +10,5 @@ const postbackPaymentsController = new PostbackPaymentsController();
 
 paymentsRouter.post('/', ensureAuthenticated, userPaymentsController.create);
 paymentsRouter.post('/postback', postbackPaymentsController.create);
-paymentsRouter.get('/', ensureAuthenticated, userPaymentsController.index);
 
 export default paymentsRouter;

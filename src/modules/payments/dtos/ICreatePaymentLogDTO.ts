@@ -1,4 +1,3 @@
-import IBilling from '../types/IBilling';
 import { ICard } from './ICreateUserCardDTO';
 
 export interface IPagarmeAddress {
@@ -98,9 +97,9 @@ export interface IPagarmeLog {
   payment_method: string;
   capture_method: string;
   antifraud_score?: string;
-  boleto_url?: string;
-  boleto_barcode?: string;
-  boleto_expiration_date?: string;
+  boleto_url: string | null;
+  boleto_barcode: string | null;
+  boleto_expiration_date: string | null;
   referer: string;
   ip: string;
   subscription_id?: string;
@@ -110,7 +109,7 @@ export interface IPagarmeLog {
   billing: IPagarmeBilling;
   shipping: IPagarmeShipping;
   items: IPagarmeItem[];
-  card: ICard;
+  card: ICard | null;
   split_rules?: string;
   metadata: {};
   antifraud_metadata: {};

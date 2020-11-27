@@ -1,5 +1,9 @@
 import User from '@modules/users/infra/typeorm/entities/User';
 import FakeUsersRepository from '@modules/users/repositories/fakes/FakeUsersRepository';
+import {
+  IPagarmeBilling,
+  IPagarmeCustomer,
+} from '../dtos/ICreatePaymentLogDTO';
 import { ICard } from '../dtos/ICreateUserCardDTO';
 import UserCard from '../infra/typeorm/schemas/UserCard';
 import FakeUserCardsRepository from '../repositories/fakes/FakeUserCardsRepository';
@@ -14,6 +18,8 @@ let card1: ICard;
 let card2: ICard;
 let userCard1: UserCard;
 let userCard2: UserCard;
+let customer: IPagarmeCustomer;
+let billing: IPagarmeBilling;
 
 describe('UpdateMainUserCard', () => {
   beforeEach(async () => {
@@ -58,14 +64,64 @@ describe('UpdateMainUserCard', () => {
       date_updated: new Date(),
     };
 
+    customer = {
+      object: 'customer',
+      id: 4219329,
+      external_id: 'aade5262-297e-4f35-a84f-a426aa159cd4',
+      type: 'individual',
+      country: 'br',
+      document_type: 'cpf',
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      phone_numbers: ['+5551996542954'],
+      date_created: '2020-11-25T17:41:11.933Z',
+      documents: [
+        {
+          object: 'document',
+          id: 'doc_ckhxp2hl317170i9t6urv8n1g',
+          type: 'cpf',
+          number: '1234567890',
+        },
+      ],
+    };
+
+    billing = {
+      object: 'billing',
+      id: 123,
+      name: 'John Doe',
+      address: {
+        object: 'address',
+        street: 'Doe',
+        street_number: '123',
+        city: 'Nothingland',
+        state: 'HI',
+        zipcode: '00000',
+        country: 'br',
+        neighborhood: 'Nothingville',
+        id: 123,
+      },
+    };
+
     userCard1 = await fakeUserCardsRepository.create({
       userId: user.id,
       card: card1,
+      billing_address: billing,
+      paying_customer: customer,
+      payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
     });
 
     userCard2 = await fakeUserCardsRepository.create({
       userId: user.id,
       card: card2,
+      billing_address: billing,
+      paying_customer: customer,
+      payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
     });
 
     userCard1.isMain = true;
@@ -103,6 +159,12 @@ describe('UpdateMainUserCard', () => {
         object: 'card',
         valid: true,
       },
+      billing_address: billing,
+      paying_customer: customer,
+      payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
     });
 
     await updateMainUserCard.execute(user.id, newUserCard.foreign_id);

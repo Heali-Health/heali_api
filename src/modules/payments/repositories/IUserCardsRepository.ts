@@ -7,6 +7,10 @@ export default interface IUserCardsRepository {
     card,
     paying_customer,
     billing_address,
+    payment_method,
+    boleto_barcode,
+    boleto_expiration_date,
+    boleto_url,
   }: ICreateUserCardDTO): Promise<UserCard>;
   findAllByUserId(userId: string): Promise<UserCard[]>;
   findUserCardByForeignId(foreignId: string): Promise<UserCard | undefined>;

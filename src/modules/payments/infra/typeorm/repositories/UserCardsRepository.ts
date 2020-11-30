@@ -15,38 +15,46 @@ class UserCardsRepository implements IUserCardsRepository {
     card,
     paying_customer,
     billing_address,
+    payment_method,
+    boleto_barcode,
+    boleto_expiration_date,
+    boleto_url,
   }: ICreateUserCardDTO): Promise<UserCard> {
-    const bag = this.ormRepository.create({
+    const userCard = this.ormRepository.create({
       user_id: userId,
-      object: card.object,
-      foreign_id: card.id,
-      brand: card.brand,
-      first_digits: card.first_digits,
-      last_digits: card.last_digits,
-      holder_name: card.holder_name,
-      expiration_date: card.expiration_date,
-      country: card.country,
-      fingerprint: card.fingerprint,
-      valid: card.valid,
-      foreign_date_created: card.date_created,
-      foreign_date_updated: card.date_updated,
+      object: card && card.object,
+      foreign_id: card ? card.id : `${payment_method}${userId}`,
+      brand: card && card.brand,
+      first_digits: card && card.first_digits,
+      last_digits: card && card.last_digits,
+      holder_name: card && card.holder_name,
+      expiration_date: card && card.expiration_date,
+      country: card && card.country,
+      fingerprint: card && card.fingerprint,
+      valid: card && card.valid,
+      foreign_date_created: card && card.date_created,
+      foreign_date_updated: card && card.date_updated,
       paying_customer,
+      payment_method,
       billing_address,
+      boleto_barcode,
+      boleto_expiration_date,
+      boleto_url,
     });
 
-    await this.ormRepository.save(bag);
+    await this.ormRepository.save(userCard);
 
-    return bag;
+    return userCard;
   }
 
   public async findAllByUserId(userId: string): Promise<UserCard[]> {
-    const bags = await this.ormRepository.find({
+    const userCards = await this.ormRepository.find({
       where: {
         user_id: userId,
       },
     });
 
-    return bags;
+    return userCards;
   }
 
   public async findUserCardByForeignId(

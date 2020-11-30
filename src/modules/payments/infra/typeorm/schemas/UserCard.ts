@@ -20,6 +20,9 @@ class UserCard {
   user_id: string;
 
   @Column()
+  payment_method: string;
+
+  @Column()
   object: string;
 
   @Column()
@@ -63,6 +66,15 @@ class UserCard {
 
   @Column()
   expiration_date: string;
+
+  @Column()
+  boleto_barcode: string | null;
+
+  @Column()
+  boleto_expiration_date: string | null;
+
+  @Column()
+  boleto_url: string | null;
 
   @CreateDateColumn()
   created_date: Date;

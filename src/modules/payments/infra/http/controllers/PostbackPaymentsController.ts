@@ -41,7 +41,16 @@ export default class PostbackPaymentsController {
       const createOrder = container.resolve(CreateOrderService);
       const logPostbackPayment = container.resolve(LogPostbackPaymentService);
 
-      const { status, card, customer, billing } = payment;
+      const {
+        status,
+        card,
+        customer,
+        billing,
+        payment_method,
+        boleto_barcode,
+        boleto_expiration_date,
+        boleto_url,
+      } = payment;
       const cardId = card.id;
 
       const { bagId, quoteId, cardExists } = await logPostbackPayment.execute({
@@ -62,6 +71,10 @@ export default class PostbackPaymentsController {
             userId,
             paying_customer: customer,
             billing_address: billing,
+            payment_method,
+            boleto_barcode,
+            boleto_expiration_date,
+            boleto_url,
           });
         }
 

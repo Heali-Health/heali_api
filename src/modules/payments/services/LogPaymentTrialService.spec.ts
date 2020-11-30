@@ -51,6 +51,9 @@ describe('LogPaymentTrial', () => {
       card_first_digits: '411111',
       card_brand: 'visa',
       payment_method: 'credit_card',
+      boleto_barcode: null,
+      boleto_expiration_date: null,
+      boleto_url: null,
       capture_method: 'ecommerce',
       referer: 'api_key',
       ip: '10.2.11.17',
@@ -147,7 +150,7 @@ describe('LogPaymentTrial', () => {
     };
   });
 
-  it('should log an payment response along with its user', async () => {
+  it('should log an credit card payment response along with its user', async () => {
     const paymentTrialLog = await logPaymentTrial.execute({
       payment,
       userId: user.id,
@@ -157,6 +160,28 @@ describe('LogPaymentTrial', () => {
 
     expect(paymentTrialLog.user).toEqual(user);
     expect(paymentTrialLog.card).toEqual(payment.card);
+    expect(paymentTrialLog.billing).toEqual(payment.billing);
+    expect(paymentTrialLog.id).toEqual(payment.id);
+  });
+
+  it('should log an boleto payment response along with its user', async () => {
+    payment.card = null;
+    payment.payment_method = 'boleto';
+    payment.boleto_barcode = 'code';
+    payment.boleto_expiration_date = 'tomorrow-omg';
+    payment.boleto_url = 'http://boletoland.help';
+
+    const paymentTrialLog = await logPaymentTrial.execute({
+      payment,
+      userId: user.id,
+      bagId: '123',
+      quoteId: '123',
+    });
+
+    expect(paymentTrialLog.user).toEqual(user);
+    expect(paymentTrialLog.card).toEqual(payment.card);
+    expect(paymentTrialLog.payment_method).toEqual(payment.payment_method);
+    expect(paymentTrialLog.boleto_barcode).toEqual(payment.boleto_barcode);
     expect(paymentTrialLog.billing).toEqual(payment.billing);
     expect(paymentTrialLog.id).toEqual(payment.id);
   });

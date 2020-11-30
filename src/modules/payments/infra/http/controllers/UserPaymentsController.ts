@@ -35,7 +35,7 @@ export default class UserPaymentsController {
         boleto_expiration_date,
         boleto_url,
       } = payment;
-      const cardId = card.id;
+      const cardId = card && card.id;
 
       const paymentTrialLog = await logPaymentTrial.execute({
         payment,
@@ -62,7 +62,9 @@ export default class UserPaymentsController {
           boleto_url,
         });
 
-        await updateMainUserCard.execute(userId, cardId);
+        if (card) {
+          await updateMainUserCard.execute(userId, cardId);
+        }
 
         await createOrder.execute({
           bagId,

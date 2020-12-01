@@ -26,6 +26,26 @@ export default class CreateOrderService {
       throw new AppError('Not valid credentials');
     }
 
+    const mailMarketingProducts = await this.mailMarketingProvider.listProducts();
+    const mailMarketingProductsIds = mailMarketingProducts.map(
+      product => product.id,
+    );
+
+    payment.items.map(async item => {
+      if (!mailMarketingProductsIds.includes(item.id)) {
+        await this.mailMarketingProvider.addProduct({
+          id: item.id,
+          title: item.title,
+          variants: [
+            {
+              id: item.id,
+              title: item.title,
+            },
+          ],
+        });
+      }
+    });
+
     await this.mailMarketingProvider.addOrder({
       id: payment.id.toString(),
       currency_code: 'BRL',

@@ -6,7 +6,9 @@ import IAddProductToProvider from '../dtos/IAddProductToProvider';
 import IMailMarketingCart from '../dtos/IMailMarketingCart';
 import IMailMarketingCustomer from '../dtos/IMailMarketingCustomer';
 import IMailMarketingOrder from '../dtos/IMailMarketingOrder';
-import IMailMarketingProduct from '../dtos/IMailMarketingProduct';
+import IMailMarketingProduct, {
+  IMailMarketingProductResponse,
+} from '../dtos/IMailMarketingProduct';
 import IMailMarketingProvider from '../models/IMailMarketingProvider';
 
 export default class MailchimpMailMarketingProvider
@@ -62,9 +64,11 @@ export default class MailchimpMailMarketingProvider
   }
 
   public async listProducts(): Promise<IMailMarketingProduct[]> {
-    const { data: products } = await this.mailchimpEcommerceClient.get<
-      IMailMarketingProduct[]
-    >('/products');
+    const {
+      data: { products },
+    } = await this.mailchimpEcommerceClient.get<IMailMarketingProductResponse>(
+      '/products',
+    );
 
     return products;
   }

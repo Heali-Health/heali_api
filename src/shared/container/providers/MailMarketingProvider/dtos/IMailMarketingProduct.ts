@@ -25,3 +25,8 @@ export default interface IMailMarketingProduct {
   variants: IMailMarketingProductVariant[];
   published_at_foreign?: string;
 }
+
+export interface IMailMarketingProductResponse {
+  products: IMailMarketingProduct[];
+  store_id: string;
+}

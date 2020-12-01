@@ -77,10 +77,7 @@ export default class CreateOrderService {
 
       await this.mailMarketingProvider.deleteCart(bagId);
     } catch (err) {
-      throw new AppError(
-        `error type: ${err.type} \n error title: ${err.title} \n error detail: ${err.detail}`,
-        err.status,
-      );
+      console.log(err);
     }
   }
 }

@@ -17,18 +17,20 @@ export default class PostbackPaymentsController {
       const postbackPayment = req.body as ICreatePaymentPostbackDTO;
 
       console.log('request received in controller');
-      console.log(req);
+      console.log(req.body);
+      console.log(req.headers);
 
-      const apiKey = process.env.PAGARME_API_KEY;
       const verifyBody = stringify(req.body);
       const headerSignature = req.headers['x-hub-signature'];
       const signature =
         headerSignature && headerSignature.toString().replace('sha1=', '');
 
+      const hash = pagarme.postack.calculateSignature(signature, verifyBody);
+
       const verify = pagarme.postback.verifySignature(
-        apiKey,
-        verifyBody,
         signature,
+        verifyBody,
+        hash,
       );
 
       if (!headerSignature || !signature || !verify) {

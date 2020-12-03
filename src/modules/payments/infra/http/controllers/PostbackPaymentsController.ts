@@ -16,6 +16,8 @@ export default class PostbackPaymentsController {
     try {
       const postbackPayment = req.body as ICreatePaymentPostbackDTO;
 
+      console.log('request received in controller');
+
       const apiKey = process.env.PAGARME_API_KEY;
       const verifyBody = stringify(req.body);
       const headerSignature = req.headers['x-hub-signature'];
@@ -29,8 +31,11 @@ export default class PostbackPaymentsController {
       );
 
       if (!headerSignature || !signature || !verify) {
+        console.log('invalid postback request');
         throw new AppError('Invalid postback request');
       }
+
+      console.log('valid postback request');
 
       const { transaction: payment } = postbackPayment;
       const userId = payment.customer.external_id;

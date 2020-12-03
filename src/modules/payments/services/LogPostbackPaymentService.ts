@@ -15,8 +15,6 @@ interface IRequest {
 
 interface IResponse {
   postbackPaymentLog: PaymentPostback;
-  bagId: string;
-  quoteId: string;
   cardExists: boolean;
 }
 
@@ -54,7 +52,7 @@ export default class LogPostbackPaymentService {
       throw new AppError('No transaction was found with the informed id');
     }
 
-    const { bagId, quoteId, card } = lastPayment;
+    const { card } = lastPayment;
 
     const postbackPaymentLog = await this.postbacksPaymentsRepository.create(
       postbackPayment,
@@ -69,8 +67,6 @@ export default class LogPostbackPaymentService {
 
     return {
       postbackPaymentLog,
-      bagId,
-      quoteId,
       cardExists,
     };
   }

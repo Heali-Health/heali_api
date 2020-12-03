@@ -14,7 +14,7 @@ import CreateOrderService from '@modules/payments/services/CreateOrderService';
 export default class PostbackPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const postbackPayment = req.body; /* as ICreatePaymentPostbackDTO */
+      const postbackPayment = req.body as ICreatePaymentPostbackDTO;
       console.log('body', req.body);
       console.log('headers', req.headers);
 
@@ -61,10 +61,10 @@ export default class PostbackPaymentsController {
         boleto_barcode,
         boleto_expiration_date,
         boleto_url,
+        metadata: { bagId, quoteId },
       } = payment;
-      const cardId = card.id;
 
-      const { bagId, quoteId, cardExists } = await logPostbackPayment.execute({
+      const { cardExists } = await logPostbackPayment.execute({
         postbackPayment,
         userId,
       });
@@ -89,7 +89,11 @@ export default class PostbackPaymentsController {
           });
         }
 
-        await updateMainUserCard.execute(userId, cardId);
+        if (card) {
+          const cardId = card && card.id;
+
+          await updateMainUserCard.execute(userId, cardId);
+        }
 
         await createOrder.execute({
           bagId,

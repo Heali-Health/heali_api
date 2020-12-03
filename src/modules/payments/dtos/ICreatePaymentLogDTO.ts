@@ -111,7 +111,10 @@ export interface IPagarmeLog {
   items: IPagarmeItem[];
   card: ICard | null;
   split_rules?: string;
-  metadata: {};
+  metadata: {
+    bagId: string;
+    quoteId: string;
+  };
   antifraud_metadata: {};
   reference_key?: string;
 }

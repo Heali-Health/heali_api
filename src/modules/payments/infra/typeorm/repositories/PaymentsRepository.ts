@@ -1,7 +1,8 @@
 import { IPagarmeLog } from '@modules/payments/dtos/ICreatePaymentLogDTO';
 import IPaymentsRepository from '@modules/payments/repositories/IPaymentsRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
-import { getMongoRepository, MongoRepository, ObjectID } from 'typeorm';
+import { getMongoRepository, MongoRepository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 import Payment from '../schemas/Payment';
 
 class PaymentsRepository implements IPaymentsRepository {
@@ -30,7 +31,7 @@ class PaymentsRepository implements IPaymentsRepository {
   }
 
   public async findOneById(id: string): Promise<Payment | undefined> {
-    const idObject = new ObjectID(id);
+    const idObject = new ObjectId(id);
 
     return this.ormRepository.findOne({ where: { id: idObject } });
   }

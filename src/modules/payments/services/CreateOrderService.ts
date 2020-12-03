@@ -70,9 +70,9 @@ export default class CreateOrderService {
           product_title: item.title,
           product_variant_id: item.id,
           product_variant_title: item.title,
-          quantity: item.quantity,
+          quantity: 1,
         })),
-        order_total: payment.amount,
+        order_total: Number(payment.amount),
       });
 
       await this.mailMarketingProvider.deleteCart(bagId);

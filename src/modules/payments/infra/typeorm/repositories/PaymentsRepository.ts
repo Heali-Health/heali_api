@@ -31,9 +31,9 @@ class PaymentsRepository implements IPaymentsRepository {
   }
 
   public async findOneById(id: string): Promise<Payment | undefined> {
-    const idObject = new ObjectId(id);
+    // const idObject = new ObjectId(id);
 
-    return this.ormRepository.findOne({ where: { id: idObject } });
+    return this.ormRepository.findOne({ where: { id } });
   }
 }
 

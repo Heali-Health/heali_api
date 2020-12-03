@@ -66,6 +66,7 @@ export default class PostbackPaymentsController {
 
       const { cardExists } = await logPostbackPayment.execute({
         postbackPayment,
+        card,
         userId,
       });
 
@@ -101,6 +102,8 @@ export default class PostbackPaymentsController {
           payment,
         });
       }
+
+      console.log('success: true');
 
       return res.status(200).json({ success: true });
     } catch (err) {

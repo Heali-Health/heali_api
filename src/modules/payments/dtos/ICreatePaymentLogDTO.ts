@@ -81,7 +81,7 @@ export interface IPagarmeLog {
   nsu: number;
   date_created: string;
   date_updated: string;
-  amount: number;
+  amount: string;
   authorized_amount: number;
   paid_amount: number;
   refunded_amount: number;

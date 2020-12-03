@@ -7,10 +7,12 @@ import IPostbacksPaymentsRepository from '../repositories/IPostbacksPaymentsRepo
 import ICreatePaymentPostbackDTO from '../dtos/ICreatePaymentPostbackDTO';
 import IPaymentsRepository from '../repositories/IPaymentsRepository';
 import IUserCardsRepository from '../repositories/IUserCardsRepository';
+import { ICard } from '../dtos/ICreateUserCardDTO';
 
 interface IRequest {
   postbackPayment: ICreatePaymentPostbackDTO;
   userId: string;
+  card: ICard | null;
 }
 
 interface IResponse {
@@ -37,6 +39,7 @@ export default class LogPostbackPaymentService {
   public async execute({
     postbackPayment,
     userId,
+    card,
   }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findById(userId);
 
@@ -44,26 +47,34 @@ export default class LogPostbackPaymentService {
       throw new AppError('No user found with this userId');
     }
 
-    const lastPayment = await this.paymentsRepository.findOneById(
-      postbackPayment.id,
-    );
+    // const lastPayment = await this.paymentsRepository.findOneById(
+    //   postbackPayment.id,
+    // );
 
-    if (!lastPayment) {
-      throw new AppError('No transaction was found with the informed id');
-    }
+    // if (!lastPayment) {
+    //   throw new AppError('No transaction was found with the informed id');
+    // }
 
-    const { card } = lastPayment;
+    // const { card } = lastPayment;
 
     const postbackPaymentLog = await this.postbacksPaymentsRepository.create(
       postbackPayment,
       user,
     );
 
-    const cardId = card.id;
+    const userCards = await this.userCardsRepository.findAllByUserId(userId);
 
-    const cardExists = !!this.userCardsRepository.findUserCardByForeignId(
-      cardId.toString(),
-    );
+    let cardExists: boolean;
+
+    if (card) {
+      cardExists = !!userCards.find(
+        userCard => card.id === userCard.foreign_id,
+      );
+    } else {
+      cardExists = !!userCards.find(
+        userCard => userCard.payment_method === 'boleto',
+      );
+    }
 
     return {
       postbackPaymentLog,

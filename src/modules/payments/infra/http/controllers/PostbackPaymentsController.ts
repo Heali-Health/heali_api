@@ -17,6 +17,7 @@ export default class PostbackPaymentsController {
       const postbackPayment = req.body as ICreatePaymentPostbackDTO;
 
       console.log('request received in controller');
+      console.log(req);
 
       const apiKey = process.env.PAGARME_API_KEY;
       const verifyBody = stringify(req.body);

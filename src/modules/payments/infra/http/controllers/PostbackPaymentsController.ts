@@ -25,11 +25,14 @@ export default class PostbackPaymentsController {
       const signature =
         headerSignature && headerSignature.toString().replace('sha1=', '');
 
-      const hash = pagarme.postack.calculateSignature(signature, verifyBody);
+      const hash = await pagarme.postack.calculateSignature(
+        signature,
+        verifyBody,
+      );
 
       console.log('hash', hash);
 
-      const verify = pagarme.postback.verifySignature(
+      const verify = await pagarme.postback.verifySignature(
         signature,
         verifyBody,
         hash,

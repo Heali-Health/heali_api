@@ -15,7 +15,6 @@ export default class PostbackPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
       const postbackPayment = req.body; /* as ICreatePaymentPostbackDTO */
-      console.log('request received in controller');
       console.log('body', req.body);
       console.log('headers', req.headers);
 
@@ -28,8 +27,6 @@ export default class PostbackPaymentsController {
         signature,
         verifyBody,
       );
-
-      console.log('hash', hash);
 
       const verify = await pagarme.postback.verifySignature(
         signature,
@@ -101,7 +98,7 @@ export default class PostbackPaymentsController {
         });
       }
 
-      return res.json({ success: true });
+      return res.status(200).json({ success: true });
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }

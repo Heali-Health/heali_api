@@ -25,6 +25,7 @@ app.use(Sentry.Handlers.requestHandler());
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // midleware para servir arquivos estáticos
 app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(rateLimiter);

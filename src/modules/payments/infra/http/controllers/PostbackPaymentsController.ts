@@ -15,7 +15,6 @@ export default class PostbackPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
       const postbackPayment = req.body; /* as ICreatePaymentPostbackDTO */
-
       console.log('request received in controller');
       console.log('body', req.body);
       console.log('headers', req.headers);
@@ -25,7 +24,7 @@ export default class PostbackPaymentsController {
       const signature =
         headerSignature && headerSignature.toString().replace('sha1=', '');
 
-      const hash = await pagarme.postack.calculateSignature(
+      const hash = await pagarme.postback.calculateSignature(
         signature,
         verifyBody,
       );

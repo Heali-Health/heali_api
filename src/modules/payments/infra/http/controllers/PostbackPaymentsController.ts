@@ -14,7 +14,7 @@ import CreateOrderService from '@modules/payments/services/CreateOrderService';
 export default class PostbackPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
-      const postbackPayment = req.body as ICreatePaymentPostbackDTO;
+      const postbackPayment = req.body; /* as ICreatePaymentPostbackDTO */
 
       console.log('request received in controller');
       console.log('body', req.body);

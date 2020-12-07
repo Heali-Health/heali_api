@@ -15,8 +15,18 @@ export default class SendScheduleRequestEmailService {
     user,
     patient,
     prices,
+    dates,
+    hours,
   }: ISendScheduleRequestEmailDTO): Promise<void> {
     const { email, name } = mailConfig.defaults.from;
+
+    const checkDatesEquality = dates.from === dates.to;
+
+    const datesString = checkDatesEquality
+      ? dates.from
+      : `de ${dates.from} a ${dates.to}`;
+
+    const hoursString = hours.join(', ');
 
     try {
       const userEmailQueueJob = {
@@ -33,6 +43,8 @@ export default class SendScheduleRequestEmailService {
           username: user.first_name,
           patientname: patient.first_name,
           prices,
+          dates: datesString,
+          hours: hoursString,
         },
         templateFile: 'schedule_request_user_version.hbs',
       };

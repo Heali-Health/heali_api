@@ -1,19 +1,65 @@
 <style>
-  .message-content {
-    font-family: : Arial, Helvetica, sans-serif;
-    max-width: 600px;
-    font-size: 18px;
-    line-height: 21px
+  .background {
+    background: #F0F6F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+  .message-content {
+    background: #FFFFFF;
+    border-radius: 6px;
+
+    margin-top: 40px;
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 60px;
+
+    padding-top: 30px;
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-bottom: 60px;
+
+    font-family: : 'Nunito Sans', Helvetica, sans-serif;
+    max-width: 600px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 23px;
+
+    letter-spacing: 0.192941px;
+
+    color: #3C4759;
+  }
+
+  .image-wrapper {
+    width: auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  img {
+    width: 120px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
+  p {
+    margin-bottom: 18px;
+  }
+
 </style>
 
-<div class="message-content">
-  <p>Olá, {{name}}!</p>
-  <p>Bem-vindo(a) à Heali! Você foi cadastrado(a) com sucesso.</p>
-  <p>A partir de agora, você poderá ter acesso a pesquisar milhares de exames médicos em centenas de laboratórios. E esse número está crescendo cada vez mais a cada dia...</p>
-  <p>Conte com a gente para cuidar melhor da sua saúde.</p>
-  <p>
-    Obrigado!<br />
-    <strong>Equipe Heali</strong>
-  </p>
+<div class="background">
+  <div class="message-content">
+    <div class="image-wrapper">
+      <img src="https://app-heali.s3.amazonaws.com/heali_mail.png" alt="logo">
+    </div>
+    <p>Olá, {{name}}!</p>
+    <p>Bem-vindo(a) à Heali! Você foi cadastrado(a) com sucesso.</p>
+    <p>A partir de agora, você poderá ter acesso a pesquisar milhares de exames médicos em centenas de laboratórios. E esse número está crescendo cada vez mais a cada dia...</p>
+    <p>Conte com a gente para cuidar melhor da sua saúde.</p>
+    <p>
+      Obrigado!<br />
+      <strong>Equipe Heali</strong>
+    </p>
+  </div>
 </div>

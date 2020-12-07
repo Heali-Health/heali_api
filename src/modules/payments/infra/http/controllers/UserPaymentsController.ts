@@ -8,6 +8,7 @@ import UpdateQuoteService from '@modules/quotes/services/UpdateQuoteStatusServic
 import CreateUserCardService from '@modules/payments/services/CreateUserCardService';
 import UpdateMainUserCardsService from '@modules/payments/services/UpdateMainUserCardService';
 import CreateOrderService from '@modules/payments/services/CreateOrderService';
+import SendScheduleRequestEmailService from '@modules/quotes/services/SendScheduleRequestEmailService';
 
 export default class UserPaymentsController {
   public async create(req: Request, res: Response): Promise<Response> {
@@ -44,7 +45,7 @@ export default class UserPaymentsController {
         quoteId,
       });
 
-      await updateQuote.execute({
+      const { user, patient, price, dates, hours } = await updateQuote.execute({
         newStatus: payment.status,
         quoteId,
         paymentTrialId: payment.id,
@@ -70,6 +71,17 @@ export default class UserPaymentsController {
           bagId,
           userId,
           payment,
+        });
+
+        const sendScheduleRequestEmail = container.resolve(
+          SendScheduleRequestEmailService,
+        );
+        await sendScheduleRequestEmail.execute({
+          user,
+          patient,
+          prices: price,
+          dates,
+          hours,
         });
       }
 

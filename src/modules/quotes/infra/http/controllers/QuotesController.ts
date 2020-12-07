@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import CreateQuoteService from '@modules/quotes/services/CreateQuoteService';
-import SendScheduleRequestEmailService from '@modules/quotes/services/SendScheduleRequestEmailService';
 import ShowProfileService from '@modules/users/services/ShowProfileService';
 import { classToClass } from 'class-transformer';
 
@@ -20,17 +19,6 @@ export default class QuotesController {
         user,
         patient,
         price,
-        dates,
-        hours,
-      });
-
-      const sendScheduleRequestEmail = container.resolve(
-        SendScheduleRequestEmailService,
-      );
-      await sendScheduleRequestEmail.execute({
-        user,
-        patient,
-        prices: price,
         dates,
         hours,
       });

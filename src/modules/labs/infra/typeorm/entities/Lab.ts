@@ -57,6 +57,15 @@ class Lab {
   @Column()
   open_hour: string;
 
+  @Column()
+  how_to_get: string;
+
+  @Column()
+  technician_responsible: string;
+
+  @Column()
+  is_open: string;
+
   @OneToMany(() => OriginalExam, originalExam => originalExam.lab)
   original_exam: OriginalExam;
 

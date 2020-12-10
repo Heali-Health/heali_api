@@ -44,6 +44,36 @@ class OriginalExam {
   @OneToMany(() => Price, price => price.original_exam_id)
   price: Price;
 
+  @Column()
+  description: string;
+
+  @Column()
+  preparation: string;
+
+  @Column()
+  sex: string;
+
+  @Column()
+  min_age: number;
+
+  @Column()
+  max_age: number;
+
+  @Column()
+  days_to_results: number;
+
+  @Column()
+  lab_min_price: number;
+
+  @Column()
+  lab_min_price_max_installments: number;
+
+  @Column()
+  lab_max_price: number;
+
+  @Column()
+  lab_max_price_max_installments: number;
+
   @CreateDateColumn()
   created_date: Date;
 
